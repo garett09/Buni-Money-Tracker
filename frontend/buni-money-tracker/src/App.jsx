@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
   BrowserRouter as Router,
   Routes,
@@ -17,12 +16,12 @@ const App = () => {
     <div>
       <Router>
         <Routes>
-          <Route path="/" element={<Root />} />
+          <Route path="/" exact element={<Root />} />
           <Route path="/login" exact element={<Login />} />
           <Route path="/signup" exact element={<SignUp />} />
           <Route path="/dashboard" exact element={<Home />} />
-          <Router path="/income" exact element={<Income />} />
-          <Route path="/expense" exact element={<Expense />} />
+          <Route path="/dashboard/income" exact element={<Income />} />
+          <Route path="/dashboard/expense" exact element={<Expense />} />
         </Routes>
       </Router>
     </div>
