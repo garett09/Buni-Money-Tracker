@@ -5,6 +5,10 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
+import { AuthProvider } from "./contexts/AuthContext";
+import { TransactionProvider } from "./contexts/TransactionContext";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 import Login from "./pages/Auth/Login";
 import SignUp from "./pages/Auth/SignUp";
 import Home from "./pages/Dashboard/Home";
@@ -13,18 +17,70 @@ import Expense from "./pages/Dashboard/Expense";
 
 const App = () => {
   return (
-    <div>
-      <Router>
-        <Routes>
-          <Route path="/" exact element={<Root />} />
-          <Route path="/login" exact element={<Login />} />
-          <Route path="/signup" exact element={<SignUp />} />
-          <Route path="/dashboard" exact element={<Home />} />
-          <Route path="/dashboard/income" exact element={<Income />} />
-          <Route path="/dashboard/expense" exact element={<Expense />} />
-        </Routes>
-      </Router>
-    </div>
+    <AuthProvider>
+      <TransactionProvider>
+        <Router>
+          <div>
+            <Routes>
+              <Route path="/" exact element={<Root />} />
+              <Route path="/login" exact element={<Login />} />
+              <Route path="/signup" exact element={<SignUp />} />
+              <Route 
+                path="/dashboard" 
+                exact 
+                element={
+                  <ProtectedRoute>
+                    <Home />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/dashboard/income" 
+                exact 
+                element={
+                  <ProtectedRoute>
+                    <Income />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/dashboard/expense" 
+                exact 
+                element={
+                  <ProtectedRoute>
+                    <Expense />
+                  </ProtectedRoute>
+                } 
+              />
+            </Routes>
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                duration: 4000,
+                style: {
+                  background: '#363636',
+                  color: '#fff',
+                },
+                success: {
+                  duration: 3000,
+                  iconTheme: {
+                    primary: '#10B981',
+                    secondary: '#fff',
+                  },
+                },
+                error: {
+                  duration: 4000,
+                  iconTheme: {
+                    primary: '#EF4444',
+                    secondary: '#fff',
+                  },
+                },
+              }}
+            />
+          </div>
+        </Router>
+      </TransactionProvider>
+    </AuthProvider>
   );
 };
 
