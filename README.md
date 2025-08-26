@@ -37,63 +37,29 @@ A beautiful and modern money tracking application built for couples to manage th
 - Category-based filtering
 - Sort transactions by date
 
-## 🚀 Quick Start
+## 🚀 Quick Start (Single Command)
 
 ### Prerequisites
 - Node.js (v16 or higher)
 - MongoDB (local or cloud)
 - npm or yarn
 
-### Backend Setup
+### Setup and Run
 
-1. **Navigate to backend directory:**
+1. Install dependencies and set up environment:
    ```bash
-   cd backend
+   ./setup.sh
    ```
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Create environment file:**
-   ```bash
-   cp .env.example .env
-   ```
-   
-   Update the `.env` file with your configuration:
-   ```env
-   PORT=8000
-   MONGODB_URI=mongodb://localhost:27017/buni-money-tracker
-   JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-   NODE_ENV=development
-   ```
-
-4. **Start the backend server:**
-   ```bash
-   npm start
-   ```
-
-### Frontend Setup
-
-1. **Navigate to frontend directory:**
-   ```bash
-   cd frontend/buni-money-tracker
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-3. **Start the development server:**
+2. Start both backend and frontend with one command from project root:
    ```bash
    npm run dev
    ```
 
-4. **Open your browser and visit:**
+3. Open your browser:
    ```
-   http://localhost:5173
+   Frontend: http://localhost:5173
+   Backend:  http://localhost:8000/api/hello
    ```
 
 ## 📁 Project Structure
@@ -113,113 +79,56 @@ buni-money-tracker/
 │   ├── index.js
 │   └── package.json
 ├── frontend/
-│   └── buni-money-tracker/
-│       ├── src/
-│       │   ├── components/
-│       │   │   ├── common/
-│       │   │   ├── dashboard/
-│       │   │   └── layouts/
-│       │   ├── contexts/
-│       │   ├── pages/
-│       │   ├── utils/
-│       │   └── App.jsx
-│       └── package.json
+│   ├── src/
+│   ├── public/
+│   └── package.json
+├── package.json        # root (workspaces + dev script)
+├── setup.sh            # installs and prepares .env
 └── README.md
 ```
 
 ## 🛠️ Tech Stack
 
 ### Backend
-- **Node.js** - Runtime environment
-- **Express.js** - Web framework
-- **MongoDB** - Database
-- **Mongoose** - ODM for MongoDB
-- **JWT** - Authentication
-- **bcrypt** - Password hashing
-- **CORS** - Cross-origin resource sharing
+- Node.js, Express.js, MongoDB, Mongoose, JWT, bcrypt, CORS
 
 ### Frontend
-- **React** - UI library
-- **Vite** - Build tool
-- **Tailwind CSS** - Styling
-- **React Router** - Navigation
-- **Recharts** - Charts and graphs
-- **React Hot Toast** - Notifications
-- **Axios** - HTTP client
-- **React Icons** - Icon library
+- React, Vite, Tailwind CSS, React Router, Recharts, React Hot Toast, Axios, React Icons
 
 ## 🔧 API Endpoints
 
 ### Authentication
-- `POST /api/auth/register` - User registration
-- `POST /api/auth/login` - User login
-- `GET /api/auth/me` - Get current user
-- `PUT /api/auth/profile` - Update profile
-- `PUT /api/auth/change-password` - Change password
+- POST /api/auth/register — User registration
+- POST /api/auth/login — User login
+- GET /api/auth/me — Get current user
+- PUT /api/auth/profile — Update profile
+- PUT /api/auth/change-password — Change password
 
 ### Transactions
-- `GET /api/transactions` - Get all transactions
-- `POST /api/transactions` - Create transaction
-- `GET /api/transactions/:id` - Get single transaction
-- `PUT /api/transactions/:id` - Update transaction
-- `DELETE /api/transactions/:id` - Delete transaction
-- `GET /api/transactions/stats` - Get statistics
-- `GET /api/transactions/categories/list` - Get categories
+- GET /api/transactions — Get all transactions
+- POST /api/transactions — Create transaction
+- GET /api/transactions/:id — Get single transaction
+- PUT /api/transactions/:id — Update transaction
+- DELETE /api/transactions/:id — Delete transaction
+- GET /api/transactions/stats — Get statistics
+- GET /api/transactions/categories/list — Get categories
 
 ## 🎯 Key Features for Couples
 
-### Shared Financial Visibility
-- Both partners can see all transactions
-- Real-time balance updates
-- Shared expense tracking
-
-### Smart Categorization
-- Pre-defined categories for common expenses
-- Custom tags for better organization
-- Location tracking for transactions
-
-### Financial Insights
-- Visual charts showing spending patterns
-- Category-wise expense breakdown
-- Monthly/yearly financial summaries
-
-### Easy Management
-- Quick add transactions
-- Bulk operations
-- Search and filter capabilities
-- Export functionality (coming soon)
+- Shared financial visibility
+- Smart categorization and tags
+- Visual insights and summaries
+- Quick add and management
 
 ## 🚀 Deployment
 
-### Backend Deployment
-1. Set up a MongoDB database (MongoDB Atlas recommended)
-2. Deploy to platforms like Heroku, Railway, or DigitalOcean
-3. Update environment variables
-4. Set up CORS for your frontend domain
-
-### Frontend Deployment
-1. Build the project: `npm run build`
-2. Deploy to platforms like Vercel, Netlify, or GitHub Pages
-3. Update API endpoints to point to your backend
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+- Backend: Deploy Node/Express, set env vars, allow CORS
+- Frontend: Build with `npm run build` and deploy to Vercel/Netlify
 
 ## 📝 License
 
-This project is licensed under the MIT License.
-
-## 🙏 Acknowledgments
-
-- Built with love for couples managing their finances together
-- Inspired by modern fintech applications
-- Special thanks to the open-source community
+MIT
 
 ---
 
-**Happy tracking! 💰✨**
+Happy tracking! 💰✨
