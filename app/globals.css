@@ -1,7 +1,9 @@
-@import "tailwindcss";
-
 /* iOS 26 San Francisco Fonts - Works locally and in production */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 @font-face {
   font-family: 'SF Pro Display';
@@ -51,11 +53,7 @@
   font-display: swap;
 }
 
-@theme {
-  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-text: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --breakpoint-3xl: 1920px;
-  
+:root {
   /* iOS 26 Color Palette */
   --color-primary: #007AFF;
   --color-primary-dark: #0056CC;
