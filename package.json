@@ -1,17 +1,38 @@
 {
   "name": "buni-money-tracker",
   "version": "1.0.0",
-  "description": "Buni Money Tracker - A fully responsive Expense Tracker App using the MERN stack",
+  "description": "A modern money tracking application with iOS-style UI",
+  "main": "index.js",
   "scripts": {
     "start": "concurrently \"npm run backend\" \"npm run frontend\"",
     "backend": "cd backend && npm install && npm start",
     "frontend": "cd frontend/buni-money-tracker && npm install && npm run dev",
-    "install-all": "npm install && cd backend && npm install && cd ../frontend/buni-money-tracker && npm install"
+    "build": "cd frontend/buni-money-tracker && npm run build",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "@upstash/redis": "^1.25.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.1.9"
   },
-  "keywords": ["mern", "expense-tracker", "money-tracker", "react", "nodejs"],
-  "author": "",
-  "license": "ISC"
+  "keywords": [
+    "money-tracker",
+    "expense-tracker",
+    "income-tracker",
+    "react",
+    "nodejs",
+    "vercel",
+    "upstash",
+    "redis"
+  ],
+  "author": "Adrian",
+  "license": "MIT"
 }
