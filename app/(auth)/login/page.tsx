@@ -58,16 +58,16 @@ const LoginPage = () => {
   return (
     <AuthLayout>
       <div className="lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center">
-        <div className="ios-fade-in">
-          <h3 className="text-display text-3xl font-semibold text-white mb-2">Welcome Back</h3>
-          <p className="text-body text-white/70 mb-8">
+        <div className="apple-fade-in">
+          <h3 className="text-display text-4xl font-semibold text-white mb-3 tracking-tight">Welcome Back</h3>
+          <p className="text-body text-white/60 mb-10 text-lg">
             Please enter your details to log in.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 ios-slide-up" style={{ animationDelay: '0.2s' }}>
+        <form onSubmit={handleSubmit} className="space-y-8 apple-slide-up" style={{ animationDelay: '0.3s' }}>
           <div>
-            <label htmlFor="email" className="block text-body text-sm font-medium text-white/90 mb-2">
+            <label htmlFor="email" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
               Email
             </label>
             <input
@@ -77,13 +77,13 @@ const LoginPage = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="glass-input w-full px-4 py-3 rounded-xl focus:outline-none transition-all duration-300"
+              className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg"
               placeholder="Enter your email"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-body text-sm font-medium text-white/90 mb-2">
+            <label htmlFor="password" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
               Password
             </label>
             <input
@@ -93,7 +93,7 @@ const LoginPage = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="glass-input w-full px-4 py-3 rounded-xl focus:outline-none transition-all duration-300"
+              className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg"
               placeholder="Enter your password"
             />
           </div>
@@ -101,15 +101,15 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full glass-button text-white py-3 px-4 rounded-xl font-medium text-body disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full glass-button text-white py-4 px-6 rounded-2xl font-medium text-body text-lg disabled:opacity-50 disabled:cursor-not-allowed apple-shimmer"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
-        <p className="text-center text-body text-white/70 mt-8 ios-fade-in" style={{ animationDelay: '0.4s' }}>
+        <p className="text-center text-body text-white/60 mt-10 apple-fade-in text-lg" style={{ animationDelay: '0.6s' }}>
           Don't have an account?{" "}
-          <Link href="/signup" className="text-white font-medium hover:text-white/80 transition-colors">
+          <Link href="/signup" className="text-white font-medium hover:text-white/80 transition-colors duration-300">
             Sign up
           </Link>
         </p>
