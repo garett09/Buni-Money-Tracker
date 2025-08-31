@@ -22,5 +22,10 @@
       "src": "/(.*)",
       "dest": "/frontend/buni-money-tracker/$1"
     }
-  ]
+  ],
+  "functions": {
+    "backend/index.js": {
+      "maxDuration": 30
+    }
+  }
 }
