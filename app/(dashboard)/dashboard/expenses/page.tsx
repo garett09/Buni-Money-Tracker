@@ -5,6 +5,7 @@ import DashboardLayout from '@/app/components/DashboardLayout';
 import { toast } from 'react-hot-toast';
 import { FiTrendingDown, FiPlus, FiCalendar, FiTag, FiDollarSign, FiTarget, FiBarChart, FiAlertTriangle } from 'react-icons/fi';
 import { expenseCategories, spendingInsights } from '@/app/lib/categories';
+import { ApiClient } from '@/app/lib/api';
 
 const ExpensesPage = () => {
   const [formData, setFormData] = useState({
@@ -21,15 +22,33 @@ const ExpensesPage = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [showInsights, setShowInsights] = useState(false);
 
-  // Load sample transactions
+  // Load transactions from API
   useEffect(() => {
-    const sampleTransactions = [
-      { id: 1, amount: 2500, description: 'Monthly Groceries', category: 'Food & Dining', subcategory: 'Groceries', date: '2024-01-20', recurring: true },
-      { id: 2, amount: 800, description: 'Gas for the month', category: 'Transportation', subcategory: 'Gas/Fuel', date: '2024-01-18', recurring: true },
-      { id: 3, amount: 150, description: 'Coffee with friends', category: 'Food & Dining', subcategory: 'Coffee & Snacks', date: '2024-01-19', recurring: false },
-      { id: 4, amount: 1200, description: 'Netflix & Spotify', category: 'Entertainment', subcategory: 'Streaming Services', date: '2024-01-15', recurring: true }
-    ];
-    setTransactions(sampleTransactions);
+    const loadTransactions = async () => {
+      try {
+        const response = await ApiClient.getExpenseTransactions();
+        setTransactions(response.transactions || []);
+      } catch (error) {
+        console.error('Error loading expense transactions:', error);
+        // Fallback to localStorage for development
+        const savedTransactions = localStorage.getItem('expenseTransactions');
+        if (savedTransactions) {
+          setTransactions(JSON.parse(savedTransactions));
+        } else {
+          // Load sample transactions only if no saved data exists
+          const sampleTransactions = [
+            { id: 1, amount: 2500, description: 'Monthly Groceries', category: 'Food & Dining', subcategory: 'Groceries', date: '2024-01-20', recurring: true },
+            { id: 2, amount: 800, description: 'Gas for the month', category: 'Transportation', subcategory: 'Gas/Fuel', date: '2024-01-18', recurring: true },
+            { id: 3, amount: 150, description: 'Coffee with friends', category: 'Food & Dining', subcategory: 'Coffee & Snacks', date: '2024-01-19', recurring: false },
+            { id: 4, amount: 1200, description: 'Netflix & Spotify', category: 'Entertainment', subcategory: 'Streaming Services', date: '2024-01-15', recurring: true }
+          ];
+          setTransactions(sampleTransactions);
+          localStorage.setItem('expenseTransactions', JSON.stringify(sampleTransactions));
+        }
+      }
+    };
+
+    loadTransactions();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -56,16 +75,15 @@ const ExpensesPage = () => {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await ApiClient.addExpenseTransaction(formData);
+      const newTransaction = response.transaction;
       
-      const newTransaction = {
-        id: Date.now(),
-        ...formData,
-        amount: parseFloat(formData.amount)
-      };
+      const updatedTransactions = [newTransaction, ...transactions];
+      setTransactions(updatedTransactions);
       
-      setTransactions(prev => [newTransaction, ...prev]);
+      // Also update localStorage as fallback
+      localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
+      
       toast.success('Expense added successfully!');
       
       setFormData({

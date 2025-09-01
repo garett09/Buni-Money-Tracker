@@ -4,21 +4,68 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import DashboardLayout from '@/app/components/DashboardLayout';
 import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiTarget } from 'react-icons/fi';
+import { ApiClient } from '@/app/lib/api';
 
 const DashboardPage = () => {
   const [user, setUser] = useState<any>(null);
+  const [incomeTransactions, setIncomeTransactions] = useState<any[]>([]);
+  const [expenseTransactions, setExpenseTransactions] = useState<any[]>([]);
 
-  useEffect(() => {
+  const loadData = async () => {
     const userData = localStorage.getItem('user');
     if (userData) {
       setUser(JSON.parse(userData));
     }
+
+    try {
+      // Load income transactions from API
+      const incomeResponse = await ApiClient.getIncomeTransactions();
+      setIncomeTransactions(incomeResponse.transactions || []);
+
+      // Load expense transactions from API
+      const expenseResponse = await ApiClient.getExpenseTransactions();
+      setExpenseTransactions(expenseResponse.transactions || []);
+    } catch (error) {
+      console.error('Error loading transactions:', error);
+      // Fallback to localStorage for development
+      const savedIncome = localStorage.getItem('incomeTransactions');
+      if (savedIncome) {
+        setIncomeTransactions(JSON.parse(savedIncome));
+      }
+      const savedExpenses = localStorage.getItem('expenseTransactions');
+      if (savedExpenses) {
+        setExpenseTransactions(JSON.parse(savedExpenses));
+      }
+    }
+  };
+
+  useEffect(() => {
+    loadData();
   }, []);
+
+  // Refresh data when the page becomes visible (user navigates back)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        loadData();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, []);
+
+  // Calculate totals
+  const totalIncome = incomeTransactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+  const totalExpenses = expenseTransactions.reduce((sum, transaction) => sum + transaction.amount, 0);
+  const netBalance = totalIncome - totalExpenses;
+  const savingsGoal = 15000; // You can make this configurable later
+  const savingsProgress = Math.min((netBalance / savingsGoal) * 100, 100);
 
   const stats = [
     {
       title: 'Total Income',
-      value: '₱25,000',
+      value: `₱${totalIncome.toLocaleString()}`,
       change: '+12%',
       changeType: 'positive',
       icon: FiTrendingUp,
@@ -26,7 +73,7 @@ const DashboardPage = () => {
     },
     {
       title: 'Total Expenses',
-      value: '₱18,500',
+      value: `₱${totalExpenses.toLocaleString()}`,
       change: '+5%',
       changeType: 'negative',
       icon: FiTrendingDown,
@@ -34,16 +81,16 @@ const DashboardPage = () => {
     },
     {
       title: 'Net Balance',
-      value: '₱6,500',
-      change: '+8%',
-      changeType: 'positive',
+      value: `₱${netBalance.toLocaleString()}`,
+      change: netBalance >= 0 ? '+8%' : '-5%',
+      changeType: netBalance >= 0 ? 'positive' : 'negative',
       icon: FiDollarSign,
-      color: 'from-blue-500 to-cyan-600'
+      color: netBalance >= 0 ? 'from-blue-500 to-cyan-600' : 'from-red-500 to-rose-600'
     },
     {
       title: 'Savings Goal',
-      value: '₱15,000',
-      change: '43%',
+      value: `₱${savingsGoal.toLocaleString()}`,
+      change: `${savingsProgress.toFixed(0)}%`,
       changeType: 'neutral',
       icon: FiTarget,
       color: 'from-purple-500 to-violet-600'
@@ -135,30 +182,51 @@ const DashboardPage = () => {
               Recent Transactions
             </h2>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                    <FiTrendingUp size={16} className="text-white" />
+              {(() => {
+                // Combine and sort all transactions by date (most recent first)
+                const allTransactions = [
+                  ...incomeTransactions.map(t => ({ ...t, type: 'income' })),
+                  ...expenseTransactions.map(t => ({ ...t, type: 'expense' }))
+                ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 5);
+
+                if (allTransactions.length === 0) {
+                  return (
+                    <div className="text-center py-8">
+                      <p className="text-white/60">No transactions yet</p>
+                      <p className="text-white/40 text-sm mt-2">Add some income or expenses to see them here</p>
+                    </div>
+                  );
+                }
+
+                return allTransactions.map((transaction) => (
+                  <div key={`${transaction.type}-${transaction.id}`} className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${
+                        transaction.type === 'income' 
+                          ? 'from-green-500 to-emerald-600' 
+                          : 'from-red-500 to-rose-600'
+                      } flex items-center justify-center`}>
+                        {transaction.type === 'income' ? (
+                          <FiTrendingUp size={16} className="text-white" />
+                        ) : (
+                          <FiTrendingDown size={16} className="text-white" />
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-white font-medium">{transaction.description}</p>
+                        <p className="text-white/60 text-sm">
+                          {new Date(transaction.date).toLocaleDateString()}
+                        </p>
+                      </div>
+                    </div>
+                    <span className={`font-semibold ${
+                      transaction.type === 'income' ? 'text-green-400' : 'text-red-400'
+                    }`}>
+                      {transaction.type === 'income' ? '+' : '-'}₱{transaction.amount.toLocaleString()}
+                    </span>
                   </div>
-                  <div>
-                    <p className="text-white font-medium">Salary</p>
-                    <p className="text-white/60 text-sm">Today</p>
-                  </div>
-                </div>
-                <span className="text-green-400 font-semibold">+₱25,000</span>
-              </div>
-              <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center">
-                    <FiTrendingDown size={16} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-white font-medium">Groceries</p>
-                    <p className="text-white/60 text-sm">Yesterday</p>
-                  </div>
-                </div>
-                <span className="text-red-400 font-semibold">-₱2,500</span>
-              </div>
+                ));
+              })()}
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import DashboardLayout from '@/app/components/DashboardLayout';
 import { toast } from 'react-hot-toast';
 import { FiTrendingUp, FiPlus, FiCalendar, FiTag, FiDollarSign, FiTarget, FiBarChart } from 'react-icons/fi';
 import { incomeCategories, spendingInsights } from '@/app/lib/categories';
+import { ApiClient } from '@/app/lib/api';
 
 const IncomePage = () => {
   const [formData, setFormData] = useState({
@@ -21,14 +22,32 @@ const IncomePage = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [showInsights, setShowInsights] = useState(false);
 
-  // Load sample transactions
+  // Load transactions from API
   useEffect(() => {
-    const sampleTransactions = [
-      { id: 1, amount: 25000, description: 'Monthly Salary', category: 'Salary & Wages', subcategory: 'Primary Job', date: '2024-01-15', recurring: true },
-      { id: 2, amount: 5000, description: 'Freelance Web Development', category: 'Freelance & Contract', subcategory: 'Web Development', date: '2024-01-10', recurring: false },
-      { id: 3, amount: 1200, description: 'Investment Dividends', category: 'Investment Income', subcategory: 'Dividends', date: '2024-01-05', recurring: true }
-    ];
-    setTransactions(sampleTransactions);
+    const loadTransactions = async () => {
+      try {
+        const response = await ApiClient.getIncomeTransactions();
+        setTransactions(response.transactions || []);
+      } catch (error) {
+        console.error('Error loading income transactions:', error);
+        // Fallback to localStorage for development
+        const savedTransactions = localStorage.getItem('incomeTransactions');
+        if (savedTransactions) {
+          setTransactions(JSON.parse(savedTransactions));
+        } else {
+          // Load sample transactions only if no saved data exists
+          const sampleTransactions = [
+            { id: 1, amount: 25000, description: 'Monthly Salary', category: 'Salary & Wages', subcategory: 'Primary Job', date: '2024-01-15', recurring: true },
+            { id: 2, amount: 5000, description: 'Freelance Web Development', category: 'Freelance & Contract', subcategory: 'Web Development', date: '2024-01-10', recurring: false },
+            { id: 3, amount: 1200, description: 'Investment Dividends', category: 'Investment Income', subcategory: 'Dividends', date: '2024-01-05', recurring: true }
+          ];
+          setTransactions(sampleTransactions);
+          localStorage.setItem('incomeTransactions', JSON.stringify(sampleTransactions));
+        }
+      }
+    };
+
+    loadTransactions();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -55,16 +74,15 @@ const IncomePage = () => {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await ApiClient.addIncomeTransaction(formData);
+      const newTransaction = response.transaction;
       
-      const newTransaction = {
-        id: Date.now(),
-        ...formData,
-        amount: parseFloat(formData.amount)
-      };
+      const updatedTransactions = [newTransaction, ...transactions];
+      setTransactions(updatedTransactions);
       
-      setTransactions(prev => [newTransaction, ...prev]);
+      // Also update localStorage as fallback
+      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
+      
       toast.success('Income added successfully!');
       
       setFormData({
@@ -78,6 +96,7 @@ const IncomePage = () => {
       });
       setSelectedCategory(null);
     } catch (error) {
+      console.error('Error adding income:', error);
       toast.error('Failed to add income');
     } finally {
       setLoading(false);
