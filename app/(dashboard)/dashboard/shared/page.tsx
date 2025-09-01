@@ -26,10 +26,10 @@ const SharedExpensesPage = () => {
               <FiUsers size={36} className="text-white" />
             </div>
             <div>
-              <h1 className="text-6xl font-bold text-white mb-3 tracking-tight">
+              <h1 className="text-6xl font-bold mb-3 tracking-tight" style={{ color: 'var(--text-primary)' }}>
                 Shared Expenses
               </h1>
-              <p className="text-xl text-white/70 font-light">
+              <p className="text-xl font-light" style={{ color: 'var(--text-muted)' }}>
                 Share and track expenses with your partner
               </p>
             </div>
@@ -43,9 +43,13 @@ const SharedExpensesPage = () => {
               onClick={() => setActiveTab('expenses')}
               className={`flex items-center gap-3 px-6 py-3 rounded-xl text-lg font-semibold transition-all duration-300 ${
                 activeTab === 'expenses'
-                  ? 'bg-white/20 text-white shadow-lg'
-                  : 'text-white/70 hover:text-white hover:bg-white/5'
+                  ? 'shadow-lg'
+                  : 'hover:bg-white/5'
               }`}
+              style={{
+                backgroundColor: activeTab === 'expenses' ? 'var(--overlay-heavy)' : 'transparent',
+                color: activeTab === 'expenses' ? 'var(--text-primary)' : 'var(--text-muted)'
+              }}
             >
               <FiUsers size={20} />
               Shared Expenses
@@ -54,9 +58,13 @@ const SharedExpensesPage = () => {
               onClick={() => setActiveTab('settings')}
               className={`flex items-center gap-3 px-6 py-3 rounded-xl text-lg font-semibold transition-all duration-300 ${
                 activeTab === 'settings'
-                  ? 'bg-white/20 text-white shadow-lg'
-                  : 'text-white/70 hover:text-white hover:bg-white/5'
+                  ? 'shadow-lg'
+                  : 'hover:bg-white/5'
               }`}
+              style={{
+                backgroundColor: activeTab === 'settings' ? 'var(--overlay-heavy)' : 'transparent',
+                color: activeTab === 'settings' ? 'var(--text-primary)' : 'var(--text-muted)'
+              }}
             >
               <FiSettings size={20} />
               Settings

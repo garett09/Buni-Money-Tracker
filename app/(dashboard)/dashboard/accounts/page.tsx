@@ -194,17 +194,18 @@ const AccountsPage = () => {
                 <FiCreditCard size={36} className="text-white" />
               </div>
               <div>
-                <h1 className="text-6xl font-bold text-white mb-3 tracking-tight">
+                <h1 className="text-6xl font-bold mb-3 tracking-tight" style={{ color: 'var(--text-primary)' }}>
                   My Accounts
                 </h1>
-                <p className="text-xl text-white/70 font-light">
+                <p className="text-xl font-light" style={{ color: 'var(--text-muted)' }}>
                   Manage your bank accounts, credit cards, and digital wallets
                 </p>
               </div>
             </div>
             <button
               onClick={handleAddAccount}
-              className="liquid-button text-white py-4 px-8 font-bold text-lg flex items-center gap-3 rounded-2xl hover:scale-105 transition-all duration-300"
+              className="liquid-button py-4 px-8 font-bold text-lg flex items-center gap-3 rounded-2xl hover:scale-105 transition-all duration-300"
+              style={{ color: 'var(--text-primary)' }}
             >
               <FiPlus size={24} />
               Add Account
@@ -223,8 +224,8 @@ const AccountsPage = () => {
                     <FiDollarSign size={28} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm font-medium mb-1">Total Balance</p>
-                    <p className="text-white font-bold text-3xl">₱{totalBalance.toLocaleString()}</p>
+                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Total Balance</p>
+                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>₱{totalBalance.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -240,8 +241,8 @@ const AccountsPage = () => {
                     <FiHome size={28} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm font-medium mb-1">Active Accounts</p>
-                    <p className="text-white font-bold text-3xl">{activeAccounts.length}</p>
+                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Active Accounts</p>
+                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>{activeAccounts.length}</p>
                   </div>
                 </div>
               </div>
@@ -257,8 +258,8 @@ const AccountsPage = () => {
                     <FiCreditCard size={28} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm font-medium mb-1">Credit Cards</p>
-                    <p className="text-white font-bold text-3xl">{accounts.filter(acc => acc.accountType === 'credit-card').length}</p>
+                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Credit Cards</p>
+                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>{accounts.filter(acc => acc.accountType === 'credit-card').length}</p>
                   </div>
                 </div>
               </div>
@@ -274,8 +275,8 @@ const AccountsPage = () => {
                     <FiPieChart size={28} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm font-medium mb-1">Digital Wallets</p>
-                    <p className="text-white font-bold text-3xl">{accounts.filter(acc => acc.accountType === 'digital-wallet').length}</p>
+                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Digital Wallets</p>
+                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>{accounts.filter(acc => acc.accountType === 'digital-wallet').length}</p>
                   </div>
                 </div>
               </div>

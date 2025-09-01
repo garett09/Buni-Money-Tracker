@@ -10,18 +10,22 @@ const ThemePicker: React.FC = () => {
   return (
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-2">
-        <FiSettings className="text-white/60" size={16} />
-        <span className="text-white/80 text-sm font-medium">Theme</span>
+        <FiSettings size={16} style={{ color: 'var(--text-muted)' }} />
+        <span className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>Theme</span>
       </div>
       
-      <div className="flex bg-white/10 rounded-lg p-1">
+      <div className="flex bg-black/10 dark:bg-white/10 rounded-lg p-1">
         <button
           onClick={() => setTheme('dark')}
           className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
             theme === 'dark'
-              ? 'bg-blue-500/30 text-blue-300 shadow-lg'
-              : 'text-white/70 hover:text-white hover:bg-white/10'
+              ? 'shadow-lg'
+              : 'hover:bg-black/10 dark:hover:bg-white/10'
           }`}
+          style={{
+            backgroundColor: theme === 'dark' ? 'var(--theme-primary)' : 'transparent',
+            color: theme === 'dark' ? 'white' : 'var(--text-primary)'
+          }}
         >
           <FiMoon size={14} />
           <span>Dark</span>
@@ -31,9 +35,13 @@ const ThemePicker: React.FC = () => {
           onClick={() => setTheme('light')}
           className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
             theme === 'light'
-              ? 'bg-yellow-500/30 text-yellow-300 shadow-lg'
-              : 'text-white/70 hover:text-white hover:bg-white/10'
+              ? 'shadow-lg'
+              : 'hover:bg-black/10 dark:hover:bg-white/10'
           }`}
+          style={{
+            backgroundColor: theme === 'light' ? 'var(--theme-primary)' : 'transparent',
+            color: theme === 'light' ? 'white' : 'var(--text-primary)'
+          }}
         >
           <FiSun size={14} />
           <span>Light</span>

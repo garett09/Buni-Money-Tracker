@@ -155,16 +155,16 @@ const DashboardPage = () => {
       <div className="space-y-8">
         {/* Migration Prompt */}
         {showMigrationPrompt && (
-          <div className="glass-card p-6 rounded-2xl apple-fade-in border border-blue-500/30">
+          <div className="liquid-card p-6 rounded-2xl apple-fade-in border border-blue-500/30">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
                 <FiDatabase size={24} className="text-white" />
               </div>
               <div className="flex-1">
-                <h3 className="text-display text-xl font-semibold text-white mb-2">
+                <h3 className="text-display text-xl font-semibold mb-2">
                   Migrate Your Data to Database
                 </h3>
-                <p className="text-white/70 text-sm">
+                <p className="text-sm opacity-70">
                   You have local data that can be migrated to the database for better persistence and multi-device access.
                 </p>
               </div>
@@ -172,14 +172,14 @@ const DashboardPage = () => {
                 <button
                   onClick={handleMigration}
                   disabled={migrating}
-                  className="glass-button text-white py-2 px-4 rounded-xl font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                  className="bg-blue-500/20 hover:bg-blue-500/30 text-white py-2 px-4 rounded-xl font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 transition-all duration-300"
                 >
                   <FiUpload size={16} />
                   {migrating ? 'Migrating...' : 'Migrate Now'}
                 </button>
                 <button
                   onClick={() => setShowMigrationPrompt(false)}
-                  className="glass-button text-white/60 py-2 px-4 rounded-xl font-medium text-sm hover:text-white transition-colors"
+                  className="bg-white/10 hover:bg-white/20 text-white/60 py-2 px-4 rounded-xl font-medium text-sm hover:text-white transition-all duration-300"
                 >
                   Later
                 </button>
@@ -195,10 +195,10 @@ const DashboardPage = () => {
               <FiDollarSign size={36} className="text-white" />
             </div>
             <div>
-              <h1 className="text-6xl font-bold text-white mb-3 tracking-tight">
+              <h1 className="text-6xl font-bold mb-3 tracking-tight" style={{ color: 'var(--text-primary)' }}>
                 Welcome back, {user?.name?.split(' ')[0] || 'User'}!
               </h1>
-              <p className="text-xl text-white/70 font-light">
+              <p className="text-xl font-light" style={{ color: 'var(--text-muted)' }}>
                 Here's your financial overview for today
               </p>
             </div>
@@ -220,17 +220,22 @@ const DashboardPage = () => {
                     <Icon size={24} className="text-white" />
                   </div>
                   <span className={`text-sm font-medium px-3 py-1 rounded-full ${
-                    stat.changeType === 'positive' ? 'text-green-400 bg-green-400/20' :
-                    stat.changeType === 'negative' ? 'text-red-400 bg-red-400/20' :
-                    'text-blue-400 bg-blue-400/20'
-                  }`}>
+                    stat.changeType === 'positive' ? 'bg-green-400/20' :
+                    stat.changeType === 'negative' ? 'bg-red-400/20' :
+                    'bg-blue-400/20'
+                  }`}
+                  style={{
+                    color: stat.changeType === 'positive' ? '#10B981' :
+                           stat.changeType === 'negative' ? '#EF4444' :
+                           '#3B82F6'
+                  }}>
                     {stat.change}
                   </span>
                 </div>
-                <h3 className="text-display text-2xl font-semibold text-white mb-1">
+                <h3 className="text-display text-2xl font-semibold mb-1" style={{ color: 'var(--text-primary)' }}>
                   {stat.value}
                 </h3>
-                <p className="text-body text-white/60 text-sm">
+                <p className="text-body text-sm" style={{ color: 'var(--text-muted)' }}>
                   {stat.title}
                 </p>
               </div>
@@ -241,7 +246,7 @@ const DashboardPage = () => {
         {/* Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="liquid-card p-8 apple-fade-in">
-            <h2 className="text-display text-2xl font-semibold text-white mb-6">
+            <h2 className="text-display text-2xl font-semibold mb-6" style={{ color: 'var(--text-primary)' }}>
               Quick Actions
             </h2>
             <div className="space-y-6">
@@ -259,9 +264,10 @@ const DashboardPage = () => {
                         <FiTrendingUp size={28} className="text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-white font-semibold text-lg mb-1">Add Income</h3>
-                        <p className="text-white/60 text-sm mb-3">Record your earnings</p>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-xl text-green-300 font-medium text-sm border border-green-500/30 group-hover:from-green-500/30 group-hover:to-emerald-600/30 transition-all duration-300">
+                        <h3 className="font-semibold text-lg mb-1" style={{ color: 'var(--text-primary)' }}>Add Income</h3>
+                        <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>Record your earnings</p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-xl font-medium text-sm border border-green-500/30 group-hover:from-green-500/30 group-hover:to-emerald-600/30 transition-all duration-300"
+                             style={{ color: '#10B981' }}>
                           <FiTrendingUp size={16} />
                           Add Income
                         </div>
@@ -285,9 +291,10 @@ const DashboardPage = () => {
                         <FiTrendingDown size={28} className="text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-white font-semibold text-lg mb-1">Add Expense</h3>
-                        <p className="text-white/60 text-sm mb-3">Track your spending</p>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500/20 to-rose-600/20 rounded-xl text-red-300 font-medium text-sm border border-red-500/30 group-hover:from-red-500/30 group-hover:to-rose-600/30 transition-all duration-300">
+                        <h3 className="font-semibold text-lg mb-1" style={{ color: 'var(--text-primary)' }}>Add Expense</h3>
+                        <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>Track your spending</p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500/20 to-rose-600/20 rounded-xl font-medium text-sm border border-red-500/30 group-hover:from-red-500/30 group-hover:to-rose-600/30 transition-all duration-300"
+                             style={{ color: '#EF4444' }}>
                           <FiTrendingDown size={16} />
                           Add Expense
                         </div>
@@ -311,9 +318,10 @@ const DashboardPage = () => {
                         <FiTarget size={28} className="text-white" />
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-white font-semibold text-lg mb-1">Set Savings Goals</h3>
-                        <p className="text-white/60 text-sm mb-3">Plan for your future</p>
-                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-violet-600/20 rounded-xl text-purple-300 font-medium text-sm border border-purple-500/30 group-hover:from-purple-500/30 group-hover:to-violet-600/30 transition-all duration-300">
+                        <h3 className="font-semibold text-lg mb-1" style={{ color: 'var(--text-primary)' }}>Set Savings Goals</h3>
+                        <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>Plan for your future</p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-violet-600/20 rounded-xl font-medium text-sm border border-purple-500/30 group-hover:from-purple-500/30 group-hover:to-violet-600/30 transition-all duration-300"
+                             style={{ color: '#8B5CF6' }}>
                           <FiTarget size={16} />
                           Set Goals
                         </div>
@@ -328,7 +336,7 @@ const DashboardPage = () => {
           {/* Quick Savings Section */}
           {savingsGoals.length > 0 && (
             <div className="liquid-card p-8 apple-fade-in">
-              <h2 className="text-display text-2xl font-semibold text-white mb-6">
+              <h2 className="text-display text-2xl font-semibold mb-6" style={{ color: 'var(--text-primary)' }}>
                 Quick Savings
               </h2>
               <div className="space-y-4">
@@ -347,15 +355,15 @@ const DashboardPage = () => {
                                 <FiTarget size={20} className="text-white" />
                               </div>
                               <div>
-                                <h3 className="text-white font-semibold text-lg">{goal.name}</h3>
-                                <p className="text-white/60 text-sm">
+                                <h3 className="font-semibold text-lg" style={{ color: 'var(--text-primary)' }}>{goal.name}</h3>
+                                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
                                   ₱{goal.currentAmount.toLocaleString()} / ₱{goal.targetAmount.toLocaleString()}
                                 </p>
                               </div>
                             </div>
                             <div className="text-right">
-                              <span className="text-white font-bold text-xl">{progress.toFixed(0)}%</span>
-                              <div className="text-white/60 text-xs">Complete</div>
+                              <span className="font-bold text-xl" style={{ color: 'var(--text-primary)' }}>{progress.toFixed(0)}%</span>
+                              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>Complete</div>
                             </div>
                           </div>
                           
@@ -385,7 +393,7 @@ const DashboardPage = () => {
                         );
                         
                         return (
-                          <div className="text-xs text-white/60 mb-3">
+                          <div className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>
                             {timeline.days !== Infinity && timeline.days > 0 ? (
                               <span>⏱️ {SavingsCalculator.formatTimeline(timeline)} to goal</span>
                             ) : (
@@ -439,14 +447,16 @@ const DashboardPage = () => {
                                 toast.success(`₱${amount.toLocaleString()} added to ${goal.name}!`);
                               }
                             }}
-                            className="px-3 py-1 bg-green-500/20 hover:bg-green-500/30 text-green-300 rounded-lg text-xs font-medium transition-colors"
+                            className="px-3 py-1 bg-green-500/20 hover:bg-green-500/30 rounded-lg text-xs font-medium transition-colors"
+                            style={{ color: '#10B981' }}
                           >
                             +₱{amount}
                           </button>
                         ))}
                         <Link
                           href="/dashboard/savings"
-                          className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-medium transition-colors"
+                          className="px-3 py-1 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-medium transition-colors"
+                          style={{ color: 'var(--text-primary)' }}
                         >
                           More
                         </Link>
@@ -459,7 +469,7 @@ const DashboardPage = () => {
           )}
 
           <div className="liquid-card p-8 apple-fade-in">
-            <h2 className="text-display text-2xl font-semibold text-white mb-6">
+            <h2 className="text-display text-2xl font-semibold mb-6" style={{ color: 'var(--text-primary)' }}>
               Recent Transactions
             </h2>
             <div className="space-y-4">
@@ -473,8 +483,8 @@ const DashboardPage = () => {
                 if (allTransactions.length === 0) {
                   return (
                     <div className="text-center py-8">
-                      <p className="text-white/60">No transactions yet</p>
-                      <p className="text-white/40 text-sm mt-2">Add some income or expenses to see them here</p>
+                      <p style={{ color: 'var(--text-muted)' }}>No transactions yet</p>
+                      <p className="text-sm mt-2" style={{ color: 'var(--text-muted)' }}>Add some income or expenses to see them here</p>
                     </div>
                   );
                 }
@@ -494,15 +504,16 @@ const DashboardPage = () => {
                         )}
                       </div>
                       <div>
-                        <p className="text-white font-medium">{transaction.description}</p>
-                        <p className="text-white/60 text-sm">
+                        <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{transaction.description}</p>
+                        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
                           {new Date(transaction.date).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
-                    <span className={`font-semibold ${
-                      transaction.type === 'income' ? 'text-green-400' : 'text-red-400'
-                    }`}>
+                    <span className="font-semibold"
+                          style={{
+                            color: transaction.type === 'income' ? '#10B981' : '#EF4444'
+                          }}>
                       {transaction.type === 'income' ? '+' : '-'}₱{transaction.amount.toLocaleString()}
                     </span>
                   </div>

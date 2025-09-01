@@ -71,20 +71,20 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <div className="relative z-10 flex">
         {/* Mobile menu button */}
         <button
-          className="md:hidden fixed top-4 left-4 z-50 glass-button p-3 rounded-xl"
+          className="md:hidden fixed top-4 left-4 z-50 liquid-button p-3 rounded-xl"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
           {sidebarOpen ? <FiX size={20} /> : <FiMenu size={20} />}
         </button>
 
         {/* Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-40 w-64 glass-card transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
+        <div className={`fixed inset-y-0 left-0 z-40 w-64 liquid-card transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
           <div className="flex flex-col h-full p-6">
             {/* Logo */}
             <div className="mb-8">
-              <h2 className="text-display text-2xl font-semibold text-white">Buni Tracker</h2>
+              <h2 className="text-display text-2xl font-semibold" style={{ color: 'var(--text-primary)' }}>Buni Tracker</h2>
             </div>
 
             {/* Navigation */}
@@ -95,11 +95,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition-all duration-300 group"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl opacity-80 hover:opacity-100 hover:bg-black/10 dark:hover:bg-white/10 transition-all duration-300 group"
                     onClick={() => setSidebarOpen(false)}
                   >
                     <Icon size={20} className="group-hover:scale-110 transition-transform" />
-                    <span className="font-medium">{item.name}</span>
+                    <span className="font-medium" style={{ color: 'var(--text-primary)' }}>{item.name}</span>
                   </Link>
                 );
               })}
@@ -112,16 +112,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <FiUser size={20} />
                 </div>
                 <div>
-                  <p className="text-white font-medium">{user.name}</p>
-                  <p className="text-white/60 text-sm">{user.email}</p>
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>{user.name}</p>
+                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{user.email}</p>
                 </div>
               </div>
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-white/80 hover:text-white hover:bg-red-500/20 transition-all duration-300 group"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl opacity-80 hover:opacity-100 hover:bg-red-500/20 transition-all duration-300 group"
               >
                 <FiLogOut size={20} className="group-hover:scale-110 transition-transform" />
-                <span className="font-medium">Logout</span>
+                <span className="font-medium" style={{ color: 'var(--text-primary)' }}>Logout</span>
               </button>
             </div>
           </div>
@@ -130,16 +130,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         {/* Main content */}
         <div className="flex-1 md:ml-64">
           {/* Header with theme picker */}
-          <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 px-6 py-4">
+          <div className="liquid-card border-b border-white/10 px-6 py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
                 <button
                   onClick={() => setSidebarOpen(true)}
-                  className="md:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                  className="md:hidden p-2 rounded-lg bg-black/10 dark:bg-white/10 hover:bg-black/20 dark:hover:bg-white/20 transition-colors"
                 >
-                  <FiMenu size={20} className="text-white" />
+                  <FiMenu size={20} />
                 </button>
-                <h1 className="text-white font-semibold text-lg">Dashboard</h1>
+                <h1 className="font-semibold text-lg" style={{ color: 'var(--text-primary)' }}>Dashboard</h1>
               </div>
               <ThemePicker />
             </div>

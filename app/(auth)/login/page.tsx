@@ -69,8 +69,8 @@ const LoginPage = () => {
                 </svg>
               </div>
               <div>
-                <h1 className="text-6xl font-bold mb-3 tracking-tight text-white">Welcome Back</h1>
-                <p className="text-xl text-white/70 font-light">
+                <h1 className="text-6xl font-bold mb-3 tracking-tight" style={{ color: 'var(--text-primary)' }}>Welcome Back</h1>
+                <p className="text-xl font-light" style={{ color: 'var(--text-muted)' }}>
                   Please enter your details to log in to your account
                 </p>
               </div>
@@ -82,13 +82,13 @@ const LoginPage = () => {
         {/* Enhanced Form */}
         <div className="liquid-card p-10 rounded-3xl">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-white mb-2">Sign In</h2>
-            <p className="text-white/60">Access your financial dashboard</p>
+            <h2 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Sign In</h2>
+            <p style={{ color: 'var(--text-muted)' }}>Access your financial dashboard</p>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-3">
-              <label htmlFor="email" className="block text-lg font-semibold text-white mb-2">
+              <label htmlFor="email" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
                 Email Address
               </label>
               <div className="relative">

@@ -245,13 +245,14 @@ const SavingsPage = () => {
                 <FiTarget size={36} className="text-white" />
               </div>
               <div>
-                <h1 className="text-6xl font-bold text-white mb-3 tracking-tight">Savings Goals</h1>
-                <p className="text-xl text-white/70 font-light">Plan and track your financial goals</p>
+                <h1 className="text-6xl font-bold mb-3 tracking-tight" style={{ color: 'var(--text-primary)' }}>Savings Goals</h1>
+                <p className="text-xl font-light" style={{ color: 'var(--text-muted)' }}>Plan and track your financial goals</p>
               </div>
             </div>
             <button
               onClick={() => setShowAddForm(true)}
-              className="liquid-button text-white py-4 px-8 font-bold text-lg flex items-center gap-3 rounded-2xl hover:scale-105 transition-all duration-300"
+              className="liquid-button py-4 px-8 font-bold text-lg flex items-center gap-3 rounded-2xl hover:scale-105 transition-all duration-300"
+              style={{ color: 'var(--text-primary)' }}
             >
               <FiPlus size={24} />
               Add Goal
@@ -269,8 +270,8 @@ const SavingsPage = () => {
                   <FiTarget size={28} className="text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold text-xl mb-1">Create New Goal</h3>
-                  <p className="text-white/60 text-lg">Start saving for your dreams</p>
+                  <h3 className="font-semibold text-xl mb-1" style={{ color: 'var(--text-primary)' }}>Create New Goal</h3>
+                  <p className="text-lg" style={{ color: 'var(--text-muted)' }}>Start saving for your dreams</p>
                 </div>
               </div>
             </div>
@@ -280,13 +281,13 @@ const SavingsPage = () => {
         {/* Add/Edit Goal Form */}
         {showAddForm && (
           <div className="liquid-card p-8 apple-slide-up">
-            <h2 className="text-display text-2xl font-semibold text-white mb-6">
+            <h2 className="text-display text-2xl font-semibold mb-6" style={{ color: 'var(--text-primary)' }}>
               {editingGoal ? 'Edit Savings Goal' : 'Add New Savings Goal'}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
-                <label htmlFor="name" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
+                <label htmlFor="name" className="block text-body text-sm font-medium mb-3 tracking-wide" style={{ color: 'var(--text-primary)' }}>
                   Goal Name
                 </label>
                 <input
@@ -302,7 +303,7 @@ const SavingsPage = () => {
               </div>
 
               <div>
-                <label htmlFor="category" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
+                <label htmlFor="category" className="block text-body text-sm font-medium mb-3 tracking-wide" style={{ color: 'var(--text-primary)' }}>
                   Category
                 </label>
                 <select
@@ -323,7 +324,7 @@ const SavingsPage = () => {
               </div>
 
               <div>
-                <label htmlFor="description" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
+                <label htmlFor="description" className="block text-body text-sm font-medium mb-3 tracking-wide" style={{ color: 'var(--text-primary)' }}>
                   Description (Optional)
                 </label>
                 <textarea
@@ -339,9 +340,9 @@ const SavingsPage = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label htmlFor="targetAmount" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
-                    Target Amount (₱)
-                  </label>
+                                  <label htmlFor="targetAmount" className="block text-body text-sm font-medium mb-3 tracking-wide" style={{ color: 'var(--text-primary)' }}>
+                  Target Amount (₱)
+                </label>
                   <input
                     type="number"
                     id="targetAmount"
