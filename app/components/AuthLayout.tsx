@@ -12,9 +12,9 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ children }) => {
     <div className="flex min-h-screen relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-3xl apple-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-pink-500/10 to-cyan-500/10 rounded-full blur-3xl apple-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-full blur-3xl apple-float" style={{ animationDelay: '4s' }} />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl apple-float" style={{ background: 'var(--theme-bg-gradient-1)', animationDelay: '0s' }} />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl apple-float" style={{ background: 'var(--theme-bg-gradient-2)', animationDelay: '2s' }} />
+        <div className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full blur-3xl apple-float" style={{ background: 'var(--theme-bg-gradient-3)', animationDelay: '4s' }} />
       </div>
 
       <div className="w-screen h-screen md:w-[60vw] px-8 md:px-12 pt-8 pb-12 flex flex-col justify-center relative z-10">
