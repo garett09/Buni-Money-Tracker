@@ -2,7 +2,7 @@
 
 const API_BASE = process.env.NODE_ENV === 'production' 
   ? 'https://your-vercel-app.vercel.app' 
-  : 'http://localhost:3000';
+  : '';
 
 export class ApiClient {
   private static getAuthHeaders() {
