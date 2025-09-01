@@ -29,8 +29,8 @@ const ExpensesPage = () => {
         const response = await ApiClient.getExpenseTransactions();
         setTransactions(response.transactions || []);
       } catch (error) {
-        console.error('Error loading expense transactions:', error);
-        // Fallback to localStorage for development
+        console.log('API not available, using localStorage fallback');
+        // Fallback to localStorage for development or when API is not available
         const savedTransactions = localStorage.getItem('expenseTransactions');
         if (savedTransactions) {
           setTransactions(JSON.parse(savedTransactions));
@@ -75,17 +75,33 @@ const ExpensesPage = () => {
     setLoading(true);
 
     try {
+      // Always try API first to save to database
       const response = await ApiClient.addExpenseTransaction(formData);
       const newTransaction = response.transaction;
       
       const updatedTransactions = [newTransaction, ...transactions];
       setTransactions(updatedTransactions);
       
-      // Also update localStorage as fallback
+      // Also update localStorage as backup
       localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
       
-      toast.success('Expense added successfully!');
+      toast.success('Expense added successfully and saved to database!');
+    } catch (error) {
+      console.log('API not available, using localStorage fallback');
+      // Fallback to localStorage for development
+      const newTransaction = {
+        id: Date.now(),
+        ...formData,
+        amount: parseFloat(formData.amount),
+        createdAt: new Date().toISOString()
+      };
       
+      const updatedTransactions = [newTransaction, ...transactions];
+      setTransactions(updatedTransactions);
+      localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
+      
+      toast.success('Expense added successfully (saved locally)!');
+    } finally {
       setFormData({
         amount: '',
         description: '',
@@ -96,9 +112,6 @@ const ExpensesPage = () => {
         frequency: 'monthly'
       });
       setSelectedCategory(null);
-    } catch (error) {
-      toast.error('Failed to add expense');
-    } finally {
       setLoading(false);
     }
   };
