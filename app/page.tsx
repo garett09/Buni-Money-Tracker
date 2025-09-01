@@ -152,10 +152,10 @@ export default function HomePage() {
         <section id="features" className="py-20 px-6">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-16 apple-fade-in">
-              <h2 className="text-display text-4xl md:text-5xl font-bold mb-6 tracking-tight" style={{ color: 'var(--theme-text-primary)' }}>
+              <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-white">
                 Everything you need to manage your finances
               </h2>
-              <p className="text-body text-xl max-w-3xl mx-auto" style={{ color: 'var(--theme-text-secondary)' }}>
+              <p className="text-xl max-w-3xl mx-auto text-white/70">
                 Built specifically for Adrian and Gabby, Buni Money Tracker combines 
                 powerful functionality with stunning design to make financial management effortless.
               </p>
@@ -167,16 +167,16 @@ export default function HomePage() {
                 return (
                   <div
                     key={feature.title}
-                    className="glass-card p-8 rounded-2xl apple-slide-up apple-shimmer hover:scale-105 transition-all duration-300 group"
+                    className="liquid-card p-8 rounded-2xl apple-slide-up hover:scale-105 transition-all duration-300 group"
                     style={{ animationDelay: `${index * 0.1}s` }}
                   >
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 shadow-lg apple-glow group-hover:scale-110 transition-transform duration-300`}>
+                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                       <Icon size={32} className="text-white" />
                     </div>
-                    <h3 className="text-display text-2xl font-semibold mb-4" style={{ color: 'var(--theme-text-primary)' }}>
+                    <h3 className="text-2xl font-semibold mb-4 text-white">
                       {feature.title}
                     </h3>
-                    <p className="text-body leading-relaxed" style={{ color: 'var(--theme-text-secondary)' }}>
+                    <p className="text-white/60 leading-relaxed">
                       {feature.description}
                     </p>
                   </div>
@@ -189,12 +189,12 @@ export default function HomePage() {
         {/* Benefits Section */}
         <section className="py-20 px-6">
           <div className="max-w-4xl mx-auto">
-            <div className="glass-card p-12 rounded-3xl apple-fade-in">
+            <div className="liquid-card p-12 rounded-3xl apple-fade-in">
               <div className="text-center mb-12">
-                <h2 className="text-display text-4xl font-bold mb-6 tracking-tight" style={{ color: 'var(--theme-text-primary)' }}>
+                <h2 className="text-4xl font-bold mb-6 tracking-tight text-white">
                   Why choose Buni Money Tracker?
                 </h2>
-                <p className="text-body text-xl" style={{ color: 'var(--theme-text-secondary)' }}>
+                <p className="text-xl text-white/70">
                   Designed with love for Adrian and Gabby's financial journey
                 </p>
               </div>
@@ -209,7 +209,7 @@ export default function HomePage() {
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
                       <FiCheck size={16} className="text-white" />
                     </div>
-                    <span className="font-medium" style={{ color: 'var(--theme-text-primary)' }}>{benefit}</span>
+                    <span className="font-medium text-white">{benefit}</span>
                   </div>
                 ))}
               </div>
@@ -220,18 +220,17 @@ export default function HomePage() {
         {/* CTA Section */}
         <section className="py-20 px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <div className="glass-card p-12 rounded-3xl apple-fade-in">
-              <h2 className="text-display text-4xl font-bold mb-6 tracking-tight" style={{ color: 'var(--theme-text-primary)' }}>
+            <div className="liquid-card p-12 rounded-3xl apple-fade-in">
+              <h2 className="text-4xl font-bold mb-6 tracking-tight text-white">
                 Ready to take control of your finances?
               </h2>
-              <p className="text-body text-xl mb-8" style={{ color: 'var(--theme-text-secondary)' }}>
+              <p className="text-xl mb-8 text-white/70">
                 Join Adrian and Gabby in their journey to financial freedom with the most 
                 beautiful money tracking app ever created.
               </p>
               <Link
                 href="/login"
-                className="inline-flex items-center gap-3 glass-button px-10 py-5 rounded-2xl font-medium text-xl apple-shimmer group"
-                style={{ color: 'var(--theme-text-primary)' }}
+                className="inline-flex items-center gap-3 liquid-button px-10 py-5 rounded-2xl font-medium text-xl text-white group hover:scale-105 transition-all duration-300"
               >
                 Start Your Journey
                 <FiArrowRight className="group-hover:translate-x-1 transition-transform" size={24} />
@@ -241,20 +240,20 @@ export default function HomePage() {
         </section>
 
         {/* Footer */}
-        <footer className="py-12 px-6 border-t" style={{ borderColor: 'rgba(0, 0, 0, 0.1)' }}>
+        <footer className="py-12 px-6 border-t border-white/10">
           <div className="max-w-6xl mx-auto text-center">
             <div className="apple-fade-in">
-              <h3 className="text-display text-2xl font-semibold mb-4" style={{ color: 'var(--theme-text-primary)' }}>
+              <h3 className="text-2xl font-semibold mb-4 text-white">
                 Buni Money Tracker
               </h3>
-              <p className="mb-6" style={{ color: 'var(--theme-text-muted)' }}>
+              <p className="mb-6 text-white/60">
                 Made with ❤️ exclusively for Adrian and Gabby
               </p>
               <div className="flex justify-center gap-6">
-                <Link href="/login" className="transition-colors" style={{ color: 'var(--theme-text-muted)' }}>
+                <Link href="/login" className="transition-colors text-white/60 hover:text-white">
                   Get Started
                 </Link>
-                <Link href="#features" className="transition-colors" style={{ color: 'var(--theme-text-muted)' }}>
+                <Link href="#features" className="transition-colors text-white/60 hover:text-white">
                   Features
                 </Link>
               </div>
