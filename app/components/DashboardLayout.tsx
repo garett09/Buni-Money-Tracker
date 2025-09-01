@@ -8,6 +8,7 @@ import {
   FiHome, 
   FiTrendingUp, 
   FiTrendingDown, 
+  FiTarget,
   FiLogOut, 
   FiUser,
   FiMenu,
@@ -46,6 +47,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     { name: 'Dashboard', href: '/dashboard', icon: FiHome },
     { name: 'Income', href: '/dashboard/income', icon: FiTrendingUp },
     { name: 'Expenses', href: '/dashboard/expenses', icon: FiTrendingDown },
+    { name: 'Savings Goals', href: '/dashboard/savings', icon: FiTarget },
   ];
 
   if (!user) {
