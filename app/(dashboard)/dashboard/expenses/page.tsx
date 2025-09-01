@@ -17,6 +17,12 @@ const ExpensesPage = () => {
     date: new Date().toISOString().split('T')[0],
     recurring: false,
     frequency: 'monthly',
+    billingDate: new Date().toISOString().split('T')[0],
+    totalInstallments: 1,
+    currentInstallment: 1,
+    paidAmount: 0,
+    remainingAmount: 0,
+    nextBillingDate: '',
     accountId: ''
   });
   const [loading, setLoading] = useState(false);
@@ -59,10 +65,10 @@ const ExpensesPage = () => {
         } else {
           // Load sample transactions only if no saved data exists
           const sampleTransactions = [
-            { id: 1, amount: 2500, description: 'Monthly Groceries', category: 'Food & Dining', subcategory: 'Groceries', date: '2024-01-20', recurring: true },
-            { id: 2, amount: 800, description: 'Gas for the month', category: 'Transportation', subcategory: 'Gas/Fuel', date: '2024-01-18', recurring: true },
+            { id: 1, amount: 2500, description: 'Monthly Groceries', category: 'Food & Dining', subcategory: 'Groceries', date: '2024-01-20', recurring: true, billingDate: '2024-01-20', totalInstallments: 12, currentInstallment: 3, paidAmount: 7500, remainingAmount: 22500 },
+            { id: 2, amount: 800, description: 'Gas for the month', category: 'Transportation', subcategory: 'Gas/Fuel', date: '2024-01-18', recurring: true, billingDate: '2024-01-18', totalInstallments: 12, currentInstallment: 2, paidAmount: 1600, remainingAmount: 8000 },
             { id: 3, amount: 150, description: 'Coffee with friends', category: 'Food & Dining', subcategory: 'Coffee & Snacks', date: '2024-01-19', recurring: false },
-            { id: 4, amount: 1200, description: 'Netflix & Spotify', category: 'Entertainment', subcategory: 'Streaming Services', date: '2024-01-15', recurring: true }
+            { id: 4, amount: 1200, description: 'Netflix & Spotify', category: 'Entertainment', subcategory: 'Streaming Services', date: '2024-01-15', recurring: true, billingDate: '2024-01-15', totalInstallments: 12, currentInstallment: 1, paidAmount: 1200, remainingAmount: 13200 }
           ];
           setTransactions(sampleTransactions);
           localStorage.setItem('expenseTransactions', JSON.stringify(sampleTransactions));
@@ -246,7 +252,7 @@ const ExpensesPage = () => {
             </div>
             <div className="flex-1">
               <div className="flex items-center gap-4 mb-3">
-                <h1 className="text-6xl font-bold text-white tracking-tight">
+                <h1 className="text-6xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>
                   Add Expenses
                 </h1>
                 {sharingEnabled && (
@@ -258,7 +264,7 @@ const ExpensesPage = () => {
                   </div>
                 )}
               </div>
-              <p className="text-xl text-white/70 font-light">
+              <p className="text-xl font-light" style={{ color: 'var(--text-muted)' }}>
                 Track your spending and manage your expenses
                 {sharingEnabled && (
                   <span className="text-green-400/80"> • Your expenses are shared with your partner.</span>
@@ -279,8 +285,8 @@ const ExpensesPage = () => {
                     <FiDollarSign size={28} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm font-medium mb-1">Total Expenses</p>
-                    <p className="text-white font-bold text-3xl">₱{totalExpenses.toLocaleString()}</p>
+                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Total Expenses</p>
+                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>₱{totalExpenses.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -296,8 +302,8 @@ const ExpensesPage = () => {
                     <FiTrendingDown size={28} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm font-medium mb-1">Monthly Recurring</p>
-                    <p className="text-white font-bold text-3xl">₱{monthlyExpenses.toLocaleString()}</p>
+                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Monthly Recurring</p>
+                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>₱{monthlyExpenses.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
@@ -313,8 +319,8 @@ const ExpensesPage = () => {
                     <FiBarChart size={28} className="text-white" />
                   </div>
                   <div>
-                    <p className="text-white/60 text-sm font-medium mb-1">Transactions</p>
-                    <p className="text-white font-bold text-3xl">{transactions.length}</p>
+                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Transactions</p>
+                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>{transactions.length}</p>
                   </div>
                 </div>
               </div>
@@ -333,8 +339,8 @@ const ExpensesPage = () => {
                 <FiAlertTriangle size={24} className="text-white" />
               </div>
               <div>
-                <h3 className="text-display text-lg font-semibold text-white">Spending</h3>
-                <p className="text-white/60 text-xs">{insight.type}</p>
+                <h3 className="text-display text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>Spending</h3>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{insight.type}</p>
               </div>
             </div>
           </div>
@@ -427,7 +433,7 @@ const ExpensesPage = () => {
                       onChange={handleChange}
                       required
                       disabled={!selectedCategory}
-                      className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg disabled:opacity-50"
+                      className="w-full px-6 py-4 rounded-2xl focus:outline-none text-lg disabled:opacity-50 bg-white/10 border border-white/20 text-white placeholder-white/50 focus:bg-white/20 focus:border-white/30 transition-all duration-300"
                     >
                       <option value="">Select subcategory</option>
                       {selectedCategory?.subcategories.map((sub: any) => (
@@ -460,29 +466,148 @@ const ExpensesPage = () => {
                   </select>
                 </div>
 
-                <div className="flex items-center gap-6">
-                  <label className="flex items-center gap-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      name="recurring"
-                      checked={formData.recurring}
-                      onChange={handleChange}
-                      className="w-5 h-5 rounded border-2 border-white/30 bg-transparent checked:bg-blue-500"
-                    />
-                    <span className="text-white/80">Recurring Expense</span>
-                  </label>
+                <div className="space-y-6">
+                  <div className="flex items-center gap-6">
+                    <label className="flex items-center gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        name="recurring"
+                        checked={formData.recurring}
+                        onChange={handleChange}
+                        className="w-5 h-5 rounded border-2 border-white/30 bg-transparent checked:bg-blue-500"
+                      />
+                      <span style={{ color: 'var(--text-primary)' }}>Recurring Expense</span>
+                    </label>
+                    {formData.recurring && (
+                      <select
+                        name="frequency"
+                        value={formData.frequency}
+                        onChange={handleChange}
+                        className="liquid-input px-4 py-2 rounded-xl focus:outline-none"
+                      >
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="yearly">Yearly</option>
+                      </select>
+                    )}
+                  </div>
+
                   {formData.recurring && (
-                    <select
-                      name="frequency"
-                      value={formData.frequency}
-                      onChange={handleChange}
-                      className="glass-input px-4 py-2 rounded-xl focus:outline-none"
-                    >
-                      <option value="weekly">Weekly</option>
-                      <option value="monthly">Monthly</option>
-                      <option value="quarterly">Quarterly</option>
-                      <option value="yearly">Yearly</option>
-                    </select>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div className="space-y-3">
+                        <label htmlFor="billingDate" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                          Billing Date
+                        </label>
+                        <input
+                          type="date"
+                          id="billingDate"
+                          name="billingDate"
+                          value={formData.billingDate}
+                          onChange={handleChange}
+                          required
+                          className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
+                        />
+                      </div>
+
+                      <div className="space-y-3">
+                        <label htmlFor="totalInstallments" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                          Total Installments
+                        </label>
+                        <input
+                          type="number"
+                          id="totalInstallments"
+                          name="totalInstallments"
+                          value={formData.totalInstallments}
+                          onChange={handleChange}
+                          min="1"
+                          className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
+                          placeholder="e.g., 12 for monthly payments"
+                        />
+                      </div>
+
+                      <div className="space-y-3">
+                        <label htmlFor="currentInstallment" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                          Current Installment
+                        </label>
+                        <input
+                          type="number"
+                          id="currentInstallment"
+                          name="currentInstallment"
+                          value={formData.currentInstallment}
+                          onChange={handleChange}
+                          min="1"
+                          max={formData.totalInstallments}
+                          className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
+                          placeholder="Which payment is this?"
+                        />
+                      </div>
+
+                      <div className="space-y-3">
+                        <label htmlFor="paidAmount" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                          Amount Already Paid
+                        </label>
+                        <input
+                          type="number"
+                          id="paidAmount"
+                          name="paidAmount"
+                          value={formData.paidAmount}
+                          onChange={handleChange}
+                          min="0"
+                          step="0.01"
+                          className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
+                          placeholder="₱0.00"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {formData.recurring && (
+                    <div className="liquid-card p-6 rounded-2xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
+                      <h4 className="font-semibold text-lg mb-4" style={{ color: 'var(--text-primary)' }}>
+                        📊 Installment Summary
+                      </h4>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div>
+                          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Total Amount</p>
+                          <p className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>
+                            ₱{(parseFloat(formData.amount) || 0).toLocaleString()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Paid So Far</p>
+                          <p className="font-bold text-lg" style={{ color: '#10B981' }}>
+                            ₱{(parseFloat(formData.paidAmount) || 0).toLocaleString()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Remaining</p>
+                          <p className="font-bold text-lg" style={{ color: '#EF4444' }}>
+                            ₱{Math.max(0, (parseFloat(formData.amount) || 0) - (parseFloat(formData.paidAmount) || 0)).toLocaleString()}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Progress</p>
+                          <p className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>
+                            {formData.totalInstallments > 0 ? Math.round((formData.currentInstallment / formData.totalInstallments) * 100) : 0}%
+                          </p>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-4">
+                        <div className="w-full bg-white/10 rounded-full h-3">
+                          <div 
+                            className="h-full bg-gradient-to-r from-blue-500 to-purple-600 rounded-full transition-all duration-500"
+                            style={{ 
+                              width: `${formData.totalInstallments > 0 ? (formData.currentInstallment / formData.totalInstallments) * 100 : 0}%` 
+                            }}
+                          />
+                        </div>
+                        <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
+                          Installment {formData.currentInstallment} of {formData.totalInstallments}
+                        </p>
+                      </div>
+                    </div>
                   )}
                 </div>
 
@@ -499,7 +624,7 @@ const ExpensesPage = () => {
 
           {/* Recent Expenses & Insights */}
           <div className="space-y-6">
-            <div className="glass-card p-6 rounded-2xl apple-fade-in">
+            <div className="liquid-card p-6 rounded-2xl apple-fade-in">
               <h3 className="text-display text-xl font-semibold text-white mb-4 flex items-center gap-2">
                 <FiTrendingDown size={20} />
                 Recent Expenses
@@ -515,7 +640,15 @@ const ExpensesPage = () => {
                       <div className="text-right">
                         <span className="text-red-400 font-semibold">-₱{transaction.amount.toLocaleString()}</span>
                         {transaction.recurring && (
-                          <p className="text-white/50 text-xs">Recurring</p>
+                          <div className="text-white/50 text-xs">
+                            <p>Recurring</p>
+                            {transaction.currentInstallment && transaction.totalInstallments && (
+                              <p>Installment {transaction.currentInstallment}/{transaction.totalInstallments}</p>
+                            )}
+                            {transaction.paidAmount && transaction.amount && (
+                              <p>Paid: ₱{transaction.paidAmount.toLocaleString()}</p>
+                            )}
+                          </div>
                         )}
                       </div>
                       <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -540,7 +673,7 @@ const ExpensesPage = () => {
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl apple-fade-in">
+            <div className="liquid-card p-6 rounded-2xl apple-fade-in">
               <h3 className="text-display text-xl font-semibold text-white mb-4 flex items-center gap-2">
                 <FiTag size={20} />
                 Spending by Category
@@ -571,7 +704,7 @@ const ExpensesPage = () => {
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl apple-fade-in">
+            <div className="liquid-card p-6 rounded-2xl apple-fade-in">
               <h3 className="text-display text-xl font-semibold text-white mb-4 flex items-center gap-2">
                 <FiTarget size={20} />
                 Spending Insights
