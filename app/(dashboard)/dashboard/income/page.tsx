@@ -29,8 +29,8 @@ const IncomePage = () => {
         const response = await ApiClient.getIncomeTransactions();
         setTransactions(response.transactions || []);
       } catch (error) {
-        console.error('Error loading income transactions:', error);
-        // Fallback to localStorage for development
+        console.log('API not available, using localStorage fallback');
+        // Fallback to localStorage for development or when API is not available
         const savedTransactions = localStorage.getItem('incomeTransactions');
         if (savedTransactions) {
           setTransactions(JSON.parse(savedTransactions));
@@ -74,17 +74,33 @@ const IncomePage = () => {
     setLoading(true);
 
     try {
+      // Always try API first to save to database
       const response = await ApiClient.addIncomeTransaction(formData);
       const newTransaction = response.transaction;
       
       const updatedTransactions = [newTransaction, ...transactions];
       setTransactions(updatedTransactions);
       
-      // Also update localStorage as fallback
+      // Also update localStorage as backup
       localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
       
-      toast.success('Income added successfully!');
+      toast.success('Income added successfully and saved to database!');
+    } catch (error) {
+      console.log('API not available, using localStorage fallback');
+      // Fallback to localStorage for development
+      const newTransaction = {
+        id: Date.now(),
+        ...formData,
+        amount: parseFloat(formData.amount),
+        createdAt: new Date().toISOString()
+      };
       
+      const updatedTransactions = [newTransaction, ...transactions];
+      setTransactions(updatedTransactions);
+      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
+      
+      toast.success('Income added successfully (saved locally)!');
+    } finally {
       setFormData({
         amount: '',
         description: '',
@@ -95,10 +111,6 @@ const IncomePage = () => {
         frequency: 'monthly'
       });
       setSelectedCategory(null);
-    } catch (error) {
-      console.error('Error adding income:', error);
-      toast.error('Failed to add income');
-    } finally {
       setLoading(false);
     }
   };
