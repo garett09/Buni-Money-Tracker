@@ -70,23 +70,23 @@ export default function HomePage() {
     <div className="min-h-screen relative overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-3xl apple-float" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-r from-pink-500/10 to-cyan-500/10 rounded-full blur-3xl apple-float" style={{ animationDelay: '2s' }} />
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-gradient-to-r from-green-500/10 to-blue-500/10 rounded-full blur-3xl apple-float" style={{ animationDelay: '4s' }} />
-        <div className="absolute top-3/4 left-1/3 w-72 h-72 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-full blur-3xl apple-float" style={{ animationDelay: '1s' }} />
-        <div className="absolute top-1/3 right-1/4 w-56 h-56 bg-gradient-to-r from-indigo-500/10 to-violet-500/10 rounded-full blur-3xl apple-float" style={{ animationDelay: '3s' }} />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl apple-float" style={{ background: 'var(--theme-bg-gradient-1)', animationDelay: '0s' }} />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl apple-float" style={{ background: 'var(--theme-bg-gradient-2)', animationDelay: '2s' }} />
+        <div className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full blur-3xl apple-float" style={{ background: 'var(--theme-bg-gradient-3)', animationDelay: '4s' }} />
+        <div className="absolute top-3/4 left-1/3 w-72 h-72 rounded-full blur-3xl apple-float" style={{ background: 'var(--theme-bg-gradient-4)', animationDelay: '1s' }} />
+        <div className="absolute top-1/3 right-1/4 w-56 h-56 rounded-full blur-3xl apple-float" style={{ background: 'var(--theme-bg-gradient-5)', animationDelay: '3s' }} />
         
         {/* Sparkle Particles */}
-        <div className="absolute top-1/5 left-1/5 w-2 h-2 bg-white/60 rounded-full apple-sparkle" style={{ animationDelay: '0.5s' }} />
-        <div className="absolute top-2/5 right-1/4 w-1 h-1 bg-white/40 rounded-full apple-sparkle" style={{ animationDelay: '1.5s' }} />
-        <div className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 bg-white/50 rounded-full apple-sparkle" style={{ animationDelay: '2.5s' }} />
-        <div className="absolute top-3/4 right-1/3 w-1 h-1 bg-white/30 rounded-full apple-sparkle" style={{ animationDelay: '3.5s' }} />
-        <div className="absolute top-1/2 left-1/4 w-1.5 h-1.5 bg-white/40 rounded-full apple-sparkle" style={{ animationDelay: '4.5s' }} />
+        <div className="absolute top-1/5 left-1/5 w-2 h-2 rounded-full apple-sparkle" style={{ background: 'var(--theme-sparkle-1)', animationDelay: '0.5s' }} />
+        <div className="absolute top-2/5 right-1/4 w-1 h-1 rounded-full apple-sparkle" style={{ background: 'var(--theme-sparkle-2)', animationDelay: '1.5s' }} />
+        <div className="absolute bottom-1/3 left-1/3 w-1.5 h-1.5 rounded-full apple-sparkle" style={{ background: 'var(--theme-sparkle-3)', animationDelay: '2.5s' }} />
+        <div className="absolute top-3/4 right-1/3 w-1 h-1 rounded-full apple-sparkle" style={{ background: 'var(--theme-sparkle-4)', animationDelay: '3.5s' }} />
+        <div className="absolute top-1/2 left-1/4 w-1.5 h-1.5 rounded-full apple-sparkle" style={{ background: 'var(--theme-sparkle-5)', animationDelay: '4.5s' }} />
       </div>
 
       <div className="relative z-10">
         {/* Hero Section */}
-        <section className="min-h-screen flex items-center justify-center px-6">
+        <section className="py-20 min-h-screen flex items-center justify-center px-6">
           <div className="max-w-6xl mx-auto text-center">
             <div className="apple-fade-in">
               <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-8">
@@ -104,7 +104,7 @@ export default function HomePage() {
                 Take control of your finances with style.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
                 <Link
                   href="/login"
                   className="glass-button px-8 py-4 rounded-2xl text-white font-medium text-lg apple-shimmer flex items-center gap-2 group"
@@ -121,27 +121,27 @@ export default function HomePage() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto">
-                <div className="glass-card p-6 rounded-2xl apple-slide-up hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.2s' }}>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto pb-8">
+                <div className="liquid-card p-6 rounded-2xl apple-slide-up hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.2s' }}>
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center mx-auto mb-4 shadow-lg apple-glow">
                     <FiDollarSign size={24} className="text-white" />
                   </div>
-                  <h3 className="text-display text-2xl font-semibold mb-2" style={{ color: 'var(--theme-text-primary)' }}>100% Free</h3>
-                  <p style={{ color: 'var(--theme-text-muted)' }}>No hidden fees or subscriptions</p>
+                  <h3 className="text-2xl font-semibold mb-2 text-white">100% Free</h3>
+                  <p className="text-white/60">No hidden fees or subscriptions</p>
                 </div>
-                <div className="glass-card p-6 rounded-2xl apple-slide-up hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.4s' }}>
+                <div className="liquid-card p-6 rounded-2xl apple-slide-up hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.4s' }}>
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center mx-auto mb-4 shadow-lg apple-glow">
                     <FiShield size={24} className="text-white" />
                   </div>
-                  <h3 className="text-display text-2xl font-semibold mb-2" style={{ color: 'var(--theme-text-primary)' }}>Secure</h3>
-                  <p style={{ color: 'var(--theme-text-muted)' }}>Your data is always protected</p>
+                  <h3 className="text-2xl font-semibold mb-2 text-white">Secure</h3>
+                  <p className="text-white/60">Your data is always protected</p>
                 </div>
-                <div className="glass-card p-6 rounded-2xl apple-slide-up hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.6s' }}>
+                <div className="liquid-card p-6 rounded-2xl apple-slide-up hover:scale-105 transition-transform duration-300" style={{ animationDelay: '0.6s' }}>
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center mx-auto mb-4 shadow-lg apple-glow">
                     <FiStar size={24} className="text-white" />
                   </div>
-                  <h3 className="text-display text-2xl font-semibold mb-2" style={{ color: 'var(--theme-text-primary)' }}>Premium</h3>
-                  <p style={{ color: 'var(--theme-text-muted)' }}>Apple-quality design & UX</p>
+                  <h3 className="text-2xl font-semibold mb-2 text-white">Premium</h3>
+                  <p className="text-white/60">Apple-quality design & UX</p>
                 </div>
               </div>
             </div>

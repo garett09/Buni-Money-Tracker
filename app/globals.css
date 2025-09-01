@@ -94,6 +94,20 @@
   --theme-bg-gradient: linear-gradient(135deg, #0F0F23 0%, #1A1A2E 50%, #16213E 100%);
   --theme-card-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.06) 100%);
   
+  /* Background gradient orbs for landing page */
+  --theme-bg-gradient-1: linear-gradient(135deg, rgba(74, 144, 226, 0.1) 0%, rgba(123, 104, 238, 0.1) 100%);
+  --theme-bg-gradient-2: linear-gradient(135deg, rgba(255, 20, 147, 0.1) 0%, rgba(0, 191, 255, 0.1) 100%);
+  --theme-bg-gradient-3: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(74, 144, 226, 0.1) 100%);
+  --theme-bg-gradient-4: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%);
+  --theme-bg-gradient-5: linear-gradient(135deg, rgba(103, 58, 183, 0.1) 0%, rgba(156, 39, 176, 0.1) 100%);
+  
+  /* Sparkle particles for landing page */
+  --theme-sparkle-1: rgba(255, 255, 255, 0.6);
+  --theme-sparkle-2: rgba(255, 255, 255, 0.4);
+  --theme-sparkle-3: rgba(255, 255, 255, 0.5);
+  --theme-sparkle-4: rgba(255, 255, 255, 0.3);
+  --theme-sparkle-5: rgba(255, 255, 255, 0.4);
+  
   /* iOS 26 Color Palette (kept for compatibility) */
   --color-primary: #007AFF;
   --color-primary-dark: #0056CC;
@@ -222,7 +236,7 @@
   }
 }
 
-/* Pink Theme Variables */
+/* Light Theme Variables */
 [data-theme="light"] {
   --theme-primary: #3B82F6;
   --theme-primary-hover: #2563EB;
@@ -233,6 +247,20 @@
   --theme-secondary-hover: #4F46E5;
   --theme-secondary-light: #818CF8;
   --theme-secondary-dark: #4338CA;
+  
+  /* Background gradient orbs for landing page - Light Mode */
+  --theme-bg-gradient-1: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%);
+  --theme-bg-gradient-2: linear-gradient(135deg, rgba(236, 72, 153, 0.15) 0%, rgba(14, 165, 233, 0.15) 100%);
+  --theme-bg-gradient-3: linear-gradient(135deg, rgba(34, 197, 94, 0.15) 0%, rgba(59, 130, 246, 0.15) 100%);
+  --theme-bg-gradient-4: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(251, 146, 60, 0.15) 100%);
+  --theme-bg-gradient-5: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%);
+  
+  /* Sparkle particles for landing page - Light Mode */
+  --theme-sparkle-1: rgba(0, 0, 0, 0.4);
+  --theme-sparkle-2: rgba(0, 0, 0, 0.3);
+  --theme-sparkle-3: rgba(0, 0, 0, 0.35);
+  --theme-sparkle-4: rgba(0, 0, 0, 0.25);
+  --theme-sparkle-5: rgba(0, 0, 0, 0.3);
   
   --theme-accent: #10B981;
   --theme-accent-hover: #059669;
@@ -289,6 +317,7 @@
     background: var(--theme-bg-gradient) !important;
     min-height: 100vh;
     background-attachment: fixed;
+    overflow-x: hidden;
   }
 
   /* Force theme background on body as well */
@@ -297,6 +326,13 @@
     background-attachment: fixed;
     overflow-x: hidden;
     color: rgba(255, 255, 255, 0.95);
+    min-height: 100vh;
+  }
+
+  /* Ensure proper viewport handling */
+  #__next {
+    min-height: 100vh;
+    overflow-x: hidden;
   }
 
   /* Apple Liquid Glass Morphism Utilities */
