@@ -107,7 +107,7 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
                 <Link
                   href="/login"
-                  className="glass-button px-8 py-4 rounded-2xl text-white font-medium text-lg apple-shimmer flex items-center gap-2 group"
+                  className="liquid-button px-8 py-4 rounded-2xl text-white font-medium text-lg flex items-center gap-2 group hover:scale-105 transition-all duration-300"
                 >
                   Get Started
                   <FiArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
