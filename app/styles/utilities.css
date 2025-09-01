@@ -1,0 +1,217 @@
+/* Liquid Design Utility Classes */
+
+@layer utilities {
+  /* Liquid Glass Utilities */
+  .liquid-glass-sm {
+    background: var(--liquid-glass-bg);
+    backdrop-filter: blur(var(--liquid-blur-sm)) saturate(var(--liquid-saturate-sm));
+    -webkit-backdrop-filter: blur(var(--liquid-blur-sm)) saturate(var(--liquid-saturate-sm));
+    border: 1px solid var(--liquid-glass-border);
+    border-radius: var(--liquid-radius-sm);
+  }
+  
+  .liquid-glass-md {
+    background: var(--liquid-glass-bg);
+    backdrop-filter: blur(var(--liquid-blur-md)) saturate(var(--liquid-saturate-md));
+    -webkit-backdrop-filter: blur(var(--liquid-blur-md)) saturate(var(--liquid-saturate-md));
+    border: 1px solid var(--liquid-glass-border);
+    border-radius: var(--liquid-radius-md);
+  }
+  
+  .liquid-glass-lg {
+    background: var(--liquid-glass-bg);
+    backdrop-filter: blur(var(--liquid-blur-lg)) saturate(var(--liquid-saturate-lg));
+    -webkit-backdrop-filter: blur(var(--liquid-blur-lg)) saturate(var(--liquid-saturate-lg));
+    border: 1px solid var(--liquid-glass-border);
+    border-radius: var(--liquid-radius-lg);
+  }
+  
+  .liquid-glass-xl {
+    background: var(--liquid-glass-bg);
+    backdrop-filter: blur(var(--liquid-blur-xl)) saturate(var(--liquid-saturate-xl));
+    -webkit-backdrop-filter: blur(var(--liquid-blur-xl)) saturate(var(--liquid-saturate-xl));
+    border: 1px solid var(--liquid-glass-border);
+    border-radius: var(--liquid-radius-xl);
+  }
+  
+  /* Liquid Shape Utilities */
+  .liquid-shape-1 {
+    border-radius: var(--liquid-shape-1);
+    animation: liquidMorph 8s ease-in-out infinite;
+  }
+  
+  .liquid-shape-2 {
+    border-radius: var(--liquid-shape-2);
+    animation: liquidMorph2 10s ease-in-out infinite;
+  }
+  
+  .liquid-shape-3 {
+    border-radius: var(--liquid-shape-3);
+    animation: liquidMorph3 12s ease-in-out infinite;
+  }
+  
+  /* Liquid Animation Utilities */
+  .liquid-float {
+    animation: appleFloat 6s ease-in-out infinite;
+  }
+  
+  .liquid-glow {
+    animation: appleGlow 3s ease-in-out infinite alternate;
+  }
+  
+  .liquid-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .liquid-shimmer::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: liquidShimmer 3s infinite;
+  }
+  
+  /* Liquid Progress Utilities */
+  .liquid-progress {
+    background: var(--liquid-progress-bg);
+    border-radius: var(--liquid-radius-lg);
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .liquid-progress::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: liquidFlow 2s ease-in-out infinite;
+  }
+  
+  .liquid-progress-fill {
+    background: var(--liquid-progress-fill);
+    border-radius: var(--liquid-radius-lg);
+    transition: width var(--liquid-duration-slower) var(--liquid-ease-apple);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .liquid-progress-fill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: liquidShimmer 1.5s ease-in-out infinite;
+  }
+  
+  /* Liquid Progress Variants */
+  .liquid-progress-success .liquid-progress-fill {
+    background: var(--liquid-progress-success);
+  }
+  
+  .liquid-progress-warning .liquid-progress-fill {
+    background: var(--liquid-progress-warning);
+  }
+  
+  .liquid-progress-error .liquid-progress-fill {
+    background: var(--liquid-progress-error);
+  }
+  
+  /* Liquid Focus Utilities */
+  .liquid-focus {
+    transition: all var(--liquid-duration-normal) var(--liquid-ease-apple);
+  }
+  
+  .liquid-focus:focus {
+    outline: none;
+    box-shadow: var(--liquid-focus-ring), var(--liquid-focus-glow);
+    transform: scale(1.02);
+  }
+  
+  .liquid-focus-lg:focus {
+    outline: none;
+    box-shadow: var(--liquid-focus-ring-lg), var(--liquid-focus-glow);
+    transform: scale(1.05);
+  }
+  
+  /* Liquid Hover Utilities */
+  .liquid-hover {
+    transition: all var(--liquid-duration-normal) var(--liquid-ease-apple);
+  }
+  
+  .liquid-hover:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--liquid-shadow-lg), var(--liquid-inset-lg);
+  }
+  
+  .liquid-hover-lg:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: var(--liquid-shadow-xl), var(--liquid-inset-xl);
+  }
+  
+  /* Liquid Spacing Utilities */
+  .liquid-space-xs { padding: var(--liquid-space-xs); }
+  .liquid-space-sm { padding: var(--liquid-space-sm); }
+  .liquid-space-md { padding: var(--liquid-space-md); }
+  .liquid-space-lg { padding: var(--liquid-space-lg); }
+  .liquid-space-xl { padding: var(--liquid-space-xl); }
+  .liquid-space-2xl { padding: var(--liquid-space-2xl); }
+  .liquid-space-3xl { padding: var(--liquid-space-3xl); }
+  
+  /* Liquid Typography Utilities */
+  .liquid-text-xs { font-size: var(--liquid-text-xs); }
+  .liquid-text-sm { font-size: var(--liquid-text-sm); }
+  .liquid-text-base { font-size: var(--liquid-text-base); }
+  .liquid-text-lg { font-size: var(--liquid-text-lg); }
+  .liquid-text-xl { font-size: var(--liquid-text-xl); }
+  .liquid-text-2xl { font-size: var(--liquid-text-2xl); }
+  .liquid-text-3xl { font-size: var(--liquid-text-3xl); }
+  .liquid-text-4xl { font-size: var(--liquid-text-4xl); }
+  
+  /* Liquid Shadow Utilities */
+  .liquid-shadow-sm { box-shadow: var(--liquid-shadow-sm), var(--liquid-inset-sm); }
+  .liquid-shadow-md { box-shadow: var(--liquid-shadow-md), var(--liquid-inset-md); }
+  .liquid-shadow-lg { box-shadow: var(--liquid-shadow-lg), var(--liquid-inset-lg); }
+  .liquid-shadow-xl { box-shadow: var(--liquid-shadow-xl), var(--liquid-inset-xl); }
+  .liquid-shadow-2xl { box-shadow: var(--liquid-shadow-2xl), var(--liquid-inset-xl); }
+  
+  /* Liquid Border Radius Utilities */
+  .liquid-rounded-sm { border-radius: var(--liquid-radius-sm); }
+  .liquid-rounded-md { border-radius: var(--liquid-radius-md); }
+  .liquid-rounded-lg { border-radius: var(--liquid-radius-lg); }
+  .liquid-rounded-xl { border-radius: var(--liquid-radius-xl); }
+  .liquid-rounded-2xl { border-radius: var(--liquid-radius-2xl); }
+  .liquid-rounded-3xl { border-radius: var(--liquid-radius-3xl); }
+  
+  /* Liquid Animation Utilities */
+  .liquid-animate-fast { animation-duration: var(--liquid-duration-fast); }
+  .liquid-animate-normal { animation-duration: var(--liquid-duration-normal); }
+  .liquid-animate-slow { animation-duration: var(--liquid-duration-slow); }
+  .liquid-animate-slower { animation-duration: var(--liquid-duration-slower); }
+  
+  /* Liquid Easing Utilities */
+  .liquid-ease-in { transition-timing-function: var(--liquid-ease-in); }
+  .liquid-ease-out { transition-timing-function: var(--liquid-ease-out); }
+  .liquid-ease-in-out { transition-timing-function: var(--liquid-ease-in-out); }
+  .liquid-ease-apple { transition-timing-function: var(--liquid-ease-apple); }
+  .liquid-ease-bounce { transition-timing-function: var(--liquid-ease-bounce); }
+  
+  /* Liquid Z-Index Utilities */
+  .liquid-z-dropdown { z-index: var(--liquid-z-dropdown); }
+  .liquid-z-sticky { z-index: var(--liquid-z-sticky); }
+  .liquid-z-fixed { z-index: var(--liquid-z-fixed); }
+  .liquid-z-modal-backdrop { z-index: var(--liquid-z-modal-backdrop); }
+  .liquid-z-modal { z-index: var(--liquid-z-modal); }
+  .liquid-z-popover { z-index: var(--liquid-z-popover); }
+  .liquid-z-tooltip { z-index: var(--liquid-z-tooltip); }
+  .liquid-z-toast { z-index: var(--liquid-z-toast); }
+}

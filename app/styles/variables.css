@@ -1,0 +1,155 @@
+/* CSS Custom Properties for Liquid Design System */
+
+:root {
+  /* Liquid Design Colors */
+  --liquid-primary: #007AFF;
+  --liquid-primary-dark: #0056CC;
+  --liquid-secondary: #5856D6;
+  --liquid-success: #34C759;
+  --liquid-warning: #FF9500;
+  --liquid-error: #FF3B30;
+  --liquid-info: #5AC8FA;
+  
+  /* Liquid Glass Colors */
+  --liquid-glass-bg: rgba(255, 255, 255, 0.08);
+  --liquid-glass-bg-hover: rgba(255, 255, 255, 0.12);
+  --liquid-glass-border: rgba(255, 255, 255, 0.15);
+  --liquid-glass-border-hover: rgba(255, 255, 255, 0.25);
+  --liquid-glass-shadow: rgba(0, 0, 0, 0.25);
+  --liquid-glass-shadow-hover: rgba(0, 0, 0, 0.3);
+  
+  /* Liquid Blur Values */
+  --liquid-blur-sm: 20px;
+  --liquid-blur-md: 40px;
+  --liquid-blur-lg: 60px;
+  --liquid-blur-xl: 80px;
+  
+  /* Liquid Saturation Values */
+  --liquid-saturate-sm: 120%;
+  --liquid-saturate-md: 150%;
+  --liquid-saturate-lg: 180%;
+  --liquid-saturate-xl: 200%;
+  
+  /* Liquid Border Radius */
+  --liquid-radius-sm: 12px;
+  --liquid-radius-md: 16px;
+  --liquid-radius-lg: 20px;
+  --liquid-radius-xl: 24px;
+  --liquid-radius-2xl: 28px;
+  --liquid-radius-3xl: 32px;
+  
+  /* Liquid Spacing */
+  --liquid-space-xs: 0.5rem;
+  --liquid-space-sm: 0.75rem;
+  --liquid-space-md: 1rem;
+  --liquid-space-lg: 1.5rem;
+  --liquid-space-xl: 2rem;
+  --liquid-space-2xl: 2.5rem;
+  --liquid-space-3xl: 3rem;
+  
+  /* Liquid Typography */
+  --liquid-text-xs: 0.75rem;
+  --liquid-text-sm: 0.875rem;
+  --liquid-text-base: 1rem;
+  --liquid-text-lg: 1.125rem;
+  --liquid-text-xl: 1.25rem;
+  --liquid-text-2xl: 1.5rem;
+  --liquid-text-3xl: 1.875rem;
+  --liquid-text-4xl: 2.25rem;
+  
+  /* Liquid Animation Durations */
+  --liquid-duration-fast: 0.15s;
+  --liquid-duration-normal: 0.3s;
+  --liquid-duration-slow: 0.5s;
+  --liquid-duration-slower: 0.8s;
+  
+  /* Liquid Animation Easing */
+  --liquid-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --liquid-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --liquid-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --liquid-ease-apple: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --liquid-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Liquid Z-Index Scale */
+  --liquid-z-dropdown: 1000;
+  --liquid-z-sticky: 1020;
+  --liquid-z-fixed: 1030;
+  --liquid-z-modal-backdrop: 1040;
+  --liquid-z-modal: 1050;
+  --liquid-z-popover: 1060;
+  --liquid-z-tooltip: 1070;
+  --liquid-z-toast: 1080;
+  
+  /* Liquid Breakpoints */
+  --liquid-breakpoint-sm: 576px;
+  --liquid-breakpoint-md: 768px;
+  --liquid-breakpoint-lg: 992px;
+  --liquid-breakpoint-xl: 1200px;
+  --liquid-breakpoint-2xl: 1400px;
+  
+  /* Liquid Shadows */
+  --liquid-shadow-sm: 0 4px 16px rgba(0, 0, 0, 0.1);
+  --liquid-shadow-md: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --liquid-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.2);
+  --liquid-shadow-xl: 0 25px 80px rgba(0, 0, 0, 0.25);
+  --liquid-shadow-2xl: 0 35px 100px rgba(0, 0, 0, 0.3);
+  
+  /* Liquid Inset Shadows */
+  --liquid-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  --liquid-inset-md: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  --liquid-inset-lg: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  --liquid-inset-xl: inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  
+  /* Liquid Focus States */
+  --liquid-focus-ring: 0 0 0 4px rgba(0, 122, 255, 0.15);
+  --liquid-focus-ring-lg: 0 0 0 6px rgba(0, 122, 255, 0.15);
+  --liquid-focus-glow: 0 8px 32px rgba(0, 122, 255, 0.1);
+  
+  /* Liquid Morphing Shapes */
+  --liquid-shape-1: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  --liquid-shape-2: 30% 70% 70% 30% / 30% 30% 70% 70%;
+  --liquid-shape-3: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  
+  /* Liquid Progress Colors */
+  --liquid-progress-bg: rgba(255, 255, 255, 0.1);
+  --liquid-progress-fill: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+  --liquid-progress-success: linear-gradient(135deg, #34C759 0%, #30D158 100%);
+  --liquid-progress-warning: linear-gradient(135deg, #FF9500 0%, #FF9F0A 100%);
+  --liquid-progress-error: linear-gradient(135deg, #FF3B30 0%, #FF453A 100%);
+}
+
+/* Dark Mode Variables */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --liquid-glass-bg: rgba(0, 0, 0, 0.2);
+    --liquid-glass-bg-hover: rgba(0, 0, 0, 0.3);
+    --liquid-glass-border: rgba(255, 255, 255, 0.1);
+    --liquid-glass-border-hover: rgba(255, 255, 255, 0.2);
+    --liquid-glass-shadow: rgba(0, 0, 0, 0.4);
+    --liquid-glass-shadow-hover: rgba(0, 0, 0, 0.5);
+    
+    --liquid-inset-sm: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    --liquid-inset-md: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    --liquid-inset-lg: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    --liquid-inset-xl: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* High Contrast Mode Variables */
+@media (prefers-contrast: high) {
+  :root {
+    --liquid-glass-bg: rgba(255, 255, 255, 0.2);
+    --liquid-glass-border: rgba(255, 255, 255, 0.5);
+    --liquid-glass-border-hover: rgba(255, 255, 255, 0.7);
+  }
+}
+
+/* Reduced Motion Variables */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --liquid-duration-fast: 0s;
+    --liquid-duration-normal: 0s;
+    --liquid-duration-slow: 0s;
+    --liquid-duration-slower: 0s;
+  }
+}

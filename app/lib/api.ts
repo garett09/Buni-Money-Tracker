@@ -121,4 +121,44 @@ export class ApiClient {
     
     return response.json();
   }
+
+  // User management
+  static async getUserProfile() {
+    const response = await fetch(`${API_BASE}/api/users`, {
+      headers: this.getAuthHeaders(),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch user profile');
+    }
+    
+    return response.json();
+  }
+
+  static async updateUserProfile(updates: any) {
+    const response = await fetch(`${API_BASE}/api/users`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(updates),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update user profile');
+    }
+    
+    return response.json();
+  }
+
+  static async deleteUserAccount() {
+    const response = await fetch(`${API_BASE}/api/users`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders(),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to delete user account');
+    }
+    
+    return response.json();
+  }
 }

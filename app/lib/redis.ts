@@ -3,8 +3,8 @@ import { Redis } from "@upstash/redis";
 // Initialize Redis client
 let redis: any;
 
-if (process.env.NODE_ENV === 'development' || !process.env.UPSTASH_REDIS_REST_URL) {
-  console.log('Using in-memory storage for development');
+if (!process.env.UPSTASH_REDIS_REST_URL || !process.env.UPSTASH_REDIS_REST_TOKEN) {
+  console.log('Using in-memory storage (Redis credentials not found)');
   const memoryStore = {
     data: new Map(),
     async hset(key: string, obj: any) {
@@ -38,6 +38,23 @@ if (process.env.NODE_ENV === 'development' || !process.env.UPSTASH_REDIS_REST_UR
     },
     async del(key: string) {
       this.data.delete(key);
+    },
+    async sadd(key: string, value: any) {
+      if (!this.data.has(key)) {
+        this.data.set(key, new Set());
+      }
+      const set = this.data.get(key);
+      set.add(value);
+      this.data.set(key, set);
+    },
+    async smembers(key: string) {
+      const set = this.data.get(key) || new Set();
+      return Array.from(set);
+    },
+    async srem(key: string, value: any) {
+      const set = this.data.get(key) || new Set();
+      set.delete(value);
+      this.data.set(key, set);
     }
   };
   redis = memoryStore;
@@ -46,6 +63,7 @@ if (process.env.NODE_ENV === 'development' || !process.env.UPSTASH_REDIS_REST_UR
     url: process.env.UPSTASH_REDIS_REST_URL!,
     token: process.env.UPSTASH_REDIS_REST_TOKEN!,
   });
+  console.log('✅ Connected to Redis database');
 }
 
 export { redis };

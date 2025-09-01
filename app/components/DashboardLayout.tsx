@@ -14,6 +14,7 @@ import {
   FiMenu,
   FiX
 } from 'react-icons/fi';
+import ThemePicker from './ThemePicker';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -124,6 +125,22 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
         {/* Main content */}
         <div className="flex-1 md:ml-64">
+          {/* Header with theme picker */}
+          <div className="bg-white/5 backdrop-blur-xl border-b border-white/10 px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className="md:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors"
+                >
+                  <FiMenu size={20} className="text-white" />
+                </button>
+                <h1 className="text-white font-semibold text-lg">Dashboard</h1>
+              </div>
+              <ThemePicker />
+            </div>
+          </div>
+          
           <main className="p-6 md:p-8">
             {children}
           </main>

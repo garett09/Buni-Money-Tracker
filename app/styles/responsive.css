@@ -1,0 +1,229 @@
+/* Responsive Design Enhancements for Liquid UI */
+
+/* Mobile First Approach */
+
+/* Extra Small Devices (phones, 320px and up) */
+@media (min-width: 320px) {
+  .liquid-card {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+  
+  .liquid-button {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+  }
+  
+  .liquid-input {
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+  }
+}
+
+/* Small Devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+  .liquid-card {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+  
+  .liquid-button {
+    padding: 1rem 1.5rem;
+    border-radius: 16px;
+    font-size: 1rem;
+  }
+  
+  .liquid-input {
+    padding: 1rem 1.5rem;
+    border-radius: 16px;
+    font-size: 1rem;
+  }
+}
+
+/* Medium Devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+  .liquid-card {
+    padding: 2rem;
+    border-radius: 24px;
+  }
+  
+  .liquid-button {
+    padding: 1.25rem 2rem;
+    border-radius: 20px;
+    font-size: 1.125rem;
+  }
+  
+  .liquid-input {
+    padding: 1.25rem 2rem;
+    border-radius: 20px;
+    font-size: 1.125rem;
+  }
+  
+  /* Enable more complex animations on larger screens */
+  .liquid-shape,
+  .liquid-shape-2,
+  .liquid-shape-3 {
+    animation-duration: 8s;
+  }
+}
+
+/* Large Devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+  .liquid-card {
+    padding: 2.5rem;
+    border-radius: 28px;
+  }
+  
+  .liquid-button {
+    padding: 1.5rem 2.5rem;
+    border-radius: 24px;
+    font-size: 1.25rem;
+  }
+  
+  .liquid-input {
+    padding: 1.5rem 2.5rem;
+    border-radius: 24px;
+    font-size: 1.25rem;
+  }
+  
+  /* Full animation performance on desktop */
+  .liquid-shape,
+  .liquid-shape-2,
+  .liquid-shape-3 {
+    animation-duration: 6s;
+  }
+}
+
+/* Extra Large Devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .liquid-card {
+    padding: 3rem;
+    border-radius: 32px;
+  }
+  
+  .liquid-button {
+    padding: 1.75rem 3rem;
+    border-radius: 28px;
+    font-size: 1.375rem;
+  }
+  
+  .liquid-input {
+    padding: 1.75rem 3rem;
+    border-radius: 28px;
+    font-size: 1.375rem;
+  }
+}
+
+/* Ultra Wide Screens (1400px and up) */
+@media (min-width: 1400px) {
+  .liquid-card {
+    padding: 3.5rem;
+    border-radius: 36px;
+  }
+  
+  .liquid-button {
+    padding: 2rem 3.5rem;
+    border-radius: 32px;
+    font-size: 1.5rem;
+  }
+  
+  .liquid-input {
+    padding: 2rem 3.5rem;
+    border-radius: 32px;
+    font-size: 1.5rem;
+  }
+}
+
+/* Landscape Orientation Adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+  .liquid-card {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+  
+  .liquid-button {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+  }
+  
+  .liquid-input {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+  }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .liquid-card,
+  .liquid-button,
+  .liquid-input {
+    border-width: 0.5px;
+  }
+}
+
+/* Touch Device Specific Styles */
+@media (hover: none) and (pointer: coarse) {
+  .liquid-button {
+    min-height: 44px; /* iOS touch target minimum */
+    min-width: 44px;
+  }
+  
+  .liquid-input {
+    min-height: 44px;
+  }
+  
+  /* Larger touch targets for better usability */
+  .liquid-card {
+    padding: 1.5rem;
+  }
+}
+
+/* Foldable Device Support */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .liquid-card {
+    padding: 2rem;
+    border-radius: 20px;
+  }
+  
+  .liquid-button {
+    padding: 1.25rem 2rem;
+    border-radius: 18px;
+  }
+  
+  .liquid-input {
+    padding: 1.25rem 2rem;
+    border-radius: 18px;
+  }
+}
+
+/* Container Queries Support (when available) */
+@container (min-width: 400px) {
+  .liquid-card {
+    padding: 2rem;
+  }
+}
+
+@container (min-width: 600px) {
+  .liquid-card {
+    padding: 2.5rem;
+  }
+}
+
+/* Dark Mode Responsive Adjustments */
+@media (prefers-color-scheme: dark) {
+  @media (max-width: 768px) {
+    .liquid-card {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+  }
+  
+  @media (min-width: 769px) {
+    .liquid-card {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+  }
+}

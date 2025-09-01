@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       { 
         message: 'Registration failed. Please try again.',
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        error: process.env.NODE_ENV === 'development' ? (error instanceof Error ? error.message : 'Unknown error') : undefined
       },
       { status: 500 }
     );

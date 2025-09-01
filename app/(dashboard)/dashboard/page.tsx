@@ -7,6 +7,7 @@ import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiTarget, FiDatabase, FiUpl
 import { ApiClient } from '@/app/lib/api';
 import { DataMigration } from '@/app/lib/dataMigration';
 import { toast } from 'react-hot-toast';
+import { SavingsCalculator } from '@/app/lib/savingsCalculator';
 
 const DashboardPage = () => {
   const [user, setUser] = useState<any>(null);
@@ -15,6 +16,7 @@ const DashboardPage = () => {
   const [savingsGoals, setSavingsGoals] = useState<any[]>([]);
   const [showMigrationPrompt, setShowMigrationPrompt] = useState(false);
   const [migrating, setMigrating] = useState(false);
+  const [depositHistory, setDepositHistory] = useState<any[]>([]);
 
   const loadData = async () => {
     const userData = localStorage.getItem('user');
@@ -49,6 +51,10 @@ const DashboardPage = () => {
       if (savedGoals) {
         setSavingsGoals(JSON.parse(savedGoals));
       }
+
+      // Load deposit history
+      const history = SavingsCalculator.getDepositHistory();
+      setDepositHistory(history);
       
       // Check if user has localStorage data that could be migrated
       if (DataMigration.hasLocalDataToMigrate()) {
@@ -199,14 +205,14 @@ const DashboardPage = () => {
             return (
               <div
                 key={stat.title}
-                className="glass-card p-6 rounded-2xl apple-slide-up apple-shimmer"
+                className="liquid-card p-6 apple-slide-up apple-shimmer"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="flex items-center justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center`}>
+                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center liquid-shape`}>
                     <Icon size={24} className="text-white" />
                   </div>
-                  <span className={`text-sm font-medium px-2 py-1 rounded-full ${
+                  <span className={`text-sm font-medium px-3 py-1 rounded-full ${
                     stat.changeType === 'positive' ? 'text-green-400 bg-green-400/20' :
                     stat.changeType === 'negative' ? 'text-red-400 bg-red-400/20' :
                     'text-blue-400 bg-blue-400/20'
@@ -227,16 +233,16 @@ const DashboardPage = () => {
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="glass-card p-8 rounded-2xl apple-fade-in">
+          <div className="liquid-card p-8 apple-fade-in">
             <h2 className="text-display text-2xl font-semibold text-white mb-6">
               Quick Actions
             </h2>
             <div className="space-y-4">
               <Link
                 href="/dashboard/income"
-                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group"
+                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group liquid-button"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center liquid-shape">
                   <FiTrendingUp size={24} className="text-white" />
                 </div>
                 <div>
@@ -246,9 +252,9 @@ const DashboardPage = () => {
               </Link>
               <Link
                 href="/dashboard/expenses"
-                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group"
+                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group liquid-button"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center liquid-shape-2">
                   <FiTrendingDown size={24} className="text-white" />
                 </div>
                 <div>
@@ -258,9 +264,9 @@ const DashboardPage = () => {
               </Link>
               <Link
                 href="/dashboard/savings"
-                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group"
+                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group liquid-button"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center liquid-shape-3">
                   <FiTarget size={24} className="text-white" />
                 </div>
                 <div>
@@ -271,7 +277,118 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="glass-card p-8 rounded-2xl apple-fade-in">
+          {/* Quick Savings Section */}
+          {savingsGoals.length > 0 && (
+            <div className="liquid-card p-8 apple-fade-in">
+              <h2 className="text-display text-2xl font-semibold text-white mb-6">
+                Quick Savings
+              </h2>
+              <div className="space-y-4">
+                {savingsGoals.slice(0, 3).map((goal) => {
+                  const progress = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100);
+                  return (
+                    <div key={goal.id} className="p-4 rounded-xl bg-white/5">
+                      <div className="flex items-center justify-between mb-3">
+                        <div>
+                          <h3 className="text-white font-medium">{goal.name}</h3>
+                          <p className="text-white/60 text-sm">
+                            ₱{goal.currentAmount.toLocaleString()} / ₱{goal.targetAmount.toLocaleString()}
+                          </p>
+                        </div>
+                        <span className="text-white/60 text-sm">{progress.toFixed(0)}%</span>
+                      </div>
+                      
+                      <div className="liquid-progress w-full h-2 mb-3">
+                        <div 
+                          className="liquid-progress-fill h-2"
+                          style={{ width: `${progress}%` }}
+                        ></div>
+                      </div>
+                      
+                      {/* Timeline info */}
+                      {(() => {
+                        const timeline = SavingsCalculator.calculateTimeline(
+                          parseFloat(goal.targetAmount),
+                          parseFloat(goal.currentAmount),
+                          depositHistory,
+                          goal.id
+                        );
+                        
+                        return (
+                          <div className="text-xs text-white/60 mb-3">
+                            {timeline.days !== Infinity && timeline.days > 0 ? (
+                              <span>⏱️ {SavingsCalculator.formatTimeline(timeline)} to goal</span>
+                            ) : (
+                              <span>📊 No deposit history yet</span>
+                            )}
+                          </div>
+                        );
+                      })()}
+                      
+                      <div className="flex gap-2">
+                        {[100, 500, 1000].map((amount) => (
+                          <button
+                            key={amount}
+                            onClick={async () => {
+                              try {
+                                const updatedGoal = {
+                                  ...goal,
+                                  currentAmount: (parseFloat(goal.currentAmount) + amount).toString()
+                                };
+                                
+                                await ApiClient.updateSavingsGoal(goal.id, updatedGoal);
+                                setSavingsGoals(savingsGoals.map(g => 
+                                  g.id === goal.id ? updatedGoal : g
+                                ));
+                                
+                                // Track deposit in history
+                                SavingsCalculator.addDepositToHistory(amount, goal.id);
+                                const updatedHistory = SavingsCalculator.getDepositHistory();
+                                setDepositHistory(updatedHistory);
+                                
+                                toast.success(`₱${amount.toLocaleString()} added to ${goal.name}!`);
+                              } catch (error) {
+                                console.log('API not available, using localStorage fallback');
+                                const updatedGoal = {
+                                  ...goal,
+                                  currentAmount: (parseFloat(goal.currentAmount) + amount).toString()
+                                };
+                                
+                                const updatedGoals = savingsGoals.map(g => 
+                                  g.id === goal.id ? updatedGoal : g
+                                );
+                                
+                                setSavingsGoals(updatedGoals);
+                                localStorage.setItem('savingsGoals', JSON.stringify(updatedGoals));
+                                
+                                // Track deposit in history
+                                SavingsCalculator.addDepositToHistory(amount, goal.id);
+                                const updatedHistory = SavingsCalculator.getDepositHistory();
+                                setDepositHistory(updatedHistory);
+                                
+                                toast.success(`₱${amount.toLocaleString()} added to ${goal.name}!`);
+                              }
+                            }}
+                            className="px-3 py-1 bg-green-500/20 hover:bg-green-500/30 text-green-300 rounded-lg text-xs font-medium transition-colors"
+                          >
+                            +₱{amount}
+                          </button>
+                        ))}
+                        <Link
+                          href="/dashboard/savings"
+                          className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-medium transition-colors"
+                        >
+                          More
+                        </Link>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          <div className="liquid-card p-8 apple-fade-in">
             <h2 className="text-display text-2xl font-semibold text-white mb-6">
               Recent Transactions
             </h2>

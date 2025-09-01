@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import AuthLayout from "@/app/components/AuthLayout";
+import ThemePicker from "@/app/components/ThemePicker";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -73,10 +74,15 @@ const SignUpPage = () => {
     <AuthLayout>
       <div className="lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center">
         <div className="apple-fade-in">
-          <h3 className="text-display text-4xl font-semibold text-white mb-3 tracking-tight">Create Account</h3>
-          <p className="text-body text-white/60 mb-10 text-lg">
-            Please enter your details to create an account.
-          </p>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-display text-4xl font-semibold text-white mb-3 tracking-tight">Create Account</h3>
+              <p className="text-body text-white/60 text-lg">
+                Please enter your details to create an account.
+              </p>
+            </div>
+            <ThemePicker />
+          </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6 apple-slide-up" style={{ animationDelay: '0.3s' }}>
@@ -91,7 +97,7 @@ const SignUpPage = () => {
               value={formData.name}
               onChange={handleChange}
               required
-              className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg"
+              className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
               placeholder="Enter your full name"
             />
           </div>
@@ -107,7 +113,7 @@ const SignUpPage = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg"
+              className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
               placeholder="Enter your email"
             />
           </div>
@@ -123,7 +129,7 @@ const SignUpPage = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg"
+              className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
               placeholder="Enter your password"
             />
           </div>
@@ -139,7 +145,7 @@ const SignUpPage = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               required
-              className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg"
+              className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
               placeholder="Confirm your password"
             />
           </div>
@@ -147,7 +153,7 @@ const SignUpPage = () => {
           <button
             type="submit"
             disabled={loading}
-            className="w-full glass-button text-white py-4 px-6 rounded-2xl font-medium text-body text-lg disabled:opacity-50 disabled:cursor-not-allowed apple-shimmer"
+            className="w-full liquid-button text-white py-4 px-6 font-medium text-body text-lg disabled:opacity-50 disabled:cursor-not-allowed apple-shimmer"
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>

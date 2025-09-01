@@ -1,0 +1,167 @@
+/* Browser Support and Fallbacks for Liquid Design */
+
+/* Safari-specific fixes */
+@supports (-webkit-backdrop-filter: blur(1px)) {
+  .liquid-card {
+    -webkit-backdrop-filter: blur(80px) saturate(200%);
+  }
+  
+  .liquid-button {
+    -webkit-backdrop-filter: blur(40px) saturate(180%);
+  }
+  
+  .liquid-input {
+    -webkit-backdrop-filter: blur(30px) saturate(150%);
+  }
+}
+
+/* Firefox fallbacks */
+@-moz-document url-prefix() {
+  .liquid-card {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .liquid-button {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+  }
+  
+  .liquid-input {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Internet Explorer fallbacks */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  .liquid-card,
+  .liquid-button,
+  .liquid-input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  
+  .liquid-shape,
+  .liquid-shape-2,
+  .liquid-shape-3 {
+    border-radius: 20px;
+    animation: none;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .liquid-shape,
+  .liquid-shape-2,
+  .liquid-shape-3 {
+    animation: none;
+    border-radius: 20px;
+  }
+  
+  .apple-float,
+  .apple-glow,
+  .liquid-flow,
+  .liquid-shimmer {
+    animation: none;
+  }
+  
+  .liquid-card:hover,
+  .liquid-button:hover,
+  .liquid-input:focus {
+    transform: none;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .liquid-card,
+  .liquid-button,
+  .liquid-input {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.5);
+  }
+  
+  .liquid-progress {
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .liquid-card {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .liquid-button {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .liquid-input {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .liquid-card {
+    backdrop-filter: blur(40px) saturate(150%);
+    -webkit-backdrop-filter: blur(40px) saturate(150%);
+  }
+  
+  .liquid-button {
+    backdrop-filter: blur(20px) saturate(120%);
+    -webkit-backdrop-filter: blur(20px) saturate(120%);
+  }
+  
+  .liquid-input {
+    backdrop-filter: blur(15px) saturate(100%);
+    -webkit-backdrop-filter: blur(15px) saturate(100%);
+  }
+  
+  /* Reduce animations on mobile for better performance */
+  .liquid-shape,
+  .liquid-shape-2,
+  .liquid-shape-3 {
+    animation-duration: 12s;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .liquid-card:hover,
+  .liquid-button:hover {
+    transform: none;
+  }
+  
+  .liquid-card:active,
+  .liquid-button:active {
+    transform: scale(0.98);
+  }
+}
+
+/* Print styles */
+@media print {
+  .liquid-card,
+  .liquid-button,
+  .liquid-input {
+    background: white;
+    border: 1px solid #ccc;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+  }
+  
+  .liquid-shape,
+  .liquid-shape-2,
+  .liquid-shape-3 {
+    border-radius: 8px;
+    animation: none;
+  }
+}

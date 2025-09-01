@@ -133,9 +133,9 @@ const IncomePage = () => {
 
         {/* Income Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="glass-card p-6 rounded-2xl apple-fade-in">
+          <div className="liquid-card p-6 apple-fade-in">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center liquid-shape">
                 <FiDollarSign size={24} className="text-white" />
               </div>
               <div>
@@ -144,9 +144,9 @@ const IncomePage = () => {
               </div>
             </div>
           </div>
-          <div className="glass-card p-6 rounded-2xl apple-fade-in">
+          <div className="liquid-card p-6 apple-fade-in">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center liquid-shape-2">
                 <FiTarget size={24} className="text-white" />
               </div>
               <div>
@@ -155,9 +155,9 @@ const IncomePage = () => {
               </div>
             </div>
           </div>
-          <div className="glass-card p-6 rounded-2xl apple-fade-in">
+          <div className="liquid-card p-6 apple-fade-in">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center liquid-shape-3">
                 <FiBarChart size={24} className="text-white" />
               </div>
               <div>
@@ -171,7 +171,7 @@ const IncomePage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Form */}
           <div className="lg:col-span-2">
-            <div className="glass-card p-8 rounded-2xl apple-slide-up">
+            <div className="liquid-card p-8 apple-slide-up">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
@@ -185,7 +185,7 @@ const IncomePage = () => {
                       value={formData.amount}
                       onChange={handleChange}
                       required
-                      className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg"
+                      className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
                       placeholder="0.00"
                       step="0.01"
                       min="0"
@@ -202,7 +202,7 @@ const IncomePage = () => {
                       value={formData.date}
                       onChange={handleChange}
                       required
-                      className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg"
+                      className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
                     />
                   </div>
                 </div>
@@ -218,7 +218,7 @@ const IncomePage = () => {
                     onChange={handleChange}
                     required
                     rows={3}
-                    className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg resize-none"
+                                          className="liquid-input w-full px-6 py-4 focus:outline-none text-lg resize-none"
                     placeholder="Describe your income source..."
                   />
                 </div>
@@ -234,7 +234,7 @@ const IncomePage = () => {
                       value={formData.category}
                       onChange={handleChange}
                       required
-                      className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg"
+                      className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
                     >
                       <option value="">Select a category</option>
                       {incomeCategories.map((category) => (
@@ -296,7 +296,7 @@ const IncomePage = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full glass-button text-white py-4 px-6 rounded-2xl font-medium text-body text-lg disabled:opacity-50 disabled:cursor-not-allowed apple-shimmer"
+                  className="w-full liquid-button text-white py-4 px-6 font-medium text-body text-lg disabled:opacity-50 disabled:cursor-not-allowed apple-shimmer"
                 >
                   {loading ? "Adding Income..." : "Add Income"}
                 </button>

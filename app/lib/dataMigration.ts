@@ -49,7 +49,7 @@ export class DataMigration {
       
     } catch (error) {
       console.error('Data migration failed:', error);
-      return { success: false, error: error.message };
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
   }
   

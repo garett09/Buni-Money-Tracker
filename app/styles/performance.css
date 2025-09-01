@@ -1,0 +1,134 @@
+/* Performance Optimizations for Liquid Design */
+
+/* GPU acceleration for smooth animations */
+.liquid-card,
+.liquid-button,
+.liquid-input,
+.liquid-shape,
+.liquid-shape-2,
+.liquid-shape-3,
+.liquid-progress,
+.liquid-progress-fill {
+  transform: translateZ(0);
+  will-change: transform, opacity, filter;
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Optimize animations for better performance */
+.liquid-shape,
+.liquid-shape-2,
+.liquid-shape-3 {
+  transform: translateZ(0);
+  will-change: border-radius;
+}
+
+.liquid-progress-fill {
+  will-change: width;
+}
+
+.apple-float {
+  will-change: transform;
+}
+
+.apple-glow {
+  will-change: box-shadow;
+}
+
+/* Reduce repaints and reflows */
+.liquid-card::before,
+.liquid-button::before,
+.liquid-progress::before,
+.liquid-progress-fill::before {
+  transform: translateZ(0);
+  will-change: opacity, transform;
+}
+
+/* Optimize hover states */
+.liquid-card:hover,
+.liquid-button:hover {
+  will-change: transform, box-shadow;
+}
+
+.liquid-input:focus {
+  will-change: transform, box-shadow;
+}
+
+/* Contain layout and paint for better performance */
+.liquid-card,
+.liquid-button,
+.liquid-input {
+  contain: layout style paint;
+}
+
+/* Optimize for 60fps animations */
+@media (min-resolution: 2dppx) {
+  .liquid-shape,
+  .liquid-shape-2,
+  .liquid-shape-3 {
+    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .liquid-card,
+  .liquid-button,
+  .liquid-input,
+  .liquid-shape,
+  .liquid-shape-2,
+  .liquid-shape-3,
+  .liquid-progress,
+  .liquid-progress-fill {
+    will-change: auto;
+    transform: none;
+  }
+}
+
+/* Optimize for low-end devices */
+@media (max-width: 480px) {
+  .liquid-card {
+    backdrop-filter: blur(20px) saturate(120%);
+    -webkit-backdrop-filter: blur(20px) saturate(120%);
+  }
+  
+  .liquid-button {
+    backdrop-filter: blur(15px) saturate(100%);
+    -webkit-backdrop-filter: blur(15px) saturate(100%);
+  }
+  
+  .liquid-input {
+    backdrop-filter: blur(10px) saturate(100%);
+    -webkit-backdrop-filter: blur(10px) saturate(100%);
+  }
+  
+  /* Disable complex animations on low-end devices */
+  .liquid-shape,
+  .liquid-shape-2,
+  .liquid-shape-3 {
+    animation: none;
+    border-radius: 16px;
+  }
+}
+
+/* Memory optimization */
+.liquid-card,
+.liquid-button,
+.liquid-input {
+  isolation: isolate;
+}
+
+/* Optimize for battery life */
+@media (prefers-reduced-data: reduce) {
+  .liquid-shape,
+  .liquid-shape-2,
+  .liquid-shape-3 {
+    animation: none;
+    border-radius: 20px;
+  }
+  
+  .apple-float,
+  .apple-glow {
+    animation: none;
+  }
+}
