@@ -40,7 +40,18 @@ class EnhancedApiClient {
       return window.location.origin;
     }
     
-    return 'http://localhost:3000';
+    // Use environment variable if available
+    if (process.env.NEXT_PUBLIC_API_URL) {
+      return process.env.NEXT_PUBLIC_API_URL;
+    }
+    
+    // In production, use relative URLs (handled by Vercel)
+    if (process.env.NODE_ENV === 'production' as any) {
+      return '';
+    }
+    
+    // Development fallback - use relative URLs for simplicity
+    return '';
   }
 
   private getAuthHeaders(): Record<string, string> {

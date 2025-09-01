@@ -2,16 +2,18 @@
 
 // Get the correct API base URL
 const getApiBase = () => {
-  if (process.env.NODE_ENV === 'production') {
-    return 'https://your-vercel-app.vercel.app';
+  // Use environment variable if available
+  if (process.env.NEXT_PUBLIC_API_URL) {
+    return process.env.NEXT_PUBLIC_API_URL;
   }
   
-  if (typeof window !== 'undefined') {
-    return window.location.origin;
+  // In production, use relative URLs (handled by Vercel)
+  if (process.env.NODE_ENV === 'production' as any) {
+    return '';
   }
   
-  // Fallback for server-side rendering
-  return 'http://localhost:3000';
+  // Development fallback - use relative URLs for simplicity
+  return '';
 };
 
 const API_BASE = getApiBase();
