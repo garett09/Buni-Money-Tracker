@@ -50,7 +50,7 @@ describe('API Client', () => {
 
       const result = await ApiClient.addExpenseTransaction(transactionData)
 
-      expect(fetch).toHaveBeenCalledWith('/api/transactions/expenses', {
+      expect(fetch).toHaveBeenCalledWith('http://localhost/api/transactions/expenses', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ describe('API Client', () => {
 
       const result = await ApiClient.getExpenseTransactions()
 
-      expect(fetch).toHaveBeenCalledWith('/api/transactions/expenses', {
+      expect(fetch).toHaveBeenCalledWith('http://localhost/api/transactions/expenses', {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': '',
@@ -137,7 +137,7 @@ describe('API Client', () => {
 
       const result = await ApiClient.updateExpenseTransaction(1, updatedData)
 
-      expect(fetch).toHaveBeenCalledWith('/api/transactions/expenses', {
+      expect(fetch).toHaveBeenCalledWith('http://localhost/api/transactions/expenses', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ describe('API Client', () => {
 
       const result = await ApiClient.deleteExpenseTransaction(1)
 
-      expect(fetch).toHaveBeenCalledWith('/api/transactions/expenses', {
+      expect(fetch).toHaveBeenCalledWith('http://localhost/api/transactions/expenses', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -211,7 +211,7 @@ describe('API Client', () => {
 
       const result = await ApiClient.addIncomeTransaction(transactionData)
 
-      expect(fetch).toHaveBeenCalledWith('/api/transactions/income', {
+      expect(fetch).toHaveBeenCalledWith('http://localhost/api/transactions/income', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -248,7 +248,7 @@ describe('API Client', () => {
 
       const result = await ApiClient.getIncomeTransactions()
 
-      expect(fetch).toHaveBeenCalledWith('/api/transactions/income', {
+      expect(fetch).toHaveBeenCalledWith('http://localhost/api/transactions/income', {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': '',
@@ -298,7 +298,7 @@ describe('API Client', () => {
 
       const result = await ApiClient.updateIncomeTransaction(1, updatedData)
 
-      expect(fetch).toHaveBeenCalledWith('/api/transactions/income', {
+      expect(fetch).toHaveBeenCalledWith('http://localhost/api/transactions/income', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -318,7 +318,7 @@ describe('API Client', () => {
 
       const result = await ApiClient.deleteIncomeTransaction(1)
 
-      expect(fetch).toHaveBeenCalledWith('/api/transactions/income', {
+      expect(fetch).toHaveBeenCalledWith('http://localhost/api/transactions/income', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

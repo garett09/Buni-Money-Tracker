@@ -7,6 +7,7 @@ import { toast } from 'react-hot-toast';
 import { FiTrendingDown, FiPlus, FiCalendar, FiTag, FiDollarSign, FiTarget, FiBarChart, FiAlertTriangle, FiEdit3, FiTrash2 } from 'react-icons/fi';
 import { expenseCategories, spendingInsights } from '@/app/lib/categories';
 import { ApiClient } from '@/app/lib/api';
+import { updateAccountBalance } from '@/app/lib/accounts';
 
 const ExpensesPage = () => {
   const [formData, setFormData] = useState({
@@ -42,12 +43,32 @@ const ExpensesPage = () => {
         const response = await ApiClient.getAccounts();
         setAccounts(response.accounts || []);
       } catch (error) {
-        console.log('Failed to load accounts, using empty array');
-        setAccounts([]);
+        console.log('API not available, using localStorage fallback for accounts');
+        // Fallback to localStorage
+        const savedAccounts = localStorage.getItem('userAccounts');
+        if (savedAccounts) {
+          setAccounts(JSON.parse(savedAccounts));
+        } else {
+          setAccounts([]);
+        }
       }
     };
 
     loadAccounts();
+
+    // Listen for localStorage changes to refresh accounts
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'userAccounts') {
+        if (e.newValue) {
+          setAccounts(JSON.parse(e.newValue));
+        } else {
+          setAccounts([]);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // Load transactions from API
@@ -135,6 +156,11 @@ const ExpensesPage = () => {
       // Also update localStorage as backup
       localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
       
+      // Update account balance if accountId is provided
+      if (formData.accountId) {
+        await updateAccountBalance(formData.accountId, 'expense', parseFloat(formData.amount), 'add');
+      }
+      
       toast.success('Expense added successfully and saved to database!');
     } catch (error) {
       console.log('API not available, using localStorage fallback');
@@ -149,6 +175,11 @@ const ExpensesPage = () => {
       const updatedTransactions = [newTransaction, ...transactions];
       setTransactions(updatedTransactions);
       localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
+      
+      // Update account balance if accountId is provided
+      if (formData.accountId) {
+        await updateAccountBalance(formData.accountId, 'expense', parseFloat(formData.amount), 'add');
+      }
       
       toast.success('Expense added successfully (saved locally)!');
     } finally {
@@ -180,6 +211,9 @@ const ExpensesPage = () => {
 
   const handleUpdateTransaction = async (updatedTransaction: any) => {
     try {
+      // Find the original transaction to get the previous amount and account
+      const originalTransaction = transactions.find(t => t.id === updatedTransaction.id);
+      
       // Try API first
       await ApiClient.updateExpenseTransaction(updatedTransaction.id, updatedTransaction);
       
@@ -192,22 +226,52 @@ const ExpensesPage = () => {
       // Update localStorage as backup
       localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
       
+      // Update account balance if accountId is provided
+      if (updatedTransaction.accountId && originalTransaction) {
+        await updateAccountBalance(
+          updatedTransaction.accountId, 
+          'expense', 
+          updatedTransaction.amount, 
+          'update', 
+          originalTransaction.amount
+        );
+      }
+      
       toast.success('Expense updated successfully and saved to database!');
     } catch (error) {
       console.log('API not available, using localStorage fallback');
       // Fallback to localStorage
+      const originalTransaction = transactions.find(t => t.id === updatedTransaction.id);
+      
       const updatedTransactions = transactions.map(t => 
         t.id === updatedTransaction.id ? updatedTransaction : t
       );
       setTransactions(updatedTransactions);
       localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
       
+      // Update account balance if accountId is provided
+      if (updatedTransaction.accountId && originalTransaction) {
+        await updateAccountBalance(
+          updatedTransaction.accountId, 
+          'expense', 
+          updatedTransaction.amount, 
+          'update', 
+          originalTransaction.amount
+        );
+      }
+      
       toast.success('Expense updated successfully (saved locally)!');
+    } finally {
+      setShowEditModal(false);
+      setEditingTransaction(null);
     }
   };
 
   const handleDeleteTransaction = async (transactionId: number) => {
     try {
+      // Find the transaction to get the amount and account before deleting
+      const transactionToDelete = transactions.find(t => t.id === transactionId);
+      
       // Try API first
       await ApiClient.deleteExpenseTransaction(transactionId);
       
@@ -218,13 +282,35 @@ const ExpensesPage = () => {
       // Update localStorage as backup
       localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
       
+      // Update account balance if accountId is provided
+      if (transactionToDelete?.accountId) {
+        await updateAccountBalance(
+          transactionToDelete.accountId, 
+          'expense', 
+          transactionToDelete.amount, 
+          'delete'
+        );
+      }
+      
       toast.success('Expense deleted successfully and removed from database!');
     } catch (error) {
       console.log('API not available, using localStorage fallback');
       // Fallback to localStorage
+      const transactionToDelete = transactions.find(t => t.id === transactionId);
+      
       const updatedTransactions = transactions.filter(t => t.id !== transactionId);
       setTransactions(updatedTransactions);
       localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
+      
+      // Update account balance if accountId is provided
+      if (transactionToDelete?.accountId) {
+        await updateAccountBalance(
+          transactionToDelete.accountId, 
+          'expense', 
+          transactionToDelete.amount, 
+          'delete'
+        );
+      }
       
       toast.success('Expense deleted successfully (removed locally)!');
     }
@@ -466,7 +552,7 @@ const ExpensesPage = () => {
                     <option value="">Select an account</option>
                     {accounts.map((account) => (
                       <option key={account.id} value={account.id}>
-                        {account.accountName} - ₱{account.currentBalance?.toLocaleString() || '0'}
+                        {account.name} - ₱{account.currentBalance?.toLocaleString() || '0'}
                       </option>
                     ))}
                   </select>

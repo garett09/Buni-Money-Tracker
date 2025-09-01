@@ -248,3 +248,58 @@ export const getAccountTypeOptions = (bankId?: string) => {
   
   return accountTypes.filter(type => bank.accountTypes.includes(type.id));
 };
+
+// Utility function to update account balance based on transactions
+export const updateAccountBalance = async (accountId: string, transactionType: 'income' | 'expense', amount: number, action: 'add' | 'update' | 'delete', previousAmount?: number) => {
+  try {
+    // Get current accounts
+    const savedAccounts = localStorage.getItem('userAccounts');
+    if (!savedAccounts) return;
+    
+    const accounts = JSON.parse(savedAccounts);
+    const accountIndex = accounts.findIndex((acc: any) => acc.id.toString() === accountId);
+    
+    if (accountIndex === -1) return;
+    
+    const account = accounts[accountIndex];
+    let balanceChange = 0;
+    
+    switch (action) {
+      case 'add':
+        balanceChange = transactionType === 'income' ? amount : -amount;
+        break;
+      case 'update':
+        if (previousAmount !== undefined) {
+          // Remove the old amount and add the new amount
+          const oldBalanceChange = transactionType === 'income' ? previousAmount : -previousAmount;
+          const newBalanceChange = transactionType === 'income' ? amount : -amount;
+          balanceChange = newBalanceChange - oldBalanceChange;
+        }
+        break;
+      case 'delete':
+        balanceChange = transactionType === 'income' ? -amount : amount; // Reverse the transaction
+        break;
+    }
+    
+    // Update the account balance
+    accounts[accountIndex].currentBalance = (account.currentBalance || 0) + balanceChange;
+    
+    // Save updated accounts
+    localStorage.setItem('userAccounts', JSON.stringify(accounts));
+    
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new CustomEvent('accountsUpdated', { detail: accounts }));
+    
+    // Try to update via API as well
+    try {
+      const { ApiClient } = await import('./api');
+      await ApiClient.updateAccount(account.id, { currentBalance: accounts[accountIndex].currentBalance });
+    } catch (error) {
+      console.log('API update failed, changes saved locally only');
+    }
+    
+    return accounts[accountIndex];
+  } catch (error) {
+    console.error('Error updating account balance:', error);
+  }
+};

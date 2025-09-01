@@ -34,6 +34,29 @@ const AccountsPage = () => {
 
   useEffect(() => {
     loadAccounts();
+    
+    // Listen for localStorage changes to refresh accounts
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'userAccounts') {
+        if (e.newValue) {
+          setAccounts(JSON.parse(e.newValue));
+        } else {
+          setAccounts([]);
+        }
+      }
+    };
+
+    // Listen for custom accounts updated event
+    const handleAccountsUpdated = (e: CustomEvent) => {
+      setAccounts(e.detail);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('accountsUpdated', handleAccountsUpdated as EventListener);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('accountsUpdated', handleAccountsUpdated as EventListener);
+    };
   }, []);
 
   const loadAccounts = async () => {
@@ -135,6 +158,7 @@ const AccountsPage = () => {
 
   const handleDeleteAccount = async (accountId: number) => {
     try {
+      console.log('Attempting to delete account:', accountId);
       await ApiClient.deleteAccount(accountId);
       
       const updatedAccounts = accounts.filter(acc => acc.id !== accountId);
@@ -145,6 +169,7 @@ const AccountsPage = () => {
       
       toast.success('Account deleted successfully and removed from database!');
     } catch (error) {
+      console.error('Failed to delete account via API:', error);
       console.log('API not available, using localStorage fallback');
       // Fallback to localStorage
       const updatedAccounts = accounts.filter(acc => acc.id !== accountId);

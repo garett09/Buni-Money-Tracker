@@ -1,11 +1,29 @@
 'use client';
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import AuthLayout from "@/app/components/AuthLayout";
 import ThemePicker from "@/app/components/ThemePicker";
+import { 
+  FiMail, 
+  FiLock, 
+  FiEye, 
+  FiEyeOff, 
+  FiArrowRight, 
+  FiShield, 
+  FiTrendingUp, 
+  FiBarChart,
+  FiZap,
+  FiHeart,
+  FiStar,
+  FiCheck,
+  FiUser,
+  FiUsers,
+  FiTarget,
+  FiAward
+} from 'react-icons/fi';
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +33,14 @@ const SignUpPage = () => {
     confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -61,7 +86,7 @@ const SignUpPage = () => {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      toast.success("Account created successfully!");
+      toast.success("Account created successfully! 🎉");
       router.push("/dashboard");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Registration failed");
@@ -70,22 +95,55 @@ const SignUpPage = () => {
     }
   };
 
+  const features = [
+    {
+      icon: FiTrendingUp,
+      title: 'Smart Analytics',
+      description: 'AI-powered insights and predictions',
+      color: 'from-emerald-500 to-green-600'
+    },
+    {
+      icon: FiUsers,
+      title: 'Partner Collaboration',
+      description: 'Share expenses with your partner',
+      color: 'from-blue-500 to-cyan-600'
+    },
+    {
+      icon: FiTarget,
+      title: 'Goal Achievement',
+      description: 'Set and track financial goals',
+      color: 'from-purple-500 to-violet-600'
+    }
+  ];
+
+  const benefits = [
+    { icon: FiCheck, text: 'Free forever', color: 'text-emerald-400' },
+    { icon: FiCheck, text: 'No credit card required', color: 'text-blue-400' },
+    { icon: FiCheck, text: '30-second setup', color: 'text-purple-400' },
+    { icon: FiCheck, text: 'Bank-level security', color: 'text-green-400' }
+  ];
+
   return (
     <AuthLayout>
       <div className="lg:w-[70%] h-3/4 md:h-full flex flex-col justify-center">
         {/* Enhanced Header */}
-        <div className="mb-12">
+        <div className={`mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-6">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-xl">
-                <svg className="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
-                </svg>
+              <div className="relative">
+                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center shadow-2xl animate-pulse">
+                  <FiStar size={32} className="text-white" />
+                </div>
+                <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-yellow-500 flex items-center justify-center">
+                  <FiAward size={12} className="text-white" />
+                </div>
               </div>
               <div>
-                <h1 className="text-6xl font-bold mb-3 tracking-tight text-white">Create Account</h1>
-                <p className="text-xl text-white/70 font-light">
-                  Join us and start managing your finances today
+                <h1 className="text-6xl font-bold mb-3 tracking-tight bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
+                  Join the Journey
+                </h1>
+                <p className="text-xl font-light text-white/70">
+                  Create your account and start managing finances like a pro
                 </p>
               </div>
             </div>
@@ -94,18 +152,18 @@ const SignUpPage = () => {
         </div>
 
         {/* Enhanced Form */}
-        <div className="liquid-card p-10 rounded-3xl">
-          <div className="mb-8">
-            <h2 className="text-3xl font-bold text-white mb-2">Sign Up</h2>
-            <p className="text-white/60">Create your financial dashboard account</p>
+        <div className={`liquid-card p-12 rounded-3xl backdrop-blur-lg border border-white/10 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ animationDelay: '0.2s' }}>
+          <div className="mb-10">
+            <h2 className="text-4xl font-bold mb-3 text-white">Create Account</h2>
+            <p className="text-white/60 text-lg">Start your financial freedom journey today</p>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-8">
-            <div className="space-y-3">
-              <label htmlFor="name" className="block text-lg font-semibold text-white mb-2">
+            <div className="space-y-4">
+              <label htmlFor="name" className="block text-lg font-semibold mb-3 text-white">
                 Full Name
               </label>
-              <div className="relative">
+              <div className="relative group">
                 <input
                   type="text"
                   id="name"
@@ -113,22 +171,21 @@ const SignUpPage = () => {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl"
+                  className="w-full px-8 py-6 bg-white/5 border border-white/10 rounded-2xl text-xl font-medium text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
                   placeholder="Enter your full name"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-6">
-                  <svg className="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
+                  <FiUser size={24} className="text-white/40 group-focus-within:text-emerald-400 transition-colors duration-300" />
                 </div>
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500/20 to-blue-500/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </div>
             </div>
 
-            <div className="space-y-3">
-              <label htmlFor="email" className="block text-lg font-semibold text-white mb-2">
+            <div className="space-y-4">
+              <label htmlFor="email" className="block text-lg font-semibold mb-3 text-white">
                 Email Address
               </label>
-              <div className="relative">
+              <div className="relative group">
                 <input
                   type="email"
                   id="email"
@@ -136,61 +193,80 @@ const SignUpPage = () => {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl"
+                  className="w-full px-8 py-6 bg-white/5 border border-white/10 rounded-2xl text-xl font-medium text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
                   placeholder="Enter your email address"
                 />
                 <div className="absolute inset-y-0 right-0 flex items-center pr-6">
-                  <svg className="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                  </svg>
+                  <FiMail size={24} className="text-white/40 group-focus-within:text-emerald-400 transition-colors duration-300" />
                 </div>
+                <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500/20 to-blue-500/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none" />
               </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-3">
-                <label htmlFor="password" className="block text-lg font-semibold text-white mb-2">
+              <div className="space-y-4">
+                <label htmlFor="password" className="block text-lg font-semibold mb-3 text-white">
                   Password
                 </label>
-                <div className="relative">
+                <div className="relative group">
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     id="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
                     required
-                    className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl"
-                    placeholder="Enter your password"
+                    className="w-full px-8 py-6 bg-white/5 border border-white/10 rounded-2xl text-xl font-medium text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+                    placeholder="Create a password"
                   />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-6">
-                    <svg className="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                    </svg>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-6 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-300"
+                    >
+                      {showPassword ? (
+                        <FiEyeOff size={20} className="text-white/40 hover:text-white transition-colors duration-300" />
+                      ) : (
+                        <FiEye size={20} className="text-white/40 hover:text-white transition-colors duration-300" />
+                      )}
+                    </button>
+                    <FiLock size={20} className="text-white/40 group-focus-within:text-emerald-400 transition-colors duration-300" />
                   </div>
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500/20 to-blue-500/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <label htmlFor="confirmPassword" className="block text-lg font-semibold text-white mb-2">
+              <div className="space-y-4">
+                <label htmlFor="confirmPassword" className="block text-lg font-semibold mb-3 text-white">
                   Confirm Password
                 </label>
-                <div className="relative">
+                <div className="relative group">
                   <input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     id="confirmPassword"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     required
-                    className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl"
+                    className="w-full px-8 py-6 bg-white/5 border border-white/10 rounded-2xl text-xl font-medium text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
                     placeholder="Confirm your password"
                   />
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-6">
-                    <svg className="w-6 h-6 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                  <div className="absolute inset-y-0 right-0 flex items-center pr-6 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-300"
+                    >
+                      {showConfirmPassword ? (
+                        <FiEyeOff size={20} className="text-white/40 hover:text-white transition-colors duration-300" />
+                      ) : (
+                        <FiEye size={20} className="text-white/40 hover:text-white transition-colors duration-300" />
+                      )}
+                    </button>
+                    <FiLock size={20} className="text-white/40 group-focus-within:text-emerald-400 transition-colors duration-300" />
                   </div>
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-emerald-500/20 to-blue-500/20 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300 pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -198,69 +274,86 @@ const SignUpPage = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full liquid-button text-white py-6 px-8 font-bold text-xl disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl hover:scale-105 transition-all duration-300"
+              className="group relative w-full py-6 px-8 font-bold text-xl text-white disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl overflow-hidden transition-all duration-300 hover:scale-105"
             >
-              {loading ? "Creating account..." : "Create Account"}
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-500 to-blue-600 rounded-2xl" />
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-blue-700 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="relative flex items-center justify-center gap-3">
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    Creating account...
+                  </>
+                ) : (
+                  <>
+                    Create Account
+                    <FiArrowRight className="group-hover:translate-x-1 transition-transform duration-300" size={20} />
+                  </>
+                )}
+              </div>
             </button>
 
-            <div className="text-center pt-4">
+            <div className="text-center pt-6">
               <p className="text-white/60 text-lg">
                 Already have an account?{" "}
-                <Link href="/login" className="text-blue-400 hover:text-blue-300 transition-colors font-semibold text-lg">
-                  Sign in
+                <Link href="/login" className="text-emerald-400 hover:text-emerald-300 transition-colors font-semibold text-lg hover:underline">
+                  Sign in here
                 </Link>
               </p>
             </div>
           </form>
         </div>
 
-        {/* Feature Highlights */}
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="group relative overflow-hidden">
-            <div className="liquid-card p-6 rounded-2xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold text-lg">Smart Analytics</h3>
-                  <p className="text-white/60 text-sm">Get insights into your spending</p>
+        {/* Enhanced Feature Highlights */}
+        <div className={`mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ animationDelay: '0.4s' }}>
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <div key={feature.title} className="group relative overflow-hidden">
+                <div className="liquid-card p-8 rounded-2xl backdrop-blur-lg border border-white/10 hover:scale-105 transition-all duration-300 hover:bg-white/10">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      <Icon size={28} className="text-white" />
+                    </div>
+                    <div>
+                      <h3 className="text-white font-bold text-lg mb-1">{feature.title}</h3>
+                      <p className="text-white/60 text-sm">{feature.description}</p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
+            );
+          })}
+        </div>
 
-          <div className="group relative overflow-hidden">
-            <div className="liquid-card p-6 rounded-2xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                  </svg>
+        {/* Benefits Section */}
+        <div className={`mt-8 liquid-card p-6 rounded-2xl backdrop-blur-lg border border-white/10 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ animationDelay: '0.6s' }}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {benefits.map((benefit, index) => (
+              <div key={benefit.text} className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                  <benefit.icon size={16} className={benefit.color} />
                 </div>
-                <div>
-                  <h3 className="text-white font-semibold text-lg">Goal Setting</h3>
-                  <p className="text-white/60 text-sm">Plan and achieve your dreams</p>
-                </div>
+                <span className="text-white/80 text-sm font-medium">{benefit.text}</span>
               </div>
-            </div>
+            ))}
           </div>
+        </div>
 
-          <div className="group relative overflow-hidden">
-            <div className="liquid-card p-6 rounded-2xl hover:scale-105 transition-all duration-300">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
-                  <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h3 className="text-white font-semibold text-lg">Share with Partner</h3>
-                  <p className="text-white/60 text-sm">Collaborate on finances</p>
-                </div>
-              </div>
+        {/* Trust Indicators */}
+        <div className={`mt-8 text-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`} style={{ animationDelay: '0.8s' }}>
+          <div className="flex items-center justify-center gap-6 text-white/40 text-sm">
+            <div className="flex items-center gap-2">
+              <FiShield size={16} />
+              <span>256-bit encryption</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FiZap size={16} />
+              <span>AI-powered insights</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <FiHeart size={16} />
+              <span>Made with love</span>
             </div>
           </div>
         </div>

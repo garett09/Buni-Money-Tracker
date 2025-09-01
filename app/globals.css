@@ -2,14 +2,14 @@
    BUNI MONEY TRACKER - THEME SYSTEM
    ======================================== */
 
+/* Import fonts - Must be at the top */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&display=swap');
+
 /* Tailwind CSS Directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-/* Import fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ========================================
    CSS CUSTOM PROPERTIES (VARIABLES)
@@ -201,20 +201,19 @@ html.dark-theme {
     background: var(--bg-gradient) !important;
     min-height: 100vh;
     background-attachment: fixed;
-    overflow-x: hidden;
   }
 
   body {
     background: var(--bg-gradient) !important;
     background-attachment: fixed;
-    overflow-x: hidden;
     color: var(--text-primary);
     min-height: 100vh;
   }
 
   #__next {
     min-height: 100vh;
-    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
   }
 }
 
@@ -234,7 +233,6 @@ html.dark-theme {
       inset 0 1px 0 var(--card-border);
     transition: all var(--liquid-duration-normal) cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
-    overflow: hidden;
   }
 
   .liquid-card::before {
@@ -271,7 +269,6 @@ html.dark-theme {
     color: var(--text-primary);
     transition: all var(--liquid-duration-normal) cubic-bezier(0.25, 0.46, 0.45, 0.94);
     position: relative;
-    overflow: hidden;
     transform-style: preserve-3d;
   }
 

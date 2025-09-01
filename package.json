@@ -11,6 +11,12 @@
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
     "test:ci": "jest --ci --coverage --watchAll=false",
+    "test:comprehensive": "node scripts/run-tests.js",
+    "test:unit": "jest __tests__/intelligentBudget.test.ts",
+    "test:components": "jest __tests__/*.test.tsx",
+    "test:integration": "jest __tests__/BudgetSettings.test.tsx",
+    "test:performance": "jest --testTimeout=30000",
+    "test:all": "npm run test:unit && npm run test:components && npm run test:integration && npm run test:performance",
     "css:build": "postcss app/globals.css -o app/styles/compiled.css",
     "css:watch": "postcss app/globals.css -o app/styles/compiled.css --watch",
     "css:optimize": "postcss app/globals.css -o app/styles/compiled.css --env production"

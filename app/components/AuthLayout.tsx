@@ -84,14 +84,18 @@ const StatsInfoCard: React.FC<StatsInfoCardProps> = ({ icon, label, value, color
 };
 
 const FinancialTipsCard: React.FC = () => {
-  const tips = [
-    "Save 20% of your income",
-    "Track every expense",
-    "Set SMART financial goals",
-    "Build an emergency fund"
-  ];
+  const [randomTip, setRandomTip] = React.useState<string>("");
   
-  const randomTip = tips[Math.floor(Math.random() * tips.length)];
+  React.useEffect(() => {
+    const tips = [
+      "Save 20% of your income",
+      "Track every expense",
+      "Set SMART financial goals",
+      "Build an emergency fund"
+    ];
+    
+    setRandomTip(tips[Math.floor(Math.random() * tips.length)]);
+  }, []);
   
   return (
     <div className="liquid-card p-6 rounded-2xl apple-fade-in" style={{ animationDelay: '1.2s' }}>
@@ -103,7 +107,9 @@ const FinancialTipsCard: React.FC = () => {
         </div>
         <div>
           <h4 className="font-semibold text-lg mb-2" style={{ color: 'var(--text-primary)' }}>💡 Financial Tip</h4>
-          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>{randomTip}</p>
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-muted)' }}>
+            {randomTip || "Track every expense"}
+          </p>
         </div>
       </div>
     </div>

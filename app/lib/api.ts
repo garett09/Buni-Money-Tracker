@@ -1,12 +1,25 @@
 // API helper functions for authenticated requests
 
-const API_BASE = process.env.NODE_ENV === 'production' 
-  ? 'https://your-vercel-app.vercel.app' 
-  : '';
+// Get the correct API base URL
+const getApiBase = () => {
+  if (process.env.NODE_ENV === 'production') {
+    return 'https://your-vercel-app.vercel.app';
+  }
+  
+  if (typeof window !== 'undefined') {
+    return window.location.origin;
+  }
+  
+  // Fallback for server-side rendering
+  return 'http://localhost:3000';
+};
+
+const API_BASE = getApiBase();
 
 export class ApiClient {
   private static getAuthHeaders() {
     const token = localStorage.getItem('token');
+    console.log('Auth token:', token ? 'Present' : 'Missing');
     return {
       'Content-Type': 'application/json',
       'Authorization': token ? `Bearer ${token}` : '',
@@ -261,12 +274,18 @@ export class ApiClient {
 
   // Accounts management
   static async getAccounts() {
-    const response = await fetch(`${API_BASE}/api/accounts`, {
+    const url = `${API_BASE}/api/accounts`;
+    console.log('API_BASE:', API_BASE);
+    console.log('Full URL:', url);
+    
+    const response = await fetch(url, {
       headers: this.getAuthHeaders(),
     });
     
     if (!response.ok) {
-      throw new Error('Failed to fetch accounts');
+      const errorText = await response.text();
+      console.error('Get accounts API error:', response.status, errorText);
+      throw new Error(`Failed to fetch accounts: ${response.status} ${errorText}`);
     }
     
     return response.json();
@@ -308,7 +327,63 @@ export class ApiClient {
     });
     
     if (!response.ok) {
-      throw new Error('Failed to delete account');
+      const errorText = await response.text();
+      console.error('Delete account API error:', response.status, errorText);
+      throw new Error(`Failed to delete account: ${response.status} ${errorText}`);
+    }
+    
+    return response.json();
+  }
+
+  // Data management and backup
+  static async exportUserData(): Promise<Blob> {
+    const response = await fetch(`${API_BASE}/api/data/export`, {
+      headers: this.getAuthHeaders(),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to export user data');
+    }
+    
+    return response.blob();
+  }
+
+  static async importUserData(importData: any) {
+    const response = await fetch(`${API_BASE}/api/data/import`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(importData),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to import user data');
+    }
+    
+    return response.json();
+  }
+
+  static async checkDataHealth() {
+    const response = await fetch(`${API_BASE}/api/data/health`, {
+      headers: this.getAuthHeaders(),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to check data health');
+    }
+    
+    return response.json();
+  }
+
+  // Sync data across devices
+  static async syncData(dataType: string, lastSyncTime: number) {
+    const response = await fetch(`${API_BASE}/api/data/sync`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ dataType, lastSyncTime }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to sync data');
     }
     
     return response.json();

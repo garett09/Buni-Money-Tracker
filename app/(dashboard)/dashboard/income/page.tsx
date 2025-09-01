@@ -4,9 +4,36 @@ import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/app/components/DashboardLayout';
 import EditTransactionModal from '@/app/components/EditTransactionModal';
 import { toast } from 'react-hot-toast';
-import { FiTrendingUp, FiPlus, FiCalendar, FiTag, FiDollarSign, FiTarget, FiBarChart, FiEdit3, FiTrash2 } from 'react-icons/fi';
+import { 
+  FiTrendingUp, 
+  FiPlus, 
+  FiCalendar, 
+  FiTag, 
+  FiDollarSign, 
+  FiTarget, 
+  FiBarChart, 
+  FiEdit3, 
+  FiTrash2,
+  FiArrowRight,
+  FiRefreshCw,
+  FiFilter,
+  FiSearch,
+  FiDownload,
+  FiUpload,
+  FiEye,
+  FiEyeOff,
+  FiZap,
+  FiStar,
+  FiAward,
+  FiTrendingDown,
+  FiClock,
+  FiCheckCircle,
+  FiAlertCircle,
+  FiX
+} from 'react-icons/fi';
 import { incomeCategories, spendingInsights } from '@/app/lib/categories';
 import { ApiClient } from '@/app/lib/api';
+import { updateAccountBalance } from '@/app/lib/accounts';
 
 const IncomePage = () => {
   const [formData, setFormData] = useState({
@@ -32,6 +59,13 @@ const IncomePage = () => {
   const [editingTransaction, setEditingTransaction] = useState<any>(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [accounts, setAccounts] = useState<any[]>([]);
+  const [showForm, setShowForm] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
+  const [sortBy, setSortBy] = useState('date');
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [refreshing, setRefreshing] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState('all');
 
   // Load accounts from API
   useEffect(() => {
@@ -40,12 +74,32 @@ const IncomePage = () => {
         const response = await ApiClient.getAccounts();
         setAccounts(response.accounts || []);
       } catch (error) {
-        console.log('Failed to load accounts, using empty array');
-        setAccounts([]);
+        console.log('API not available, using localStorage fallback for accounts');
+        // Fallback to localStorage
+        const savedAccounts = localStorage.getItem('userAccounts');
+        if (savedAccounts) {
+          setAccounts(JSON.parse(savedAccounts));
+        } else {
+          setAccounts([]);
+        }
       }
     };
 
     loadAccounts();
+
+    // Listen for localStorage changes to refresh accounts
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'userAccounts') {
+        if (e.newValue) {
+          setAccounts(JSON.parse(e.newValue));
+        } else {
+          setAccounts([]);
+        }
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, []);
 
   // Load transactions from API
@@ -78,20 +132,21 @@ const IncomePage = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
-    
+    setFormData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
+    }));
+
+    // Auto-select subcategory when category changes
     if (name === 'category') {
       const category = incomeCategories.find(cat => cat.name === value);
       setSelectedCategory(category);
-      setFormData({
-        ...formData,
-        [name]: value,
-        subcategory: '', // Reset subcategory when category changes
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value,
-      });
+      if (category && category.subcategories.length > 0) {
+        setFormData(prev => ({
+          ...prev,
+          subcategory: (category.subcategories[0] as any).name || category.subcategories[0]
+        }));
+      }
     }
   };
 
@@ -100,33 +155,36 @@ const IncomePage = () => {
     setLoading(true);
 
     try {
-      // Always try API first to save to database
-      const response = await ApiClient.addIncomeTransaction(formData);
-      const newTransaction = response.transaction;
-      
-      const updatedTransactions = [newTransaction, ...transactions];
-      setTransactions(updatedTransactions);
-      
-      // Also update localStorage as backup
-      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
-      
-      toast.success('Income added successfully and saved to database!');
-    } catch (error) {
-      console.log('API not available, using localStorage fallback');
-      // Fallback to localStorage for development
-      const newTransaction = {
-        id: Date.now(),
+      const transactionData = {
         ...formData,
         amount: parseFloat(formData.amount),
-        createdAt: new Date().toISOString()
+        id: Date.now(),
+        type: 'income'
       };
-      
-      const updatedTransactions = [newTransaction, ...transactions];
-      setTransactions(updatedTransactions);
-      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
-      
-      toast.success('Income added successfully (saved locally)!');
-    } finally {
+
+      // Try API first
+      try {
+        await ApiClient.addIncomeTransaction(transactionData);
+        toast.success('Income transaction added successfully! 💰');
+      } catch (apiError) {
+        console.log('API not available, saving to localStorage');
+        // Fallback to localStorage
+        const existingTransactions = JSON.parse(localStorage.getItem('incomeTransactions') || '[]');
+        const updatedTransactions = [transactionData, ...existingTransactions];
+        localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
+        toast.success('Income transaction saved locally! 💰');
+      }
+
+      // Update account balance if account is selected
+      if (formData.accountId) {
+        try {
+          await updateAccountBalance(formData.accountId, 'income', parseFloat(formData.amount), 'add');
+        } catch (error) {
+          console.error('Failed to update account balance:', error);
+        }
+      }
+
+      setTransactions(prev => [transactionData, ...prev]);
       setFormData({
         amount: '',
         description: '',
@@ -143,567 +201,497 @@ const IncomePage = () => {
         nextPaymentDate: '',
         accountId: ''
       });
-      setSelectedCategory(null);
+      setShowForm(false);
+    } catch (error) {
+      console.error('Error adding transaction:', error);
+      toast.error('Failed to add transaction. Please try again.');
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleEditTransaction = (transaction: any) => {
-    setEditingTransaction(transaction);
-    setShowEditModal(true);
-  };
+  const handleDelete = async (transactionId: number) => {
+    if (!confirm('Are you sure you want to delete this transaction?')) return;
 
-  const handleUpdateTransaction = async (updatedTransaction: any) => {
     try {
       // Try API first
-      await ApiClient.updateIncomeTransaction(updatedTransaction.id, updatedTransaction);
-      
-      // Update local state
-      const updatedTransactions = transactions.map(t => 
-        t.id === updatedTransaction.id ? updatedTransaction : t
-      );
-      setTransactions(updatedTransactions);
-      
-      // Update localStorage as backup
-      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
-      
-      toast.success('Income updated successfully and saved to database!');
+      try {
+        await ApiClient.deleteIncomeTransaction(transactionId);
+        toast.success('Transaction deleted successfully! 🗑️');
+      } catch (apiError) {
+        console.log('API not available, deleting from localStorage');
+        // Fallback to localStorage
+        const existingTransactions = JSON.parse(localStorage.getItem('incomeTransactions') || '[]');
+        const updatedTransactions = existingTransactions.filter((t: any) => t.id !== transactionId);
+        localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
+        toast.success('Transaction deleted from local storage! 🗑️');
+      }
+
+      setTransactions(prev => prev.filter(t => t.id !== transactionId));
     } catch (error) {
-      console.log('API not available, using localStorage fallback');
-      // Fallback to localStorage
-      const updatedTransactions = transactions.map(t => 
-        t.id === updatedTransaction.id ? updatedTransaction : t
-      );
-      setTransactions(updatedTransactions);
-      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
-      
-      toast.success('Income updated successfully (saved locally)!');
+      console.error('Error deleting transaction:', error);
+      toast.error('Failed to delete transaction. Please try again.');
     }
   };
 
-  const handleDeleteTransaction = async (transactionId: number) => {
+  const handleRefresh = async () => {
+    setRefreshing(true);
     try {
-      // Try API first
-      await ApiClient.deleteIncomeTransaction(transactionId);
-      
-      // Update local state
-      const updatedTransactions = transactions.filter(t => t.id !== transactionId);
-      setTransactions(updatedTransactions);
-      
-      // Update localStorage as backup
-      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
-      
-      toast.success('Income deleted successfully and removed from database!');
+      const response = await ApiClient.getIncomeTransactions();
+      setTransactions(response.transactions || []);
+      toast.success('Data refreshed successfully! 🔄');
     } catch (error) {
-      console.log('API not available, using localStorage fallback');
-      // Fallback to localStorage
-      const updatedTransactions = transactions.filter(t => t.id !== transactionId);
-      setTransactions(updatedTransactions);
-      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
-      
-      toast.success('Income deleted successfully (removed locally)!');
+      console.error('Error refreshing data:', error);
+      toast.error('Failed to refresh data. Please try again.');
+    } finally {
+      setRefreshing(false);
     }
   };
 
-  const totalIncome = transactions.reduce((sum, transaction) => sum + transaction.amount, 0);
-  const monthlyIncome = transactions.filter(t => t.recurring).reduce((sum, transaction) => sum + transaction.amount, 0);
+  // Filter and sort transactions
+  const filteredTransactions = transactions
+    .filter(transaction => {
+      const matchesSearch = transaction.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           transaction.category.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = !filterCategory || transaction.category === filterCategory;
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      let comparison = 0;
+      switch (sortBy) {
+        case 'amount':
+          comparison = b.amount - a.amount;
+          break;
+        case 'date':
+          comparison = new Date(b.date).getTime() - new Date(a.date).getTime();
+          break;
+        case 'description':
+          comparison = a.description.localeCompare(b.description);
+          break;
+        default:
+          comparison = 0;
+      }
+      return sortOrder === 'desc' ? comparison : -comparison;
+    });
+
+  // Calculate statistics
+  const totalIncome = transactions.reduce((sum, t) => sum + t.amount, 0);
+  const monthlyIncome = transactions
+    .filter(t => {
+      const transactionDate = new Date(t.date);
+      const now = new Date();
+      return transactionDate.getMonth() === now.getMonth() && 
+             transactionDate.getFullYear() === now.getFullYear();
+    })
+    .reduce((sum, t) => sum + t.amount, 0);
+  const recurringIncome = transactions
+    .filter(t => t.recurring)
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const insights = [
+    {
+      icon: FiTrendingUp,
+      title: 'Total Income',
+      value: `₱${totalIncome.toLocaleString()}`,
+      description: 'All time earnings',
+      color: 'from-emerald-500 to-green-600'
+    },
+    {
+      icon: FiCalendar,
+      title: 'This Month',
+      value: `₱${monthlyIncome.toLocaleString()}`,
+      description: 'Current month earnings',
+      color: 'from-blue-500 to-cyan-600'
+    },
+    {
+      icon: FiZap,
+      title: 'Recurring Income',
+      value: `₱${recurringIncome.toLocaleString()}`,
+      description: 'Monthly recurring income',
+      color: 'from-purple-500 to-violet-600'
+    }
+  ];
 
   return (
     <DashboardLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="mb-12">
-          <div className="flex items-center gap-6 mb-8">
-            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-xl">
-              <FiTrendingUp size={36} className="text-white" />
-            </div>
-            <div>
-              <h1 className="text-6xl font-bold mb-3 tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                Add Income
-              </h1>
-              <p className="text-xl font-light" style={{ color: 'var(--text-muted)' }}>
-                Record your earnings and track your income sources
-              </p>
-            </div>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-white mb-2">Income Management</h1>
+            <p className="text-white/60">Track and manage your income sources</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={handleRefresh}
+              disabled={refreshing}
+              className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 disabled:opacity-50"
+            >
+              <FiRefreshCw size={20} className={`text-white/60 ${refreshing ? 'animate-spin' : ''}`} />
+            </button>
+            <button
+              onClick={() => setShowForm(!showForm)}
+              className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl hover:scale-105 transition-all duration-300"
+            >
+              <FiPlus size={20} />
+              Add Income
+            </button>
           </div>
         </div>
 
-        {/* Income Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-          <div className="group relative overflow-hidden">
-            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <FiDollarSign size={28} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Total Income</p>
-                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>₱{totalIncome.toLocaleString()}</p>
-                  </div>
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {insights.map((insight, index) => (
+            <div key={insight.title} className="liquid-card p-6 rounded-2xl backdrop-blur-lg border border-white/10">
+              <div className="flex items-center gap-4">
+                <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${insight.color} flex items-center justify-center`}>
+                  <insight.icon size={24} className="text-white" />
+                </div>
+                <div>
+                  <p className="text-white/60 text-sm">{insight.title}</p>
+                  <p className="text-2xl font-bold text-white">{insight.value}</p>
+                  <p className="text-white/40 text-xs">{insight.description}</p>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div className="group relative overflow-hidden">
-            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-cyan-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <FiTrendingUp size={28} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Monthly Recurring</p>
-                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>₱{monthlyIncome.toLocaleString()}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="group relative overflow-hidden">
-            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-violet-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <FiBarChart size={28} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Transactions</p>
-                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>{transactions.length}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Form */}
-          <div className="lg:col-span-2">
-            <div className="liquid-card p-10 rounded-3xl apple-slide-up">
-              <div className="mb-8">
-                <h2 className="text-3xl font-bold mb-2" style={{ color: 'var(--text-primary)' }}>Transaction Details</h2>
-                <p style={{ color: 'var(--text-muted)' }}>Fill in the details of your income transaction</p>
-              </div>
-              <form onSubmit={handleSubmit} className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <label htmlFor="amount" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                      Amount (₱)
-                    </label>
-                    <input
-                      type="number"
-                      id="amount"
-                      name="amount"
-                      value={formData.amount}
-                      onChange={handleChange}
-                      required
-                      className="liquid-input w-full px-8 py-6 focus:outline-none text-2xl font-medium rounded-2xl"
-                      placeholder="0.00"
-                      step="0.01"
-                      min="0"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <label htmlFor="date" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                      Date
-                    </label>
-                    <input
-                      type="date"
-                      id="date"
-                      name="date"
-                      value={formData.date}
-                      onChange={handleChange}
-                      required
-                      className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl"
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <label htmlFor="description" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                    Description
-                  </label>
-                  <textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
+        {/* Add Income Form */}
+        {showForm && (
+          <div className="liquid-card p-8 rounded-3xl backdrop-blur-lg border border-white/10">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white">Add New Income</h2>
+              <button
+                onClick={() => setShowForm(false)}
+                className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-300"
+              >
+                <FiX size={20} className="text-white/60" />
+              </button>
+            </div>
+            
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-white font-medium mb-2">Amount (₱)</label>
+                  <input
+                    type="number"
+                    name="amount"
+                    value={formData.amount}
                     onChange={handleChange}
                     required
-                    rows={4}
-                    className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium resize-none rounded-2xl"
-                    placeholder="Describe your income source..."
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+                    placeholder="0.00"
                   />
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <div className="space-y-3">
-                    <label htmlFor="category" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                      Category
-                    </label>
-                    <select
-                      id="category"
-                      name="category"
-                      value={formData.category}
-                      onChange={handleChange}
-                      required
-                      className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl"
-                    >
-                      <option value="">Select a category</option>
-                      {incomeCategories.map((category) => (
-                        <option key={category.id} value={category.name}>
-                          {category.icon} {category.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="space-y-3">
-                    <label htmlFor="subcategory" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                      Subcategory
-                    </label>
-                    <select
-                      id="subcategory"
-                      name="subcategory"
-                      value={formData.subcategory}
-                      onChange={handleChange}
-                      required
-                      disabled={!selectedCategory}
-                      className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl disabled:opacity-50"
-                    >
-                      <option value="">Select subcategory</option>
-                      {selectedCategory?.subcategories.map((sub: any) => (
-                        <option key={sub.name} value={sub.name}>
-                          {sub.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <label htmlFor="accountId" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                    Account
-                  </label>
-                  <select
-                    id="accountId"
-                    name="accountId"
-                    value={formData.accountId}
+                
+                <div>
+                  <label className="block text-white font-medium mb-2">Date</label>
+                  <input
+                    type="date"
+                    name="date"
+                    value={formData.date}
                     onChange={handleChange}
                     required
-                    className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl"
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-white font-medium mb-2">Description</label>
+                <input
+                  type="text"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+                  placeholder="e.g., Monthly Salary, Freelance Payment"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-white font-medium mb-2">Category</label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
                   >
-                    <option value="">Select an account</option>
-                    {accounts.map((account) => (
-                      <option key={account.id} value={account.id}>
-                        {account.accountName} - ₱{account.currentBalance?.toLocaleString() || '0'}
+                    <option value="">Select Category</option>
+                    {incomeCategories.map(category => (
+                      <option key={category.name} value={category.name}>
+                        {category.name}
                       </option>
                     ))}
                   </select>
                 </div>
-
-                <div className="space-y-6">
-                  <div className="flex items-center gap-8">
-                    <label className="flex items-center gap-4 cursor-pointer group">
-                      <input
-                        type="checkbox"
-                        name="recurring"
-                        checked={formData.recurring}
-                        onChange={handleChange}
-                        className="w-6 h-6 rounded-lg border-2 border-white/30 bg-transparent checked:bg-green-500 checked:border-green-500 transition-all duration-200"
-                      />
-                      <span className="text-lg font-medium transition-colors" style={{ color: 'var(--text-primary)' }}>Recurring Income</span>
-                    </label>
-                    {formData.recurring && (
-                      <select
-                        name="frequency"
-                        value={formData.frequency}
-                        onChange={handleChange}
-                        className="liquid-input px-6 py-3 rounded-xl focus:outline-none text-lg font-medium"
-                      >
-                        <option value="weekly">Weekly</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="quarterly">Quarterly</option>
-                        <option value="yearly">Yearly</option>
-                      </select>
-                    )}
-                  </div>
-
-                  {formData.recurring && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <label htmlFor="paymentDate" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                          Payment Date
-                        </label>
-                        <input
-                          type="date"
-                          id="paymentDate"
-                          name="paymentDate"
-                          value={formData.paymentDate}
-                          onChange={handleChange}
-                          required
-                          className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
-                        />
-                      </div>
-
-                      <div className="space-y-3">
-                        <label htmlFor="totalPayments" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                          Total Payments
-                        </label>
-                        <input
-                          type="number"
-                          id="totalPayments"
-                          name="totalPayments"
-                          value={formData.totalPayments}
-                          onChange={handleChange}
-                          min="1"
-                          className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
-                          placeholder="e.g., 12 for monthly payments"
-                        />
-                      </div>
-
-                      <div className="space-y-3">
-                        <label htmlFor="currentPayment" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                          Current Payment
-                        </label>
-                        <input
-                          type="number"
-                          id="currentPayment"
-                          name="currentPayment"
-                          value={formData.currentPayment}
-                          onChange={handleChange}
-                          min="1"
-                          max={formData.totalPayments}
-                          className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
-                          placeholder="Which payment is this?"
-                        />
-                      </div>
-
-                      <div className="space-y-3">
-                        <label htmlFor="receivedAmount" className="block text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
-                          Amount Already Received
-                        </label>
-                        <input
-                          type="number"
-                          id="receivedAmount"
-                          name="receivedAmount"
-                          value={formData.receivedAmount}
-                          onChange={handleChange}
-                          min="0"
-                          step="0.01"
-                          className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
-                          placeholder="₱0.00"
-                        />
-                      </div>
-                    </div>
-                  )}
-
-                  {formData.recurring && (
-                    <div className="liquid-card p-6 rounded-2xl bg-gradient-to-r from-green-500/10 to-emerald-500/10 border border-green-500/20">
-                      <h4 className="font-semibold text-lg mb-4" style={{ color: 'var(--text-primary)' }}>
-                        📊 Payment Summary
-                      </h4>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div>
-                          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Total Amount</p>
-                          <p className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>
-                            ₱{(parseFloat(formData.amount) || 0).toLocaleString()}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Received So Far</p>
-                          <p className="font-bold text-lg" style={{ color: '#10B981' }}>
-                            ₱{(parseFloat(formData.receivedAmount.toString()) || 0).toLocaleString()}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Pending</p>
-                          <p className="font-bold text-lg" style={{ color: '#F59E0B' }}>
-                            ₱{Math.max(0, (parseFloat(formData.amount) || 0) - (parseFloat(formData.receivedAmount.toString()) || 0)).toLocaleString()}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Progress</p>
-                          <p className="font-bold text-lg" style={{ color: 'var(--text-primary)' }}>
-                            {formData.totalPayments > 0 ? Math.round((formData.currentPayment / formData.totalPayments) * 100) : 0}%
-                          </p>
-                        </div>
-                      </div>
-                      
-                      <div className="mt-4">
-                        <div className="w-full bg-white/10 rounded-full h-3">
-                          <div 
-                            className="h-full bg-gradient-to-r from-green-500 to-emerald-600 rounded-full transition-all duration-500"
-                            style={{ 
-                              width: `${formData.totalPayments > 0 ? (formData.currentPayment / formData.totalPayments) * 100 : 0}%` 
-                            }}
-                          />
-                        </div>
-                        <p className="text-xs mt-2" style={{ color: 'var(--text-muted)' }}>
-                          Payment {formData.currentPayment} of {formData.totalPayments}
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                
+                <div>
+                  <label className="block text-white font-medium mb-2">Subcategory</label>
+                  <select
+                    name="subcategory"
+                    value={formData.subcategory}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+                  >
+                    <option value="">Select Subcategory</option>
+                                         {selectedCategory?.subcategories.map((sub: any) => (
+                       <option key={sub.name || sub} value={sub.name || sub}>{sub.name || sub}</option>
+                     ))}
+                  </select>
                 </div>
+              </div>
 
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2 text-white">
+                  <input
+                    type="checkbox"
+                    name="recurring"
+                    checked={formData.recurring}
+                    onChange={handleChange}
+                    className="w-4 h-4 text-emerald-500 bg-white/5 border-white/10 rounded focus:ring-emerald-500 focus:ring-2"
+                  />
+                  <span>Recurring Income</span>
+                </label>
+              </div>
+
+              {formData.recurring && (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <label className="block text-white font-medium mb-2">Frequency</label>
+                    <select
+                      name="frequency"
+                      value={formData.frequency}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+                    >
+                      <option value="weekly">Weekly</option>
+                      <option value="monthly">Monthly</option>
+                      <option value="quarterly">Quarterly</option>
+                      <option value="yearly">Yearly</option>
+                    </select>
+                  </div>
+                  
+                  <div>
+                    <label className="block text-white font-medium mb-2">Total Payments</label>
+                    <input
+                      type="number"
+                      name="totalPayments"
+                      value={formData.totalPayments}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+                      placeholder="12"
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-white font-medium mb-2">Current Payment</label>
+                    <input
+                      type="number"
+                      name="currentPayment"
+                      value={formData.currentPayment}
+                      onChange={handleChange}
+                      className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+                      placeholder="1"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-4">
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full liquid-button py-6 px-8 font-bold text-xl disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl hover:scale-105 transition-all duration-300"
-                  style={{ color: 'var(--text-primary)' }}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {loading ? "Adding Income..." : "Add Income"}
+                  {loading ? 'Adding...' : 'Add Income'}
                 </button>
-              </form>
-            </div>
+                <button
+                  type="button"
+                  onClick={() => setShowForm(false)}
+                  className="px-6 py-3 bg-white/10 text-white rounded-2xl hover:bg-white/20 transition-all duration-300"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
           </div>
+        )}
 
-          {/* Recent Income & Insights */}
-          <div className="space-y-8">
-            <div className="liquid-card p-8 rounded-3xl">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
-                  <FiTrendingUp size={24} className="text-white" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Recent Income</h3>
-                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Your latest transactions</p>
-                </div>
+        {/* Filters and Search */}
+        <div className="liquid-card p-6 rounded-2xl backdrop-blur-lg border border-white/10">
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+            <div className="flex items-center gap-4 flex-1">
+              <div className="relative flex-1 max-w-md">
+                <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/40" size={20} />
+                <input
+                  type="text"
+                  placeholder="Search transactions..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+                />
               </div>
-              <div className="space-y-4">
-                {transactions.slice(0, 5).map((transaction) => (
-                  <div key={transaction.id} className="group relative overflow-hidden">
-                    <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-102">
-                      <div className="flex items-center justify-between">
-                        <div className="flex-1">
-                          <p className="font-semibold text-lg mb-1" style={{ color: 'var(--text-primary)' }}>{transaction.description}</p>
-                          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{transaction.subcategory} • {new Date(transaction.date).toLocaleDateString()}</p>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <div className="text-right">
-                            <span className="text-green-400 font-bold text-lg">+₱{transaction.amount.toLocaleString()}</span>
-                            {transaction.recurring && (
-                              <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                                <p>Recurring</p>
-                                {transaction.currentPayment && transaction.totalPayments && (
-                                  <p>Payment {transaction.currentPayment}/{transaction.totalPayments}</p>
-                                )}
-                                {transaction.receivedAmount && transaction.amount && (
-                                  <p>Received: ₱{transaction.receivedAmount.toLocaleString()}</p>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button
-                              onClick={() => handleEditTransaction(transaction)}
-                              className="p-3 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 transition-colors"
-                              title="Edit transaction"
-                            >
-                              <FiEdit3 size={18} />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteTransaction(transaction.id)}
-                              className="p-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 transition-colors"
-                              title="Delete transaction"
-                            >
-                              <FiTrash2 size={18} />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+              
+              <select
+                value={filterCategory}
+                onChange={(e) => setFilterCategory(e.target.value)}
+                className="px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+              >
+                <option value="">All Categories</option>
+                {incomeCategories.map(category => (
+                  <option key={category.name} value={category.name}>{category.name}</option>
                 ))}
-              </div>
+              </select>
             </div>
-
-            <div className="liquid-card p-8 rounded-3xl">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
-                  <FiTag size={24} className="text-white" />
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>Income Categories</h3>
-                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Breakdown by category</p>
-                </div>
-              </div>
-              <div className="space-y-4">
-                {incomeCategories.map((category) => {
-                  const categoryTotal = transactions
-                    .filter(t => t.category === category.name)
-                    .reduce((sum, t) => sum + t.amount, 0);
-                  const percentage = totalIncome > 0 ? (categoryTotal / totalIncome * 100) : 0;
-                  
-                  return (
-                    <div key={category.id} className="group relative overflow-hidden">
-                      <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-102 cursor-pointer">
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="font-semibold text-lg" style={{ color: 'var(--text-primary)' }}>{category.icon} {category.name}</span>
-                          <span className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>{percentage.toFixed(1)}%</span>
-                        </div>
-                        <div className="relative mb-2">
-                          <div className="w-full bg-white/10 rounded-full h-3">
-                            <div 
-                              className={`h-3 rounded-full bg-gradient-to-r ${category.color} transition-all duration-500`}
-                              style={{ width: `${percentage}%` }}
-                            />
-                          </div>
-                          {/* Progress glow effect */}
-                          <div 
-                            className="absolute top-0 h-3 bg-gradient-to-r from-white/20 to-transparent rounded-full blur-sm transition-all duration-500"
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
-                        <p className="text-sm font-medium" style={{ color: 'var(--text-muted)' }}>₱{categoryTotal.toLocaleString()}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="liquid-card p-6 rounded-2xl apple-fade-in">
-              <h3 className="text-display text-xl font-semibold mb-4 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
-                <FiTarget size={20} />
-                Income Insights
-              </h3>
-              <div className="space-y-4">
-                <div className="p-4 rounded-xl bg-white/5">
-                  <h4 className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>💡 Financial Tip</h4>
-                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                    {spendingInsights.moneySavingTips[Math.floor(Math.random() * spendingInsights.moneySavingTips.length)]}
-                  </p>
-                </div>
-                <div className="p-4 rounded-xl bg-white/5">
-                  <h4 className="font-medium mb-2" style={{ color: 'var(--text-primary)' }}>📊 Recommended Split</h4>
-                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                    Consider the 50/30/20 rule: 50% for needs, 30% for wants, 20% for savings and debt repayment.
-                  </p>
-                </div>
-              </div>
+            
+            <div className="flex items-center gap-2">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+              >
+                <option value="date">Date</option>
+                <option value="amount">Amount</option>
+                <option value="description">Description</option>
+              </select>
+              
+              <button
+                onClick={() => setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc')}
+                className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300"
+              >
+                {sortOrder === 'desc' ? <FiTrendingDown size={20} className="text-white/60" /> : <FiTrendingUp size={20} className="text-white/60" />}
+              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Edit Transaction Modal */}
-      <EditTransactionModal
-        isOpen={showEditModal}
-        onClose={() => {
-          setShowEditModal(false);
-          setEditingTransaction(null);
-        }}
-        transaction={editingTransaction}
-        type="income"
-        onUpdate={handleUpdateTransaction}
-        onDelete={handleDeleteTransaction}
-      />
+        {/* Transactions List */}
+        <div className="liquid-card rounded-2xl backdrop-blur-lg border border-white/10 overflow-hidden">
+          <div className="p-6 border-b border-white/10">
+            <h2 className="text-xl font-bold text-white">Income Transactions</h2>
+            <p className="text-white/60 text-sm">{filteredTransactions.length} transactions found</p>
+          </div>
+          
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-white/5">
+                <tr>
+                  <th className="px-6 py-4 text-left text-white/60 font-medium">Description</th>
+                  <th className="px-6 py-4 text-left text-white/60 font-medium">Category</th>
+                  <th className="px-6 py-4 text-left text-white/60 font-medium">Amount</th>
+                  <th className="px-6 py-4 text-left text-white/60 font-medium">Date</th>
+                  <th className="px-6 py-4 text-left text-white/60 font-medium">Status</th>
+                  <th className="px-6 py-4 text-center text-white/60 font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/10">
+                {filteredTransactions.length > 0 ? (
+                  filteredTransactions.map((transaction) => (
+                    <tr key={transaction.id} className="hover:bg-white/5 transition-colors duration-300">
+                      <td className="px-6 py-4">
+                        <div>
+                          <p className="text-white font-medium">{transaction.description}</p>
+                          {transaction.subcategory && (
+                            <p className="text-white/60 text-sm">{transaction.subcategory}</p>
+                          )}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 rounded-full text-sm">
+                          {transaction.category}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4">
+                        <p className="text-emerald-400 font-bold">₱{transaction.amount.toLocaleString()}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <p className="text-white">{new Date(transaction.date).toLocaleDateString()}</p>
+                      </td>
+                      <td className="px-6 py-4">
+                        {transaction.recurring ? (
+                          <span className="flex items-center gap-2 text-blue-400">
+                            <FiRefreshCw size={16} />
+                            <span className="text-sm">Recurring</span>
+                          </span>
+                        ) : (
+                          <span className="flex items-center gap-2 text-green-400">
+                            <FiCheckCircle size={16} />
+                            <span className="text-sm">One-time</span>
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-6 py-4">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={() => {
+                              setEditingTransaction(transaction);
+                              setShowEditModal(true);
+                            }}
+                            className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-300"
+                          >
+                            <FiEdit3 size={16} className="text-blue-400" />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(transaction.id)}
+                            className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-300"
+                          >
+                            <FiTrash2 size={16} className="text-red-400" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-12 text-center">
+                      <FiTrendingUp size={48} className="mx-auto mb-4 text-white/40" />
+                      <p className="text-white/60 mb-4">No income transactions found</p>
+                      <button
+                        onClick={() => setShowForm(true)}
+                        className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-500 text-white rounded-2xl hover:bg-emerald-600 transition-colors duration-300"
+                      >
+                        <FiPlus size={16} />
+                        Add Your First Income
+                      </button>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Edit Transaction Modal */}
+        {showEditModal && editingTransaction && (
+          <EditTransactionModal
+            isOpen={showEditModal}
+            transaction={editingTransaction}
+            onClose={() => {
+              setShowEditModal(false);
+              setEditingTransaction(null);
+            }}
+            onUpdate={(updatedTransaction: any) => {
+              setTransactions(prev => 
+                prev.map(t => t.id === updatedTransaction.id ? updatedTransaction : t)
+              );
+              setShowEditModal(false);
+              setEditingTransaction(null);
+              toast.success('Transaction updated successfully! ✏️');
+            }}
+            onDelete={(transactionId: number) => {
+              handleDelete(transactionId);
+              setShowEditModal(false);
+              setEditingTransaction(null);
+            }}
+            type="income"
+          />
+        )}
+      </div>
     </DashboardLayout>
   );
 };

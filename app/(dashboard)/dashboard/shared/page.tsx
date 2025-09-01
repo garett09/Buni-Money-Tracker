@@ -18,7 +18,7 @@ const SharedExpensesPage = () => {
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
+      <div className="space-y-8 min-h-full">
         {/* Header */}
         <div className="mb-12">
           <div className="flex items-center gap-6 mb-8">
