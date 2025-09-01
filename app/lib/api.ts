@@ -66,4 +66,59 @@ export class ApiClient {
     
     return response.json();
   }
+
+  // Savings goals
+  static async getSavingsGoals() {
+    const response = await fetch(`${API_BASE}/api/savings`, {
+      headers: this.getAuthHeaders(),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch savings goals');
+    }
+    
+    return response.json();
+  }
+
+  static async addSavingsGoal(goalData: any) {
+    const response = await fetch(`${API_BASE}/api/savings`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(goalData),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to add savings goal');
+    }
+    
+    return response.json();
+  }
+
+  static async updateSavingsGoal(goalId: number, updates: any) {
+    const response = await fetch(`${API_BASE}/api/savings`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ goalId, updates }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update savings goal');
+    }
+    
+    return response.json();
+  }
+
+  static async deleteSavingsGoal(goalId: number) {
+    const response = await fetch(`${API_BASE}/api/savings`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ goalId }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to delete savings goal');
+    }
+    
+    return response.json();
+  }
 }
