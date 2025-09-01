@@ -40,6 +40,34 @@ export class ApiClient {
     return response.json();
   }
 
+  static async updateIncomeTransaction(transactionId: number, updates: any) {
+    const response = await fetch(`${API_BASE}/api/transactions/income`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ transactionId, updates }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update income transaction');
+    }
+    
+    return response.json();
+  }
+
+  static async deleteIncomeTransaction(transactionId: number) {
+    const response = await fetch(`${API_BASE}/api/transactions/income`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ transactionId }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to delete income transaction');
+    }
+    
+    return response.json();
+  }
+
   // Expense transactions
   static async getExpenseTransactions() {
     const response = await fetch(`${API_BASE}/api/transactions/expenses`, {
@@ -62,6 +90,34 @@ export class ApiClient {
     
     if (!response.ok) {
       throw new Error('Failed to add expense transaction');
+    }
+    
+    return response.json();
+  }
+
+  static async updateExpenseTransaction(transactionId: number, updates: any) {
+    const response = await fetch(`${API_BASE}/api/transactions/expenses`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ transactionId, updates }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update expense transaction');
+    }
+    
+    return response.json();
+  }
+
+  static async deleteExpenseTransaction(transactionId: number) {
+    const response = await fetch(`${API_BASE}/api/transactions/expenses`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ transactionId }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to delete expense transaction');
     }
     
     return response.json();
@@ -157,6 +213,102 @@ export class ApiClient {
     
     if (!response.ok) {
       throw new Error('Failed to delete user account');
+    }
+    
+    return response.json();
+  }
+
+  // Shared expenses
+  static async getSharedExpenses() {
+    const response = await fetch(`${API_BASE}/api/shared/expenses`, {
+      headers: this.getAuthHeaders(),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch shared expenses');
+    }
+    
+    return response.json();
+  }
+
+  static async enableExpenseSharing(partnerEmail: string, partnerName?: string) {
+    const response = await fetch(`${API_BASE}/api/shared/expenses`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ action: 'enable', partnerEmail, partnerName }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to enable expense sharing');
+    }
+    
+    return response.json();
+  }
+
+  static async disableExpenseSharing() {
+    const response = await fetch(`${API_BASE}/api/shared/expenses`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ action: 'disable' }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to disable expense sharing');
+    }
+    
+    return response.json();
+  }
+
+  // Accounts management
+  static async getAccounts() {
+    const response = await fetch(`${API_BASE}/api/accounts`, {
+      headers: this.getAuthHeaders(),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch accounts');
+    }
+    
+    return response.json();
+  }
+
+  static async addAccount(accountData: any) {
+    const response = await fetch(`${API_BASE}/api/accounts`, {
+      method: 'POST',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify(accountData),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to add account');
+    }
+    
+    return response.json();
+  }
+
+  static async updateAccount(accountId: number, updates: any) {
+    const response = await fetch(`${API_BASE}/api/accounts`, {
+      method: 'PUT',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ accountId, updates }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to update account');
+    }
+    
+    return response.json();
+  }
+
+  static async deleteAccount(accountId: number) {
+    const response = await fetch(`${API_BASE}/api/accounts`, {
+      method: 'DELETE',
+      headers: this.getAuthHeaders(),
+      body: JSON.stringify({ accountId }),
+    });
+    
+    if (!response.ok) {
+      throw new Error('Failed to delete account');
     }
     
     return response.json();

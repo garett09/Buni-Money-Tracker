@@ -189,13 +189,20 @@ const DashboardPage = () => {
         )}
 
         {/* Welcome Section */}
-        <div className="apple-fade-in">
-          <h1 className="text-display text-4xl font-semibold text-white mb-2 tracking-tight">
-            Welcome back, {user?.name?.split(' ')[0] || 'User'}!
-          </h1>
-          <p className="text-body text-white/60 text-lg">
-            Here's your financial overview for today.
-          </p>
+        <div className="mb-12">
+          <div className="flex items-center gap-6 mb-8">
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-xl">
+              <FiDollarSign size={36} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-6xl font-bold text-white mb-3 tracking-tight">
+                Welcome back, {user?.name?.split(' ')[0] || 'User'}!
+              </h1>
+              <p className="text-xl text-white/70 font-light">
+                Here's your financial overview for today
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Stats Grid */}
@@ -237,41 +244,82 @@ const DashboardPage = () => {
             <h2 className="text-display text-2xl font-semibold text-white mb-6">
               Quick Actions
             </h2>
-            <div className="space-y-4">
+            <div className="space-y-6">
               <Link
                 href="/dashboard/income"
-                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group liquid-button"
+                className="group relative overflow-hidden"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center liquid-shape">
-                  <FiTrendingUp size={24} className="text-white" />
-                </div>
-                <div>
-                  <h3 className="text-white font-medium">Add Income</h3>
-                  <p className="text-white/60 text-sm">Record your earnings</p>
+                <div className="liquid-card p-6 rounded-2xl hover:scale-105 transition-all duration-300">
+                  <div className="relative">
+                    {/* Animated background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    <div className="flex items-center gap-6 relative z-10">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center liquid-shape shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <FiTrendingUp size={28} className="text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-white font-semibold text-lg mb-1">Add Income</h3>
+                        <p className="text-white/60 text-sm mb-3">Record your earnings</p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/20 to-emerald-600/20 rounded-xl text-green-300 font-medium text-sm border border-green-500/30 group-hover:from-green-500/30 group-hover:to-emerald-600/30 transition-all duration-300">
+                          <FiTrendingUp size={16} />
+                          Add Income
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </Link>
+
               <Link
                 href="/dashboard/expenses"
-                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group liquid-button"
+                className="group relative overflow-hidden"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center liquid-shape-2">
-                  <FiTrendingDown size={24} className="text-white" />
-                </div>
-                <div>
-                  <h3 className="text-white font-medium">Add Expense</h3>
-                  <p className="text-white/60 text-sm">Track your spending</p>
+                <div className="liquid-card p-6 rounded-2xl hover:scale-105 transition-all duration-300">
+                  <div className="relative">
+                    {/* Animated background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-rose-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    <div className="flex items-center gap-6 relative z-10">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center liquid-shape-2 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <FiTrendingDown size={28} className="text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-white font-semibold text-lg mb-1">Add Expense</h3>
+                        <p className="text-white/60 text-sm mb-3">Track your spending</p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-500/20 to-rose-600/20 rounded-xl text-red-300 font-medium text-sm border border-red-500/30 group-hover:from-red-500/30 group-hover:to-rose-600/30 transition-all duration-300">
+                          <FiTrendingDown size={16} />
+                          Add Expense
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </Link>
+
               <Link
                 href="/dashboard/savings"
-                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group liquid-button"
+                className="group relative overflow-hidden"
               >
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center liquid-shape-3">
-                  <FiTarget size={24} className="text-white" />
-                </div>
-                <div>
-                  <h3 className="text-white font-medium">Set Savings Goals</h3>
-                  <p className="text-white/60 text-sm">Plan for your future</p>
+                <div className="liquid-card p-6 rounded-2xl hover:scale-105 transition-all duration-300">
+                  <div className="relative">
+                    {/* Animated background gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-violet-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    <div className="flex items-center gap-6 relative z-10">
+                      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center liquid-shape-3 shadow-lg group-hover:scale-110 transition-transform duration-300">
+                        <FiTarget size={28} className="text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-white font-semibold text-lg mb-1">Set Savings Goals</h3>
+                        <p className="text-white/60 text-sm mb-3">Plan for your future</p>
+                        <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/20 to-violet-600/20 rounded-xl text-purple-300 font-medium text-sm border border-purple-500/30 group-hover:from-purple-500/30 group-hover:to-violet-600/30 transition-all duration-300">
+                          <FiTarget size={16} />
+                          Set Goals
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </Link>
             </div>
@@ -287,22 +335,44 @@ const DashboardPage = () => {
                 {savingsGoals.slice(0, 3).map((goal) => {
                   const progress = Math.min((goal.currentAmount / goal.targetAmount) * 100, 100);
                   return (
-                    <div key={goal.id} className="p-4 rounded-xl bg-white/5">
-                      <div className="flex items-center justify-between mb-3">
-                        <div>
-                          <h3 className="text-white font-medium">{goal.name}</h3>
-                          <p className="text-white/60 text-sm">
-                            ₱{goal.currentAmount.toLocaleString()} / ₱{goal.targetAmount.toLocaleString()}
-                          </p>
+                    <div key={goal.id} className="liquid-card p-6 rounded-2xl hover:scale-102 transition-all duration-300 group">
+                      <div className="relative">
+                        {/* Animated background gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-violet-500/5 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        
+                        <div className="relative z-10">
+                          <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center gap-4">
+                              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg">
+                                <FiTarget size={20} className="text-white" />
+                              </div>
+                              <div>
+                                <h3 className="text-white font-semibold text-lg">{goal.name}</h3>
+                                <p className="text-white/60 text-sm">
+                                  ₱{goal.currentAmount.toLocaleString()} / ₱{goal.targetAmount.toLocaleString()}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <span className="text-white font-bold text-xl">{progress.toFixed(0)}%</span>
+                              <div className="text-white/60 text-xs">Complete</div>
+                            </div>
+                          </div>
+                          
+                          <div className="relative mb-4">
+                            <div className="w-full h-3 bg-white/10 rounded-full overflow-hidden">
+                              <div 
+                                className="h-full bg-gradient-to-r from-purple-500 to-violet-600 rounded-full transition-all duration-500 ease-out"
+                                style={{ width: `${progress}%` }}
+                              />
+                            </div>
+                            {/* Progress glow effect */}
+                            <div 
+                              className="absolute top-0 h-3 bg-gradient-to-r from-purple-400/50 to-violet-500/50 rounded-full blur-sm transition-all duration-500"
+                              style={{ width: `${progress}%` }}
+                            />
+                          </div>
                         </div>
-                        <span className="text-white/60 text-sm">{progress.toFixed(0)}%</span>
-                      </div>
-                      
-                      <div className="liquid-progress w-full h-2 mb-3">
-                        <div 
-                          className="liquid-progress-fill h-2"
-                          style={{ width: `${progress}%` }}
-                        ></div>
                       </div>
                       
                       {/* Timeline info */}

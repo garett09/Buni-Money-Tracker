@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-type Theme = 'blue' | 'pink';
+type Theme = 'dark' | 'light';
 
 interface ThemeContextType {
   theme: Theme;
@@ -25,12 +25,12 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [theme, setThemeState] = useState<Theme>('blue');
+  const [theme, setThemeState] = useState<Theme>('dark');
 
   // Load theme from localStorage on mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme && (savedTheme === 'blue' || savedTheme === 'pink')) {
+    if (savedTheme && (savedTheme === 'dark' || savedTheme === 'light')) {
       setThemeState(savedTheme);
     }
   }, []);
@@ -46,7 +46,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   };
 
   const toggleTheme = () => {
-    setThemeState(prev => prev === 'blue' ? 'pink' : 'blue');
+    setThemeState(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
   const value = {

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTheme } from '@/app/contexts/ThemeContext';
-import { FiSettings, FiDroplet } from 'react-icons/fi';
+import { FiSettings, FiMoon, FiSun } from 'react-icons/fi';
 
 const ThemePicker: React.FC = () => {
   const { theme, setTheme } = useTheme();
@@ -16,27 +16,27 @@ const ThemePicker: React.FC = () => {
       
       <div className="flex bg-white/10 rounded-lg p-1">
         <button
-          onClick={() => setTheme('blue')}
+          onClick={() => setTheme('dark')}
           className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-            theme === 'blue'
+            theme === 'dark'
               ? 'bg-blue-500/30 text-blue-300 shadow-lg'
               : 'text-white/70 hover:text-white hover:bg-white/10'
           }`}
         >
-          <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-          <span>Blue</span>
+          <FiMoon size={14} />
+          <span>Dark</span>
         </button>
         
         <button
-          onClick={() => setTheme('pink')}
+          onClick={() => setTheme('light')}
           className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-            theme === 'pink'
-              ? 'bg-pink-500/30 text-pink-300 shadow-lg'
+            theme === 'light'
+              ? 'bg-yellow-500/30 text-yellow-300 shadow-lg'
               : 'text-white/70 hover:text-white hover:bg-white/10'
           }`}
         >
-          <div className="w-3 h-3 rounded-full bg-pink-500"></div>
-          <span>Pink</span>
+          <FiSun size={14} />
+          <span>Light</span>
         </button>
       </div>
     </div>

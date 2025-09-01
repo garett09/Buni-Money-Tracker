@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/app/components/DashboardLayout';
+import EditTransactionModal from '@/app/components/EditTransactionModal';
 import { toast } from 'react-hot-toast';
-import { FiTrendingUp, FiPlus, FiCalendar, FiTag, FiDollarSign, FiTarget, FiBarChart } from 'react-icons/fi';
+import { FiTrendingUp, FiPlus, FiCalendar, FiTag, FiDollarSign, FiTarget, FiBarChart, FiEdit3, FiTrash2 } from 'react-icons/fi';
 import { incomeCategories, spendingInsights } from '@/app/lib/categories';
 import { ApiClient } from '@/app/lib/api';
 
@@ -15,12 +16,31 @@ const IncomePage = () => {
     subcategory: '',
     date: new Date().toISOString().split('T')[0],
     recurring: false,
-    frequency: 'monthly'
+    frequency: 'monthly',
+    accountId: ''
   });
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [showInsights, setShowInsights] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<any>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [accounts, setAccounts] = useState<any[]>([]);
+
+  // Load accounts from API
+  useEffect(() => {
+    const loadAccounts = async () => {
+      try {
+        const response = await ApiClient.getAccounts();
+        setAccounts(response.accounts || []);
+      } catch (error) {
+        console.log('Failed to load accounts, using empty array');
+        setAccounts([]);
+      }
+    };
+
+    loadAccounts();
+  }, []);
 
   // Load transactions from API
   useEffect(() => {
@@ -59,7 +79,8 @@ const IncomePage = () => {
       setFormData({
         ...formData,
         [name]: value,
-        subcategory: '' // Reset subcategory when category changes
+        subcategory: '', // Reset subcategory when category changes
+        accountId: formData.accountId // Preserve accountId
       });
     } else {
       setFormData({
@@ -108,10 +129,68 @@ const IncomePage = () => {
         subcategory: '',
         date: new Date().toISOString().split('T')[0],
         recurring: false,
-        frequency: 'monthly'
+        frequency: 'monthly',
+        accountId: ''
       });
       setSelectedCategory(null);
       setLoading(false);
+    }
+  };
+
+  const handleEditTransaction = (transaction: any) => {
+    setEditingTransaction(transaction);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateTransaction = async (updatedTransaction: any) => {
+    try {
+      // Try API first
+      await ApiClient.updateIncomeTransaction(updatedTransaction.id, updatedTransaction);
+      
+      // Update local state
+      const updatedTransactions = transactions.map(t => 
+        t.id === updatedTransaction.id ? updatedTransaction : t
+      );
+      setTransactions(updatedTransactions);
+      
+      // Update localStorage as backup
+      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
+      
+      toast.success('Income updated successfully and saved to database!');
+    } catch (error) {
+      console.log('API not available, using localStorage fallback');
+      // Fallback to localStorage
+      const updatedTransactions = transactions.map(t => 
+        t.id === updatedTransaction.id ? updatedTransaction : t
+      );
+      setTransactions(updatedTransactions);
+      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
+      
+      toast.success('Income updated successfully (saved locally)!');
+    }
+  };
+
+  const handleDeleteTransaction = async (transactionId: number) => {
+    try {
+      // Try API first
+      await ApiClient.deleteIncomeTransaction(transactionId);
+      
+      // Update local state
+      const updatedTransactions = transactions.filter(t => t.id !== transactionId);
+      setTransactions(updatedTransactions);
+      
+      // Update localStorage as backup
+      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
+      
+      toast.success('Income deleted successfully and removed from database!');
+    } catch (error) {
+      console.log('API not available, using localStorage fallback');
+      // Fallback to localStorage
+      const updatedTransactions = transactions.filter(t => t.id !== transactionId);
+      setTransactions(updatedTransactions);
+      localStorage.setItem('incomeTransactions', JSON.stringify(updatedTransactions));
+      
+      toast.success('Income deleted successfully (removed locally)!');
     }
   };
 
@@ -122,60 +201,88 @@ const IncomePage = () => {
     <DashboardLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="apple-fade-in">
-          <h1 className="text-display text-4xl font-semibold text-white mb-2 tracking-tight">
-            Add Income
-          </h1>
-          <p className="text-body text-white/60 text-lg">
-            Record your earnings and track your income sources.
-          </p>
+        <div className="mb-12">
+          <div className="flex items-center gap-6 mb-8">
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-xl">
+              <FiTrendingUp size={36} className="text-white" />
+            </div>
+            <div>
+              <h1 className="text-6xl font-bold text-white mb-3 tracking-tight">
+                Add Income
+              </h1>
+              <p className="text-xl text-white/70 font-light">
+                Record your earnings and track your income sources
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Income Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="liquid-card p-6 apple-fade-in">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center liquid-shape">
-                <FiDollarSign size={24} className="text-white" />
-              </div>
-              <div>
-                <h3 className="text-display text-2xl font-semibold text-white">₱{totalIncome.toLocaleString()}</h3>
-                <p className="text-white/60 text-sm">Total Income</p>
-              </div>
-            </div>
-          </div>
-          <div className="liquid-card p-6 apple-fade-in">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center liquid-shape-2">
-                <FiTarget size={24} className="text-white" />
-              </div>
-              <div>
-                <h3 className="text-display text-2xl font-semibold text-white">₱{monthlyIncome.toLocaleString()}</h3>
-                <p className="text-white/60 text-sm">Monthly Recurring</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+          <div className="group relative overflow-hidden">
+            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <FiDollarSign size={28} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm font-medium mb-1">Total Income</p>
+                    <p className="text-white font-bold text-3xl">₱{totalIncome.toLocaleString()}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div className="liquid-card p-6 apple-fade-in">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center liquid-shape-3">
-                <FiBarChart size={24} className="text-white" />
+
+          <div className="group relative overflow-hidden">
+            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-cyan-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <FiTrendingUp size={28} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm font-medium mb-1">Monthly Recurring</p>
+                    <p className="text-white font-bold text-3xl">₱{monthlyIncome.toLocaleString()}</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className="text-display text-2xl font-semibold text-white">{transactions.length}</h3>
-                <p className="text-white/60 text-sm">Transactions</p>
+            </div>
+          </div>
+
+          <div className="group relative overflow-hidden">
+            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-violet-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <FiBarChart size={28} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm font-medium mb-1">Transactions</p>
+                    <p className="text-white font-bold text-3xl">{transactions.length}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Form */}
           <div className="lg:col-span-2">
-            <div className="liquid-card p-8 apple-slide-up">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="amount" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
+            <div className="liquid-card p-10 rounded-3xl apple-slide-up">
+              <div className="mb-8">
+                <h2 className="text-3xl font-bold text-white mb-2">Transaction Details</h2>
+                <p className="text-white/60">Fill in the details of your income transaction</p>
+              </div>
+              <form onSubmit={handleSubmit} className="space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label htmlFor="amount" className="block text-lg font-semibold text-white mb-2">
                       Amount (₱)
                     </label>
                     <input
@@ -185,14 +292,14 @@ const IncomePage = () => {
                       value={formData.amount}
                       onChange={handleChange}
                       required
-                      className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
+                      className="liquid-input w-full px-8 py-6 focus:outline-none text-2xl font-medium rounded-2xl"
                       placeholder="0.00"
                       step="0.01"
                       min="0"
                     />
                   </div>
-                  <div>
-                    <label htmlFor="date" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
+                  <div className="space-y-3">
+                    <label htmlFor="date" className="block text-lg font-semibold text-white mb-2">
                       Date
                     </label>
                     <input
@@ -202,13 +309,13 @@ const IncomePage = () => {
                       value={formData.date}
                       onChange={handleChange}
                       required
-                      className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
+                      className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl"
                     />
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="description" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
+                <div className="space-y-3">
+                  <label htmlFor="description" className="block text-lg font-semibold text-white mb-2">
                     Description
                   </label>
                   <textarea
@@ -217,15 +324,15 @@ const IncomePage = () => {
                     value={formData.description}
                     onChange={handleChange}
                     required
-                    rows={3}
-                                          className="liquid-input w-full px-6 py-4 focus:outline-none text-lg resize-none"
+                    rows={4}
+                    className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium resize-none rounded-2xl"
                     placeholder="Describe your income source..."
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label htmlFor="category" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <div className="space-y-3">
+                    <label htmlFor="category" className="block text-lg font-semibold text-white mb-2">
                       Category
                     </label>
                     <select
@@ -234,7 +341,7 @@ const IncomePage = () => {
                       value={formData.category}
                       onChange={handleChange}
                       required
-                      className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
+                      className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl"
                     >
                       <option value="">Select a category</option>
                       {incomeCategories.map((category) => (
@@ -244,8 +351,8 @@ const IncomePage = () => {
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <label htmlFor="subcategory" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
+                  <div className="space-y-3">
+                    <label htmlFor="subcategory" className="block text-lg font-semibold text-white mb-2">
                       Subcategory
                     </label>
                     <select
@@ -255,7 +362,7 @@ const IncomePage = () => {
                       onChange={handleChange}
                       required
                       disabled={!selectedCategory}
-                      className="glass-input w-full px-6 py-4 rounded-2xl focus:outline-none text-lg disabled:opacity-50"
+                      className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl disabled:opacity-50"
                     >
                       <option value="">Select subcategory</option>
                       {selectedCategory?.subcategories.map((sub: any) => (
@@ -267,23 +374,44 @@ const IncomePage = () => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-6">
-                  <label className="flex items-center gap-3 cursor-pointer">
+                <div className="space-y-3">
+                  <label htmlFor="accountId" className="block text-lg font-semibold text-white mb-2">
+                    Account
+                  </label>
+                  <select
+                    id="accountId"
+                    name="accountId"
+                    value={formData.accountId}
+                    onChange={handleChange}
+                    required
+                    className="liquid-input w-full px-8 py-6 focus:outline-none text-xl font-medium rounded-2xl"
+                  >
+                    <option value="">Select an account</option>
+                    {accounts.map((account) => (
+                      <option key={account.id} value={account.id}>
+                        {account.accountName} - ₱{account.currentBalance?.toLocaleString() || '0'}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex items-center gap-8">
+                  <label className="flex items-center gap-4 cursor-pointer group">
                     <input
                       type="checkbox"
                       name="recurring"
                       checked={formData.recurring}
                       onChange={handleChange}
-                      className="w-5 h-5 rounded border-2 border-white/30 bg-transparent checked:bg-blue-500"
+                      className="w-6 h-6 rounded-lg border-2 border-white/30 bg-transparent checked:bg-green-500 checked:border-green-500 transition-all duration-200"
                     />
-                    <span className="text-white/80">Recurring Income</span>
+                    <span className="text-white/80 text-lg font-medium group-hover:text-white transition-colors">Recurring Income</span>
                   </label>
                   {formData.recurring && (
                     <select
                       name="frequency"
                       value={formData.frequency}
                       onChange={handleChange}
-                      className="glass-input px-4 py-2 rounded-xl focus:outline-none"
+                      className="liquid-input px-6 py-3 rounded-xl focus:outline-none text-lg font-medium"
                     >
                       <option value="weekly">Weekly</option>
                       <option value="monthly">Monthly</option>
@@ -296,7 +424,7 @@ const IncomePage = () => {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full liquid-button text-white py-4 px-6 font-medium text-body text-lg disabled:opacity-50 disabled:cursor-not-allowed apple-shimmer"
+                  className="w-full liquid-button text-white py-6 px-8 font-bold text-xl disabled:opacity-50 disabled:cursor-not-allowed rounded-2xl hover:scale-105 transition-all duration-300"
                 >
                   {loading ? "Adding Income..." : "Add Income"}
                 </button>
@@ -305,36 +433,68 @@ const IncomePage = () => {
           </div>
 
           {/* Recent Income & Insights */}
-          <div className="space-y-6">
-            <div className="glass-card p-6 rounded-2xl apple-fade-in">
-              <h3 className="text-display text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <FiTrendingUp size={20} />
-                Recent Income
-              </h3>
-              <div className="space-y-3">
+          <div className="space-y-8">
+            <div className="liquid-card p-8 rounded-3xl">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center">
+                  <FiTrendingUp size={24} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">Recent Income</h3>
+                  <p className="text-white/60 text-sm">Your latest transactions</p>
+                </div>
+              </div>
+              <div className="space-y-4">
                 {transactions.slice(0, 5).map((transaction) => (
-                  <div key={transaction.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5">
-                    <div>
-                      <p className="text-white font-medium">{transaction.description}</p>
-                      <p className="text-white/60 text-sm">{transaction.subcategory} • {new Date(transaction.date).toLocaleDateString()}</p>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-green-400 font-semibold">+₱{transaction.amount.toLocaleString()}</span>
-                      {transaction.recurring && (
-                        <p className="text-white/50 text-xs">Recurring</p>
-                      )}
+                  <div key={transaction.id} className="group relative overflow-hidden">
+                    <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-102">
+                      <div className="flex items-center justify-between">
+                        <div className="flex-1">
+                          <p className="text-white font-semibold text-lg mb-1">{transaction.description}</p>
+                          <p className="text-white/60 text-sm">{transaction.subcategory} • {new Date(transaction.date).toLocaleDateString()}</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <div className="text-right">
+                            <span className="text-green-400 font-bold text-lg">+₱{transaction.amount.toLocaleString()}</span>
+                            {transaction.recurring && (
+                              <p className="text-white/50 text-xs">Recurring</p>
+                            )}
+                          </div>
+                          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                              onClick={() => handleEditTransaction(transaction)}
+                              className="p-3 rounded-xl bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 transition-colors"
+                              title="Edit transaction"
+                            >
+                              <FiEdit3 size={18} />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteTransaction(transaction.id)}
+                              className="p-3 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-400 transition-colors"
+                              title="Delete transaction"
+                            >
+                              <FiTrash2 size={18} />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="glass-card p-6 rounded-2xl apple-fade-in">
-              <h3 className="text-display text-xl font-semibold text-white mb-4 flex items-center gap-2">
-                <FiTag size={20} />
-                Income Categories
-              </h3>
-              <div className="space-y-3">
+            <div className="liquid-card p-8 rounded-3xl">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+                  <FiTag size={24} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-bold text-white">Income Categories</h3>
+                  <p className="text-white/60 text-sm">Breakdown by category</p>
+                </div>
+              </div>
+              <div className="space-y-4">
                 {incomeCategories.map((category) => {
                   const categoryTotal = transactions
                     .filter(t => t.category === category.name)
@@ -342,18 +502,27 @@ const IncomePage = () => {
                   const percentage = totalIncome > 0 ? (categoryTotal / totalIncome * 100) : 0;
                   
                   return (
-                    <div key={category.id} className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors cursor-pointer">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-white/80 font-medium">{category.icon} {category.name}</span>
-                        <span className="text-white/60 text-sm">{percentage.toFixed(1)}%</span>
+                    <div key={category.id} className="group relative overflow-hidden">
+                      <div className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all duration-300 hover:scale-102 cursor-pointer">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-white font-semibold text-lg">{category.icon} {category.name}</span>
+                          <span className="text-white/60 text-sm font-medium">{percentage.toFixed(1)}%</span>
+                        </div>
+                        <div className="relative mb-2">
+                          <div className="w-full bg-white/10 rounded-full h-3">
+                            <div 
+                              className={`h-3 rounded-full bg-gradient-to-r ${category.color} transition-all duration-500`}
+                              style={{ width: `${percentage}%` }}
+                            />
+                          </div>
+                          {/* Progress glow effect */}
+                          <div 
+                            className="absolute top-0 h-3 bg-gradient-to-r from-white/20 to-transparent rounded-full blur-sm transition-all duration-500"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        <p className="text-white/60 text-sm font-medium">₱{categoryTotal.toLocaleString()}</p>
                       </div>
-                      <div className="w-full bg-white/10 rounded-full h-2">
-                        <div 
-                          className={`h-2 rounded-full bg-gradient-to-r ${category.color}`}
-                          style={{ width: `${percentage}%` }}
-                        ></div>
-                      </div>
-                      <p className="text-white/60 text-xs mt-1">₱{categoryTotal.toLocaleString()}</p>
                     </div>
                   );
                 })}
@@ -383,6 +552,19 @@ const IncomePage = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Transaction Modal */}
+      <EditTransactionModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditingTransaction(null);
+        }}
+        transaction={editingTransaction}
+        type="income"
+        onUpdate={handleUpdateTransaction}
+        onDelete={handleDeleteTransaction}
+      />
     </DashboardLayout>
   );
 };

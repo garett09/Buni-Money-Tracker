@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/app/components/DashboardLayout';
+import EditTransactionModal from '@/app/components/EditTransactionModal';
 import { toast } from 'react-hot-toast';
-import { FiTrendingDown, FiPlus, FiCalendar, FiTag, FiDollarSign, FiTarget, FiBarChart, FiAlertTriangle } from 'react-icons/fi';
+import { FiTrendingDown, FiPlus, FiCalendar, FiTag, FiDollarSign, FiTarget, FiBarChart, FiAlertTriangle, FiEdit3, FiTrash2 } from 'react-icons/fi';
 import { expenseCategories, spendingInsights } from '@/app/lib/categories';
 import { ApiClient } from '@/app/lib/api';
 
@@ -15,12 +16,33 @@ const ExpensesPage = () => {
     subcategory: '',
     date: new Date().toISOString().split('T')[0],
     recurring: false,
-    frequency: 'monthly'
+    frequency: 'monthly',
+    accountId: ''
   });
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<any>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [showInsights, setShowInsights] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<any>(null);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [sharingEnabled, setSharingEnabled] = useState(false);
+  const [partnerInfo, setPartnerInfo] = useState<any>(null);
+  const [accounts, setAccounts] = useState<any[]>([]);
+
+  // Load accounts from API
+  useEffect(() => {
+    const loadAccounts = async () => {
+      try {
+        const response = await ApiClient.getAccounts();
+        setAccounts(response.accounts || []);
+      } catch (error) {
+        console.log('Failed to load accounts, using empty array');
+        setAccounts([]);
+      }
+    };
+
+    loadAccounts();
+  }, []);
 
   // Load transactions from API
   useEffect(() => {
@@ -51,6 +73,27 @@ const ExpensesPage = () => {
     loadTransactions();
   }, []);
 
+  // Load sharing status
+  useEffect(() => {
+    const loadSharingStatus = async () => {
+      try {
+        const response = await ApiClient.getSharedExpenses();
+        setSharingEnabled(response.sharingEnabled);
+        setPartnerInfo(response.partnerInfo);
+      } catch (error) {
+        // Fallback to localStorage
+        const savedSharing = localStorage.getItem('expenseSharing');
+        if (savedSharing) {
+          const sharingData = JSON.parse(savedSharing);
+          setSharingEnabled(sharingData.enabled);
+          setPartnerInfo(sharingData.partnerInfo);
+        }
+      }
+    };
+
+    loadSharingStatus();
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target;
     
@@ -60,7 +103,8 @@ const ExpensesPage = () => {
       setFormData({
         ...formData,
         [name]: value,
-        subcategory: '' // Reset subcategory when category changes
+        subcategory: '', // Reset subcategory when category changes
+        accountId: formData.accountId // Preserve accountId
       });
     } else {
       setFormData({
@@ -109,10 +153,68 @@ const ExpensesPage = () => {
         subcategory: '',
         date: new Date().toISOString().split('T')[0],
         recurring: false,
-        frequency: 'monthly'
+        frequency: 'monthly',
+        accountId: ''
       });
       setSelectedCategory(null);
       setLoading(false);
+    }
+  };
+
+  const handleEditTransaction = (transaction: any) => {
+    setEditingTransaction(transaction);
+    setShowEditModal(true);
+  };
+
+  const handleUpdateTransaction = async (updatedTransaction: any) => {
+    try {
+      // Try API first
+      await ApiClient.updateExpenseTransaction(updatedTransaction.id, updatedTransaction);
+      
+      // Update local state
+      const updatedTransactions = transactions.map(t => 
+        t.id === updatedTransaction.id ? updatedTransaction : t
+      );
+      setTransactions(updatedTransactions);
+      
+      // Update localStorage as backup
+      localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
+      
+      toast.success('Expense updated successfully and saved to database!');
+    } catch (error) {
+      console.log('API not available, using localStorage fallback');
+      // Fallback to localStorage
+      const updatedTransactions = transactions.map(t => 
+        t.id === updatedTransaction.id ? updatedTransaction : t
+      );
+      setTransactions(updatedTransactions);
+      localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
+      
+      toast.success('Expense updated successfully (saved locally)!');
+    }
+  };
+
+  const handleDeleteTransaction = async (transactionId: number) => {
+    try {
+      // Try API first
+      await ApiClient.deleteExpenseTransaction(transactionId);
+      
+      // Update local state
+      const updatedTransactions = transactions.filter(t => t.id !== transactionId);
+      setTransactions(updatedTransactions);
+      
+      // Update localStorage as backup
+      localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
+      
+      toast.success('Expense deleted successfully and removed from database!');
+    } catch (error) {
+      console.log('API not available, using localStorage fallback');
+      // Fallback to localStorage
+      const updatedTransactions = transactions.filter(t => t.id !== transactionId);
+      setTransactions(updatedTransactions);
+      localStorage.setItem('expenseTransactions', JSON.stringify(updatedTransactions));
+      
+      toast.success('Expense deleted successfully (removed locally)!');
     }
   };
 
@@ -137,47 +239,84 @@ const ExpensesPage = () => {
     <DashboardLayout>
       <div className="space-y-8">
         {/* Header */}
-        <div className="apple-fade-in">
-          <h1 className="text-display text-4xl font-semibold text-white mb-2 tracking-tight">
-            Add Expense
-          </h1>
-          <p className="text-body text-white/60 text-lg">
-            Track your spending and manage your expenses.
-          </p>
+        <div className="mb-12">
+          <div className="flex items-center gap-6 mb-8">
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-xl">
+              <FiTrendingDown size={36} className="text-white" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-4 mb-3">
+                <h1 className="text-6xl font-bold text-white tracking-tight">
+                  Add Expenses
+                </h1>
+                {sharingEnabled && (
+                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30">
+                    <div className="w-2 h-2 rounded-full bg-green-400"></div>
+                    <span className="text-green-400 text-sm font-medium">
+                      Sharing with {partnerInfo?.name || 'Partner'}
+                    </span>
+                  </div>
+                )}
+              </div>
+              <p className="text-xl text-white/70 font-light">
+                Track your spending and manage your expenses
+                {sharingEnabled && (
+                  <span className="text-green-400/80"> • Your expenses are shared with your partner.</span>
+                )}
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Expense Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="liquid-card p-6 apple-fade-in">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center liquid-shape">
-                <FiDollarSign size={24} className="text-white" />
-              </div>
-              <div>
-                <h3 className="text-display text-2xl font-semibold text-white">₱{totalExpenses.toLocaleString()}</h3>
-                <p className="text-white/60 text-sm">Total Expenses</p>
-              </div>
-            </div>
-          </div>
-          <div className="liquid-card p-6 apple-fade-in">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center liquid-shape-2">
-                <FiTarget size={24} className="text-white" />
-              </div>
-              <div>
-                <h3 className="text-display text-2xl font-semibold text-white">₱{monthlyExpenses.toLocaleString()}</h3>
-                <p className="text-white/60 text-sm">Monthly Recurring</p>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+          <div className="group relative overflow-hidden">
+            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 via-rose-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-500 to-rose-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <FiDollarSign size={28} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm font-medium mb-1">Total Expenses</p>
+                    <p className="text-white font-bold text-3xl">₱{totalExpenses.toLocaleString()}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div className="liquid-card p-6 apple-fade-in">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center liquid-shape-3">
-                <FiBarChart size={24} className="text-white" />
+
+          <div className="group relative overflow-hidden">
+            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-orange-500/10 via-red-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <FiTrendingDown size={28} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm font-medium mb-1">Monthly Recurring</p>
+                    <p className="text-white font-bold text-3xl">₱{monthlyExpenses.toLocaleString()}</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3 className="text-display text-2xl font-semibold text-white">{transactions.length}</h3>
-                <p className="text-white/60 text-sm">Transactions</p>
+            </div>
+          </div>
+
+          <div className="group relative overflow-hidden">
+            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-violet-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <div className="flex items-center gap-6 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                    <FiBarChart size={28} className="text-white" />
+                  </div>
+                  <div>
+                    <p className="text-white/60 text-sm font-medium mb-1">Transactions</p>
+                    <p className="text-white font-bold text-3xl">{transactions.length}</p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -300,6 +439,27 @@ const ExpensesPage = () => {
                   </div>
                 </div>
 
+                <div>
+                  <label htmlFor="accountId" className="block text-body text-sm font-medium text-white/80 mb-3 tracking-wide">
+                    Account
+                  </label>
+                  <select
+                    id="accountId"
+                    name="accountId"
+                    value={formData.accountId}
+                    onChange={handleChange}
+                    required
+                    className="liquid-input w-full px-6 py-4 focus:outline-none text-lg"
+                  >
+                    <option value="">Select an account</option>
+                    {accounts.map((account) => (
+                      <option key={account.id} value={account.id}>
+                        {account.accountName} - ₱{account.currentBalance?.toLocaleString() || '0'}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 <div className="flex items-center gap-6">
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
@@ -346,16 +506,34 @@ const ExpensesPage = () => {
               </h3>
               <div className="space-y-3">
                 {transactions.slice(0, 5).map((transaction) => (
-                  <div key={transaction.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5">
-                    <div>
+                  <div key={transaction.id} className="flex items-center justify-between p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group">
+                    <div className="flex-1">
                       <p className="text-white font-medium">{transaction.description}</p>
                       <p className="text-white/60 text-sm">{transaction.subcategory} • {new Date(transaction.date).toLocaleDateString()}</p>
                     </div>
-                    <div className="text-right">
-                      <span className="text-red-400 font-semibold">-₱{transaction.amount.toLocaleString()}</span>
-                      {transaction.recurring && (
-                        <p className="text-white/50 text-xs">Recurring</p>
-                      )}
+                    <div className="flex items-center gap-3">
+                      <div className="text-right">
+                        <span className="text-red-400 font-semibold">-₱{transaction.amount.toLocaleString()}</span>
+                        {transaction.recurring && (
+                          <p className="text-white/50 text-xs">Recurring</p>
+                        )}
+                      </div>
+                      <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button
+                          onClick={() => handleEditTransaction(transaction)}
+                          className="p-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 transition-colors"
+                          title="Edit transaction"
+                        >
+                          <FiEdit3 size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteTransaction(transaction.id)}
+                          className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 transition-colors"
+                          title="Delete transaction"
+                        >
+                          <FiTrash2 size={16} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -424,6 +602,19 @@ const ExpensesPage = () => {
           </div>
         </div>
       </div>
+
+      {/* Edit Transaction Modal */}
+      <EditTransactionModal
+        isOpen={showEditModal}
+        onClose={() => {
+          setShowEditModal(false);
+          setEditingTransaction(null);
+        }}
+        transaction={editingTransaction}
+        type="expense"
+        onUpdate={handleUpdateTransaction}
+        onDelete={handleDeleteTransaction}
+      />
     </DashboardLayout>
   );
 };

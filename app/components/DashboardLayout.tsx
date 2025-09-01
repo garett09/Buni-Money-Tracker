@@ -9,6 +9,8 @@ import {
   FiTrendingUp, 
   FiTrendingDown, 
   FiTarget,
+  FiUsers,
+  FiCreditCard,
   FiLogOut, 
   FiUser,
   FiMenu,
@@ -49,6 +51,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     { name: 'Income', href: '/dashboard/income', icon: FiTrendingUp },
     { name: 'Expenses', href: '/dashboard/expenses', icon: FiTrendingDown },
     { name: 'Savings Goals', href: '/dashboard/savings', icon: FiTarget },
+    { name: 'My Accounts', href: '/dashboard/accounts', icon: FiCreditCard },
+    { name: 'Shared Expenses', href: '/dashboard/shared', icon: FiUsers },
   ];
 
   if (!user) {
@@ -154,6 +158,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           onClick={() => setSidebarOpen(false)}
         />
       )}
+
     </div>
   );
 };

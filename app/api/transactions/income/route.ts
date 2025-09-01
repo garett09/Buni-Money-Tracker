@@ -69,3 +69,82 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+// PUT - Update existing income transaction
+export async function PUT(request: NextRequest) {
+  try {
+    const user = await verifyToken(request);
+    if (!user) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { transactionId, updates } = await request.json();
+    
+    // Get all transactions
+    const transactions = await redis.lrange(`user:${user.userId}:income`, 0, -1);
+    const transactionIndex = transactions.findIndex((t: any) => t.id === transactionId);
+    
+    if (transactionIndex === -1) {
+      return NextResponse.json({ message: 'Transaction not found' }, { status: 404 });
+    }
+
+    // Update the transaction
+    const updatedTransaction = {
+      ...JSON.parse(transactions[transactionIndex]),
+      ...updates,
+      amount: updates.amount ? parseFloat(updates.amount) : JSON.parse(transactions[transactionIndex]).amount,
+      updatedAt: new Date().toISOString()
+    };
+
+    // Replace the transaction in the list
+    await redis.lset(`user:${user.userId}:income`, transactionIndex, updatedTransaction);
+
+    return NextResponse.json({
+      message: 'Income transaction updated successfully',
+      transaction: updatedTransaction
+    });
+
+  } catch (error) {
+    console.error('Error updating income transaction:', error);
+    return NextResponse.json(
+      { message: 'Server error' },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE - Delete income transaction
+export async function DELETE(request: NextRequest) {
+  try {
+    const user = await verifyToken(request);
+    if (!user) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { transactionId } = await request.json();
+    
+    // Get all transactions
+    const transactions = await redis.lrange(`user:${user.userId}:income`, 0, -1);
+    const transactionIndex = transactions.findIndex((t: any) => t.id === transactionId);
+    
+    if (transactionIndex === -1) {
+      return NextResponse.json({ message: 'Transaction not found' }, { status: 404 });
+    }
+
+    // Remove the transaction from the list
+    const deletedTransaction = JSON.parse(transactions[transactionIndex]);
+    await redis.lrem(`user:${user.userId}:income`, 1, transactions[transactionIndex]);
+
+    return NextResponse.json({
+      message: 'Income transaction deleted successfully',
+      transaction: deletedTransaction
+    });
+
+  } catch (error) {
+    console.error('Error deleting income transaction:', error);
+    return NextResponse.json(
+      { message: 'Server error' },
+      { status: 500 }
+    );
+  }
+}

@@ -237,34 +237,44 @@ const SavingsPage = () => {
   return (
     <DashboardLayout>
       <div className="space-y-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-display text-3xl font-bold text-white mb-2">Savings Goals</h1>
-            <p className="text-body text-white/60">Plan and track your financial goals</p>
+        {/* Header */}
+        <div className="mb-12">
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center gap-6">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-xl">
+                <FiTarget size={36} className="text-white" />
+              </div>
+              <div>
+                <h1 className="text-6xl font-bold text-white mb-3 tracking-tight">Savings Goals</h1>
+                <p className="text-xl text-white/70 font-light">Plan and track your financial goals</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setShowAddForm(true)}
+              className="liquid-button text-white py-4 px-8 font-bold text-lg flex items-center gap-3 rounded-2xl hover:scale-105 transition-all duration-300"
+            >
+              <FiPlus size={24} />
+              Add Goal
+            </button>
           </div>
         </div>
 
-        {/* Add Goal Button */}
-        <div className="flex justify-between items-center">
-          <div className="liquid-card p-6 apple-fade-in">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center liquid-shape">
-                <FiTarget size={24} className="text-white" />
-              </div>
-              <div>
-                <h3 className="text-white font-medium">Create New Goal</h3>
-                <p className="text-white/60 text-sm">Start saving for your dreams</p>
+        {/* Create Goal Card */}
+        <div className="group relative overflow-hidden mb-8">
+          <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-violet-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="flex items-center gap-6 relative z-10">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                  <FiTarget size={28} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-semibold text-xl mb-1">Create New Goal</h3>
+                  <p className="text-white/60 text-lg">Start saving for your dreams</p>
+                </div>
               </div>
             </div>
           </div>
-          
-          <button
-            onClick={() => setShowAddForm(true)}
-            className="liquid-button text-white py-4 px-6 font-medium text-body text-lg apple-shimmer flex items-center gap-2"
-          >
-            <FiPlus size={20} />
-            Add Goal
-          </button>
         </div>
 
         {/* Add/Edit Goal Form */}
