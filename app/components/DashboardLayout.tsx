@@ -190,7 +190,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         </button>
 
         {/* Enhanced Sidebar */}
-        <div className={`fixed inset-y-0 left-0 z-40 w-80 liquid-card backdrop-blur-lg border-r border-white/10 transform transition-transform duration-300 ease-in-out md:translate-x-0 ${
+        <div className={`fixed inset-y-0 left-0 z-40 w-80 sidebar-glass transform transition-transform duration-300 ease-in-out md:translate-x-0 will-change-transform ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
           <div className="flex flex-col h-full p-6">
@@ -210,9 +210,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </div>
 
             {/* User Profile */}
-            <div className="mb-8 p-4 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10">
+            <div className="mb-8 p-4 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
                   <FiUser size={20} className="text-white" />
                 </div>
                 <div className="flex-1">
@@ -230,17 +230,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
             {/* Quick Actions */}
             {showQuickActions && (
-              <div className="mb-6 p-4 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10">
+              <div className="mb-6 p-4 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg">
                 <h3 className="text-sm font-semibold text-white/80 mb-3">Quick Actions</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {quickActions.map((action) => (
                     <Link
                       key={action.name}
                       href={action.href}
-                      className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group"
+                      className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group shadow-sm"
                       onClick={() => setSidebarOpen(false)}
                     >
-                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300`}>
+                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300 shadow-md`}>
                         <action.icon size={16} className="text-white" />
                       </div>
                       <p className="text-xs font-medium text-white/80">{action.name}</p>
@@ -261,8 +261,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     href={item.href}
                     className={`group relative p-4 rounded-2xl transition-all duration-300 ${
                       isActive 
-                        ? 'bg-gradient-to-r from-emerald-500/20 to-blue-500/20 border border-emerald-500/30' 
-                        : 'hover:bg-white/10 border border-transparent'
+                        ? 'nav-item-glass active' 
+                        : 'nav-item-glass'
                     }`}
                     onClick={() => setSidebarOpen(false)}
                   >
@@ -305,9 +305,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             <div className="space-y-2 pt-4 border-t border-white/10">
               <Link
                 href="/dashboard/settings"
-                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/10 transition-all duration-300 group"
+                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/10 transition-all duration-300 group shadow-sm"
               >
-                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors duration-300">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors duration-300 shadow-sm">
                   <FiSettings size={20} className="text-white/60 group-hover:text-white transition-colors duration-300" />
                 </div>
                 <span className="font-medium text-white/80 group-hover:text-white transition-colors duration-300">
@@ -317,9 +317,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-red-500/20 transition-all duration-300 group"
+                className="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-red-500/20 transition-all duration-300 group shadow-sm"
               >
-                <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center group-hover:bg-red-500/30 transition-colors duration-300">
+                <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center group-hover:bg-red-500/30 transition-colors duration-300 shadow-sm">
                   <FiLogOut size={20} className="text-red-400 group-hover:text-red-300 transition-colors duration-300" />
                 </div>
                 <span className="font-medium text-red-400 group-hover:text-red-300 transition-colors duration-300">
