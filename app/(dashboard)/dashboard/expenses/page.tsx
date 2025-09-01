@@ -160,6 +160,12 @@ const ExpensesPage = () => {
         date: new Date().toISOString().split('T')[0],
         recurring: false,
         frequency: 'monthly',
+        billingDate: new Date().toISOString().split('T')[0],
+        totalInstallments: 1,
+        currentInstallment: 1,
+        paidAmount: 0,
+        remainingAmount: 0,
+        nextBillingDate: '',
         accountId: ''
       });
       setSelectedCategory(null);
@@ -577,13 +583,13 @@ const ExpensesPage = () => {
                         <div>
                           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Paid So Far</p>
                           <p className="font-bold text-lg" style={{ color: '#10B981' }}>
-                            ₱{(parseFloat(formData.paidAmount) || 0).toLocaleString()}
+                            ₱{(formData.paidAmount || 0).toLocaleString()}
                           </p>
                         </div>
                         <div>
                           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Remaining</p>
                           <p className="font-bold text-lg" style={{ color: '#EF4444' }}>
-                            ₱{Math.max(0, (parseFloat(formData.amount) || 0) - (parseFloat(formData.paidAmount) || 0)).toLocaleString()}
+                            ₱{Math.max(0, (parseFloat(formData.amount) || 0) - (formData.paidAmount || 0)).toLocaleString()}
                           </p>
                         </div>
                         <div>
