@@ -176,18 +176,42 @@ PORT=8000
 
 ## 🚀 Deployment
 
-### Frontend (Vercel/Netlify)
-```bash
-cd frontend/buni-money-tracker
-npm run build
-# Deploy the dist folder
-```
+### Vercel Deployment (Recommended)
 
-### Backend (Heroku/Railway)
+1. **Push to GitHub**
+   ```bash
+   git add .
+   git commit -m "Ready for deployment"
+   git push origin main
+   ```
+
+2. **Deploy to Vercel**
+   - Connect your GitHub repository to Vercel
+   - Vercel will automatically detect Next.js and deploy
+
+3. **Environment Variables**
+   Set these in your Vercel dashboard:
+   ```env
+   NEXT_PUBLIC_API_URL=https://your-app-name.vercel.app
+   UPSTASH_REDIS_REST_URL=your_redis_url_here
+   UPSTASH_REDIS_REST_TOKEN=your_redis_token_here
+   JWT_SECRET=your_jwt_secret_here
+   NODE_ENV=production
+   ```
+
+4. **Redis Setup**
+   - Create a free Redis database on [Upstash](https://upstash.com/)
+   - Add the Redis URL and token to Vercel environment variables
+
+### Other Platforms
+- **Netlify**: Similar process, but use `npm run build` and deploy the `.next` folder
+- **Railway**: Connect GitHub and set environment variables
+- **Heroku**: Use the Next.js buildpack
+
+### Local Development
 ```bash
-cd backend
-# Deploy with your preferred platform
-# Make sure to set environment variables
+npm run dev
+# Open http://localhost:3000
 ```
 
 ## 🤝 Contributing
