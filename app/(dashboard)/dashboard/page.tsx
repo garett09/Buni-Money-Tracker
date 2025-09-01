@@ -3,13 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import DashboardLayout from '@/app/components/DashboardLayout';
-import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiTarget } from 'react-icons/fi';
+import { FiTrendingUp, FiTrendingDown, FiDollarSign, FiTarget, FiDatabase, FiUpload } from 'react-icons/fi';
 import { ApiClient } from '@/app/lib/api';
+import { DataMigration } from '@/app/lib/dataMigration';
+import { toast } from 'react-hot-toast';
 
 const DashboardPage = () => {
   const [user, setUser] = useState<any>(null);
   const [incomeTransactions, setIncomeTransactions] = useState<any[]>([]);
   const [expenseTransactions, setExpenseTransactions] = useState<any[]>([]);
+  const [savingsGoals, setSavingsGoals] = useState<any[]>([]);
+  const [showMigrationPrompt, setShowMigrationPrompt] = useState(false);
+  const [migrating, setMigrating] = useState(false);
 
   const loadData = async () => {
     const userData = localStorage.getItem('user');
@@ -18,16 +23,20 @@ const DashboardPage = () => {
     }
 
     try {
-      // Load income transactions from API
+      // Always try to load from API/database first
       const incomeResponse = await ApiClient.getIncomeTransactions();
       setIncomeTransactions(incomeResponse.transactions || []);
 
-      // Load expense transactions from API
       const expenseResponse = await ApiClient.getExpenseTransactions();
       setExpenseTransactions(expenseResponse.transactions || []);
+
+      const savingsResponse = await ApiClient.getSavingsGoals();
+      setSavingsGoals(savingsResponse.goals || []);
+      
+      console.log('Data loaded from database successfully');
     } catch (error) {
-      console.error('Error loading transactions:', error);
-      // Fallback to localStorage for development
+      console.log('API not available, using localStorage fallback');
+      // Fallback to localStorage for development or when API is not available
       const savedIncome = localStorage.getItem('incomeTransactions');
       if (savedIncome) {
         setIncomeTransactions(JSON.parse(savedIncome));
@@ -35,6 +44,15 @@ const DashboardPage = () => {
       const savedExpenses = localStorage.getItem('expenseTransactions');
       if (savedExpenses) {
         setExpenseTransactions(JSON.parse(savedExpenses));
+      }
+      const savedGoals = localStorage.getItem('savingsGoals');
+      if (savedGoals) {
+        setSavingsGoals(JSON.parse(savedGoals));
+      }
+      
+      // Check if user has localStorage data that could be migrated
+      if (DataMigration.hasLocalDataToMigrate()) {
+        setShowMigrationPrompt(true);
       }
     }
   };
@@ -55,51 +73,115 @@ const DashboardPage = () => {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
+  // Handle data migration
+  const handleMigration = async () => {
+    setMigrating(true);
+    try {
+      const result = await DataMigration.migrateLocalDataToDatabase();
+      if (result.success) {
+        toast.success(`Successfully migrated ${result.migratedCount} transactions to database!`);
+        DataMigration.clearLocalData();
+        setShowMigrationPrompt(false);
+        // Reload data from database
+        await loadData();
+      } else {
+        toast.error('Migration failed. Please try again.');
+      }
+    } catch (error) {
+      toast.error('Migration failed. Please try again.');
+    } finally {
+      setMigrating(false);
+    }
+  };
+
   // Calculate totals
   const totalIncome = incomeTransactions.reduce((sum, transaction) => sum + transaction.amount, 0);
   const totalExpenses = expenseTransactions.reduce((sum, transaction) => sum + transaction.amount, 0);
   const netBalance = totalIncome - totalExpenses;
-  const savingsGoal = 15000; // You can make this configurable later
-  const savingsProgress = Math.min((netBalance / savingsGoal) * 100, 100);
+  
+  // Calculate savings goals totals
+  const totalSavingsTarget = savingsGoals.reduce((sum, goal) => sum + goal.targetAmount, 0);
+  const totalSavingsCurrent = savingsGoals.reduce((sum, goal) => sum + goal.currentAmount, 0);
+  const savingsProgress = totalSavingsTarget > 0 ? Math.min((totalSavingsCurrent / totalSavingsTarget) * 100, 100) : 0;
+  
+  // Calculate transaction counts
+  const incomeCount = incomeTransactions.length;
+  const expenseCount = expenseTransactions.length;
+  const totalTransactions = incomeCount + expenseCount;
 
   const stats = [
     {
       title: 'Total Income',
       value: `₱${totalIncome.toLocaleString()}`,
-      change: '+12%',
-      changeType: 'positive',
+      change: incomeCount > 0 ? `${incomeCount} transactions` : 'No data yet',
+      changeType: incomeCount > 0 ? 'positive' : 'neutral',
       icon: FiTrendingUp,
       color: 'from-green-500 to-emerald-600'
     },
     {
       title: 'Total Expenses',
       value: `₱${totalExpenses.toLocaleString()}`,
-      change: '+5%',
-      changeType: 'negative',
+      change: expenseCount > 0 ? `${expenseCount} transactions` : 'No data yet',
+      changeType: expenseCount > 0 ? 'negative' : 'neutral',
       icon: FiTrendingDown,
       color: 'from-red-500 to-rose-600'
     },
     {
       title: 'Net Balance',
       value: `₱${netBalance.toLocaleString()}`,
-      change: netBalance >= 0 ? '+8%' : '-5%',
-      changeType: netBalance >= 0 ? 'positive' : 'negative',
+      change: totalTransactions > 0 ? (netBalance >= 0 ? 'In profit' : 'In deficit') : 'No data yet',
+      changeType: totalTransactions > 0 ? (netBalance >= 0 ? 'positive' : 'negative') : 'neutral',
       icon: FiDollarSign,
-      color: netBalance >= 0 ? 'from-blue-500 to-cyan-600' : 'from-red-500 to-rose-600'
+      color: totalTransactions > 0 ? (netBalance >= 0 ? 'from-blue-500 to-cyan-600' : 'from-red-500 to-rose-600') : 'from-gray-500 to-gray-600'
     },
     {
-      title: 'Savings Goal',
-      value: `₱${savingsGoal.toLocaleString()}`,
-      change: `${savingsProgress.toFixed(0)}%`,
-      changeType: 'neutral',
+      title: 'Savings Goals',
+      value: `₱${totalSavingsTarget.toLocaleString()}`,
+      change: savingsGoals.length > 0 ? `${savingsProgress.toFixed(0)}% complete` : 'No goals set',
+      changeType: savingsGoals.length > 0 ? 'neutral' : 'neutral',
       icon: FiTarget,
-      color: 'from-purple-500 to-violet-600'
+      color: savingsGoals.length > 0 ? 'from-purple-500 to-violet-600' : 'from-gray-500 to-gray-600'
     }
   ];
 
   return (
     <DashboardLayout>
       <div className="space-y-8">
+        {/* Migration Prompt */}
+        {showMigrationPrompt && (
+          <div className="glass-card p-6 rounded-2xl apple-fade-in border border-blue-500/30">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center">
+                <FiDatabase size={24} className="text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-display text-xl font-semibold text-white mb-2">
+                  Migrate Your Data to Database
+                </h3>
+                <p className="text-white/70 text-sm">
+                  You have local data that can be migrated to the database for better persistence and multi-device access.
+                </p>
+              </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleMigration}
+                  disabled={migrating}
+                  className="glass-button text-white py-2 px-4 rounded-xl font-medium text-sm disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  <FiUpload size={16} />
+                  {migrating ? 'Migrating...' : 'Migrate Now'}
+                </button>
+                <button
+                  onClick={() => setShowMigrationPrompt(false)}
+                  className="glass-button text-white/60 py-2 px-4 rounded-xl font-medium text-sm hover:text-white transition-colors"
+                >
+                  Later
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Welcome Section */}
         <div className="apple-fade-in">
           <h1 className="text-display text-4xl font-semibold text-white mb-2 tracking-tight">
@@ -172,6 +254,18 @@ const DashboardPage = () => {
                 <div>
                   <h3 className="text-white font-medium">Add Expense</h3>
                   <p className="text-white/60 text-sm">Track your spending</p>
+                </div>
+              </Link>
+              <Link
+                href="/dashboard/savings"
+                className="flex items-center gap-4 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group"
+              >
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center">
+                  <FiTarget size={24} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="text-white font-medium">Set Savings Goals</h3>
+                  <p className="text-white/60 text-sm">Plan for your future</p>
                 </div>
               </Link>
             </div>
