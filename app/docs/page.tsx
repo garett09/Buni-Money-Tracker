@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const DocumentationPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeSection, setActiveSection] = useState('getting-started');
+  const [activeSection, setActiveSection] = useState('getting-started-step1');
 
   const tutorialSteps = [
     {
@@ -16,28 +16,28 @@ const DocumentationPage = () => {
       color: 'from-blue-500 to-cyan-600',
       steps: [
         { 
-          id: 'step-1', 
+          id: 'step1', 
           title: 'Step 1: Create Your Account', 
           description: 'Sign up and get started in minutes',
           stepNumber: 1,
           estimatedTime: '2 minutes'
         },
         { 
-          id: 'step-2', 
+          id: 'step2', 
           title: 'Step 2: Add Your First Bank Account', 
           description: 'Connect your primary bank account',
           stepNumber: 2,
           estimatedTime: '3 minutes'
         },
         { 
-          id: 'step-3', 
+          id: 'step3', 
           title: 'Step 3: Set Up Your Budget', 
           description: 'Create your first monthly budget',
           stepNumber: 3,
           estimatedTime: '5 minutes'
         },
         { 
-          id: 'step-4', 
+          id: 'step4', 
           title: 'Step 4: Track Your First Transaction', 
           description: 'Record your first expense or income',
           stepNumber: 4,
@@ -52,28 +52,28 @@ const DocumentationPage = () => {
       color: 'from-emerald-500 to-green-600',
       steps: [
         { 
-          id: 'step-5', 
+          id: 'step5', 
           title: 'Step 5: Dashboard Navigation', 
           description: 'Learn to navigate your financial dashboard',
           stepNumber: 5,
           estimatedTime: '4 minutes'
         },
         { 
-          id: 'step-6', 
+          id: 'step6', 
           title: 'Step 6: Budget Management', 
           description: 'Create and manage monthly budgets',
           stepNumber: 6,
           estimatedTime: '6 minutes'
         },
         { 
-          id: 'step-7', 
+          id: 'step7', 
           title: 'Step 7: Expense Tracking', 
           description: 'Track daily expenses and categorize spending',
           stepNumber: 7,
           estimatedTime: '5 minutes'
         },
         { 
-          id: 'step-8', 
+          id: 'step8', 
           title: 'Step 8: Income Management', 
           description: 'Manage multiple income sources',
           stepNumber: 8,
@@ -88,28 +88,28 @@ const DocumentationPage = () => {
       color: 'from-purple-500 to-pink-600',
       steps: [
         { 
-          id: 'step-9', 
+          id: 'step9', 
           title: 'Step 9: Savings Goals', 
           description: 'Set and track financial objectives',
           stepNumber: 9,
           estimatedTime: '7 minutes'
         },
         { 
-          id: 'step-10', 
+          id: 'step10', 
           title: 'Step 10: Analytics & Reports', 
           description: 'Analyze your financial patterns',
           stepNumber: 10,
           estimatedTime: '8 minutes'
         },
         { 
-          id: 'step-11', 
+          id: 'step11', 
           title: 'Step 11: AI Notifications', 
           description: 'Set up smart financial alerts',
           stepNumber: 11,
           estimatedTime: '5 minutes'
         },
         { 
-          id: 'step-12', 
+          id: 'step12', 
           title: 'Step 12: Shared Expenses', 
           description: 'Split bills with family and friends',
           stepNumber: 12,
@@ -124,21 +124,21 @@ const DocumentationPage = () => {
       color: 'from-orange-500 to-red-600',
       steps: [
         { 
-          id: 'step-13', 
+          id: 'step13', 
           title: 'Step 13: Import & Export', 
           description: 'Transfer data from other financial apps',
           stepNumber: 13,
           estimatedTime: '5 minutes'
         },
         { 
-          id: 'step-14', 
+          id: 'step14', 
           title: 'Step 14: Backup & Restore', 
           description: 'Secure your financial data',
           stepNumber: 14,
           estimatedTime: '4 minutes'
         },
         { 
-          id: 'step-15', 
+          id: 'step15', 
           title: 'Step 15: Data Sync', 
           description: 'Keep data in sync across devices',
           stepNumber: 15,
@@ -153,21 +153,21 @@ const DocumentationPage = () => {
       color: 'from-indigo-500 to-purple-600',
       steps: [
         { 
-          id: 'step-16', 
+          id: 'step16', 
           title: 'Step 16: Keyboard Shortcuts', 
           description: 'Speed up your workflow',
           stepNumber: 16,
           estimatedTime: '3 minutes'
         },
         { 
-          id: 'step-17', 
+          id: 'step17', 
           title: 'Step 17: Custom Categories', 
           description: 'Create personalized spending categories',
           stepNumber: 17,
           estimatedTime: '4 minutes'
         },
         { 
-          id: 'step-18', 
+          id: 'step18', 
           title: 'Step 18: Mobile Optimization', 
           description: 'Get the most from mobile app',
           stepNumber: 18,
@@ -239,7 +239,9 @@ const DocumentationPage = () => {
     const section = tutorialSteps.find(s => s.id === sectionId);
     const step = section?.steps.find(st => st.id === stepId);
     
-    if (!section || !step) return <div>Step not found</div>;
+    if (!section || !step) {
+      return <div>Step not found</div>;
+    }
     
     return (
       <div className="space-y-6">
