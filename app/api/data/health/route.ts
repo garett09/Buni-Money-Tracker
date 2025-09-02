@@ -22,17 +22,28 @@ export async function GET(request: NextRequest) {
   try {
     const user = await verifyToken(request);
     if (!user) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ 
+        message: 'Unauthorized - Please log in to access this resource',
+        error: 'AUTH_REQUIRED'
+      }, { status: 401 });
     }
 
     // Perform health check
     const healthStatus = await DataPersistence.healthCheck(user.userId);
     
-    return NextResponse.json(healthStatus);
+    return NextResponse.json({
+      ...healthStatus,
+      timestamp: Date.now(),
+      userId: user.userId
+    });
 
   } catch (error) {
+    console.error('Health check error:', error);
     return NextResponse.json(
-      { message: 'Server error' },
+      { 
+        message: 'Server error during health check',
+        error: 'HEALTH_CHECK_FAILED'
+      },
       { status: 500 }
     );
   }

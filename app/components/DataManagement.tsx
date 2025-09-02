@@ -38,19 +38,52 @@ const DataManagement: React.FC = () => {
   const [exporting, setExporting] = useState(false);
   const [importing, setImporting] = useState(false);
   const [lastSync, setLastSync] = useState<{ [key: string]: number }>({});
+  const [retryCount, setRetryCount] = useState(0);
 
   // Load health status on component mount
   useEffect(() => {
-    loadHealthStatus();
+    // Only load health status if user is authenticated
+    const token = localStorage.getItem('token');
+    if (token) {
+      loadHealthStatus();
+    }
   }, []);
+
+  // Retry mechanism for failed health checks
+  useEffect(() => {
+    if (retryCount > 0 && retryCount <= 3) {
+      const timer = setTimeout(() => {
+        loadHealthStatus();
+      }, 2000 * retryCount); // Exponential backoff: 2s, 4s, 6s
+      
+      return () => clearTimeout(timer);
+    }
+  }, [retryCount]);
 
   const loadHealthStatus = async () => {
     try {
       setLoading(true);
       const status = await ApiClient.checkDataHealth();
       setHealthStatus(status);
-    } catch (error) {
-      toast.error('Failed to load data health status');
+      setRetryCount(0); // Reset retry count on success
+    } catch (error: any) {
+      console.error('Health check failed:', error);
+      
+      // Provide more specific error messages
+      if (error.message?.includes('Unauthorized') || error.message?.includes('401')) {
+        toast.error('Please log in to view data health status');
+        // Don't retry for auth errors
+        return;
+      } else if (error.message?.includes('Failed to check data health')) {
+        if (retryCount < 3) {
+          setRetryCount(prev => prev + 1);
+          toast.error(`Health check failed. Retrying in ${(retryCount + 1) * 2} seconds...`);
+        } else {
+          toast.error('Unable to check data health after multiple attempts. Please try again later.');
+        }
+      } else {
+        toast.error('Failed to load data health status');
+      }
     } finally {
       setLoading(false);
     }
@@ -260,6 +293,20 @@ const DataManagement: React.FC = () => {
           <div className="text-center py-8">
             <FiDatabase size={48} className="mx-auto mb-4" style={{ color: 'var(--text-muted)' }} />
             <p style={{ color: 'var(--text-muted)' }}>No health data available</p>
+            {retryCount > 0 && (
+              <div className="mt-4">
+                <p className="text-sm text-yellow-400 mb-3">
+                  Previous attempts failed. Retry count: {retryCount}/3
+                </p>
+                <button
+                  onClick={loadHealthStatus}
+                  disabled={loading}
+                  className="px-4 py-2 rounded-lg bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30 transition-all duration-300"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

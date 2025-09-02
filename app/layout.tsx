@@ -103,7 +103,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
         {/* Preload critical resources */}
-        <link rel="preload" href="/api/data/health" as="fetch" crossOrigin="anonymous" />
+
         <link rel="preload" href="/api/accounts" as="fetch" crossOrigin="anonymous" />
         
         {/* Service Worker */}

@@ -182,8 +182,8 @@ export class EnhancedBudgetTracker {
 
       // Calculate trend based on budget usage percentages
       const recentMonths = historicalData.slice(-2);
-      const currentUsage = recentMonths[1]?.usagePercentage || 0;
-      const previousUsage = recentMonths[0]?.usagePercentage || 0;
+      const currentUsage = recentMonths[1]?.budgetUsagePercent || 0;
+      const previousUsage = recentMonths[0]?.budgetUsagePercent || 0;
       
       let trend: 'improving' | 'declining' | 'stable' = 'stable';
       let confidence = 50;
@@ -217,20 +217,20 @@ export class EnhancedBudgetTracker {
       const lastYearStr = lastYear.toISOString().slice(0, 7);
       const currentMonthStr = now.toISOString().slice(0, 7);
       
-      const currentData = await HistoricalDataManager.getBudgetPerformance(this.userId, currentMonthStr);
-      const lastMonthData = await HistoricalDataManager.getBudgetPerformance(this.userId, lastMonthStr);
-      const lastYearData = await HistoricalDataManager.getBudgetPerformance(this.userId, lastYearStr);
+      const currentData = await HistoricalDataManager.getHistoricalBudgetPerformance(this.userId, 1);
+      const lastMonthData = await HistoricalDataManager.getHistoricalBudgetPerformance(this.userId, 2);
+      const lastYearData = await HistoricalDataManager.getHistoricalBudgetPerformance(this.userId, 12);
       
       const vsLastMonth = {
-        spending: currentData && lastMonthData ? currentData.spent - lastMonthData.spent : 0,
-        budget: currentData && lastMonthData ? currentData.budget - lastMonthData.budget : 0,
-        health: currentData && lastMonthData ? currentData.healthScore - lastMonthData.healthScore : 0
+        spending: currentData.length > 0 && lastMonthData.length > 0 ? currentData[0].totalExpenses - lastMonthData[0].totalExpenses : 0,
+        budget: currentData.length > 0 && lastMonthData.length > 0 ? currentData[0].monthlyBudget - lastMonthData[0].monthlyBudget : 0,
+        health: currentData.length > 0 && lastMonthData.length > 0 ? currentData[0].financialHealthScore - lastMonthData[0].financialHealthScore : 0
       };
       
       const vsLastYear = {
-        spending: currentData && lastYearData ? currentData.spent - lastYearData.spent : 0,
-        budget: currentData && lastYearData ? currentData.budget - lastYearData.budget : 0,
-        health: currentData && lastYearData ? currentData.healthScore - lastYearData.healthScore : 0
+        spending: currentData.length > 0 && lastYearData.length > 0 ? currentData[0].totalExpenses - lastYearData[0].totalExpenses : 0,
+        budget: currentData.length > 0 && lastYearData.length > 0 ? currentData[0].monthlyBudget - lastYearData[0].monthlyBudget : 0,
+        health: currentData.length > 0 && lastYearData.length > 0 ? currentData[0].financialHealthScore - lastYearData[0].financialHealthScore : 0
       };
       
       return { vsLastMonth, vsLastYear };
@@ -295,51 +295,22 @@ export class EnhancedBudgetTracker {
       // Store budget performance
       const budgetPerformance: HistoricalBudgetPerformance = {
         month: this.currentMonth,
-        budget: this.monthlyBudget,
-        spent: totalExpenses,
-        remaining: this.monthlyBudget - totalExpenses,
-        usagePercentage: (totalExpenses / this.monthlyBudget) * 100,
-        status: this.getBudgetStatus(totalExpenses),
+        monthlyBudget: this.monthlyBudget,
+        totalExpenses: totalExpenses,
+        totalIncome: totalIncome,
+        netBalance: netBalance,
+        budgetUsagePercent: (totalExpenses / this.monthlyBudget) * 100,
         savingsRate: totalIncome > 0 ? (netBalance / totalIncome) * 100 : 0,
-        netBalance,
-        healthScore,
+        financialHealthScore: healthScore,
+        status: this.getBudgetStatus(totalExpenses),
         categoryBreakdown: this.getCategoryBreakdown(expenses),
+        unusualTransactions: 0,
         recommendations: [],
         timestamp: Date.now()
       };
       
-      await HistoricalDataManager.storeBudgetPerformance(this.userId, budgetPerformance);
-      
-      // Store spending trends
-      const spendingTrend: HistoricalSpendingTrend = {
-        month: this.currentMonth,
-        totalExpenses,
-        dailyAverage: totalExpenses / new Date().getDate(),
-        topCategories: this.getTopCategories(expenses),
-        unusualSpending: this.detectUnusualSpending(expenses),
-        spendingVelocity: this.calculateSpendingVelocity(expenses),
-        trend: this.determineSpendingTrend(expenses)
-      };
-      
-      await HistoricalDataManager.storeSpendingTrend(this.userId, spendingTrend);
-      
-      // Store financial health
-      const financialHealth: HistoricalFinancialHealth = {
-        month: this.currentMonth,
-        healthScore,
-        status: this.getHealthStatus(healthScore),
-        factors: {
-          savingsRate: totalIncome > 0 ? (netBalance / totalIncome) * 100 : 0,
-          budgetAdherence: Math.max(0, 100 - (totalExpenses / this.monthlyBudget) * 100),
-          incomeStability: 100, // Simplified for now
-          emergencyFund: this.calculateEmergencyFundRatio(netBalance, totalExpenses),
-          debtRatio: totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0
-        },
-        improvements: this.generateHealthImprovements(healthScore, totalExpenses, totalIncome),
-        timestamp: Date.now()
-      };
-      
-      await HistoricalDataManager.storeFinancialHealth(this.userId, financialHealth);
+      // Note: Historical data is now handled by the EnhancedDashboard component
+      // which automatically archives data using HistoricalDataManager.archiveMonthlyData
       
     } catch (error) {
       console.error('Failed to store monthly data:', error);
