@@ -14,7 +14,20 @@ import {
   FiTrendingUp,
   FiTrendingDown,
   FiPieChart,
-  FiHome
+  FiHome,
+  FiBook,
+  FiHelpCircle,
+  FiInfo,
+  FiTarget,
+  FiShield,
+  FiRefreshCw,
+  FiEye,
+  FiEyeOff,
+  FiStar,
+  FiCheckCircle,
+  FiAlertTriangle,
+  FiTrendingUp as FiTrendingUpIcon,
+  FiTrendingDown as FiTrendingDownIcon
 } from 'react-icons/fi';
 import { 
   philippineBanks, 
@@ -32,6 +45,8 @@ const AccountsPage = () => {
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingAccount, setEditingAccount] = useState<any>(null);
+  const [showHelp, setShowHelp] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
     loadAccounts();
@@ -104,75 +119,9 @@ const AccountsPage = () => {
     }
   };
 
-  const handleSaveAccount = async (accountData: any) => {
-    try {
-      if (editingAccount) {
-        // Update existing account
-        await ApiClient.updateAccount(editingAccount.id, accountData);
-        
-        const updatedAccounts = accounts.map(acc => 
-          acc.id === editingAccount.id ? { ...acc, ...accountData } : acc
-        );
-        setAccounts(updatedAccounts);
-        
-        // Update localStorage as backup
-        localStorage.setItem('userAccounts', JSON.stringify(updatedAccounts));
-        
-        toast.success('Account updated successfully and saved to database!');
-      } else {
-        // Add new account
-        const response = await ApiClient.addAccount(accountData);
-        const newAccount = response.account;
-        
-        const updatedAccounts = [newAccount, ...accounts];
-        setAccounts(updatedAccounts);
-        
-        // Update localStorage as backup
-        localStorage.setItem('userAccounts', JSON.stringify(updatedAccounts));
-        
-        toast.success('Account added successfully and saved to database!');
-      }
-    } catch (error) {
-      // Fallback to localStorage
-      if (editingAccount) {
-        const updatedAccounts = accounts.map(acc => 
-          acc.id === editingAccount.id ? { ...acc, ...accountData } : acc
-        );
-        setAccounts(updatedAccounts);
-        localStorage.setItem('userAccounts', JSON.stringify(updatedAccounts));
-        toast.success('Account updated successfully (saved locally)!');
-      } else {
-        const newAccount = {
-          ...accountData,
-          id: Date.now(),
-          createdAt: new Date().toISOString()
-        };
-        const updatedAccounts = [newAccount, ...accounts];
-        setAccounts(updatedAccounts);
-        localStorage.setItem('userAccounts', JSON.stringify(updatedAccounts));
-        toast.success('Account added successfully (saved locally)!');
-      }
-    }
-  };
-
-  const handleDeleteAccount = async (accountId: number) => {
-    try {
-      await ApiClient.deleteAccount(accountId);
-      
-      const updatedAccounts = accounts.filter(acc => acc.id !== accountId);
-      setAccounts(updatedAccounts);
-      
-      // Update localStorage as backup
-      localStorage.setItem('userAccounts', JSON.stringify(updatedAccounts));
-      
-      toast.success('Account deleted successfully and removed from database!');
-    } catch (error) {
-      // Fallback to localStorage
-      const updatedAccounts = accounts.filter(acc => acc.id !== accountId);
-      setAccounts(updatedAccounts);
-      localStorage.setItem('userAccounts', JSON.stringify(updatedAccounts));
-      toast.success('Account deleted successfully (removed locally)!');
-    }
+  const handleAddAccount = () => {
+    setEditingAccount(null);
+    setShowModal(true);
   };
 
   const handleEditAccount = (account: any) => {
@@ -180,319 +129,367 @@ const AccountsPage = () => {
     setShowModal(true);
   };
 
-  const handleAddAccount = () => {
-    setEditingAccount(null);
-    setShowModal(true);
-  };
-
-  const getInstitutionInfo = (account: any) => {
-    switch (account.accountType) {
-      case 'credit-card':
-        return getCreditCardById(account.creditCardId);
-      case 'digital-wallet':
-        return getDigitalWalletById(account.digitalWalletId);
-      default:
-        return getBankById(account.bankId);
+  const handleDeleteAccount = async (accountId: number) => {
+    if (window.confirm('Are you sure you want to delete this account? This action cannot be undone.')) {
+      try {
+        await ApiClient.deleteAccount(accountId);
+        toast.success('Account deleted successfully');
+        loadAccounts();
+      } catch (error) {
+        // Fallback to localStorage
+        const updatedAccounts = accounts.filter(acc => acc.id !== accountId);
+        setAccounts(updatedAccounts);
+        localStorage.setItem('userAccounts', JSON.stringify(updatedAccounts));
+        toast.success('Account deleted successfully');
+      }
     }
   };
 
-  const getAccountTypeInfo = (accountType: string) => {
-    return getAccountTypeById(accountType);
+  const handleModalClose = () => {
+    setShowModal(false);
+    setEditingAccount(null);
   };
 
-  const totalBalance = accounts.reduce((sum, account) => sum + (account.currentBalance || 0), 0);
-  const activeAccounts = accounts.filter(acc => acc.isActive);
-  const inactiveAccounts = accounts.filter(acc => !acc.isActive);
+  const handleAccountUpdate = (updatedAccount: any) => {
+    if (editingAccount) {
+      // Update existing account
+      const updatedAccounts = accounts.map(acc => 
+        acc.id === editingAccount.id ? { ...acc, ...updatedAccount } : acc
+      );
+      setAccounts(updatedAccounts);
+      localStorage.setItem('userAccounts', JSON.stringify(updatedAccounts));
+      toast.success('Account updated successfully');
+    } else {
+      // Add new account
+      const newAccount = {
+        ...updatedAccount,
+        id: Date.now(),
+        createdAt: new Date().toISOString()
+      };
+      const updatedAccounts = [...accounts, newAccount];
+      setAccounts(updatedAccounts);
+      localStorage.setItem('userAccounts', JSON.stringify(updatedAccounts));
+      toast.success('Account added successfully');
+    }
+    handleModalClose();
+  };
 
-  // Show loading state while accounts are being loaded
+  const getTotalBalance = () => {
+    return accounts.reduce((total, account) => total + (account.currentBalance || 0), 0);
+  };
+
+  const getAccountTypeCount = (type: string) => {
+    return accounts.filter(account => account.accountType === type).length;
+  };
+
+  const getAccountTypeBalance = (type: string) => {
+    return accounts
+      .filter(account => account.accountType === type)
+      .reduce((total, account) => total + (account.currentBalance || 0), 0);
+  };
+
+  const accountTypes = [
+    { id: 'checking', name: 'Checking', icon: FiCreditCard, color: 'text-blue-600' },
+    { id: 'savings', name: 'Savings', icon: FiDollarSign, color: 'text-green-600' },
+    { id: 'credit-card', name: 'Credit Card', icon: FiCreditCard, color: 'text-purple-600' },
+    { id: 'digital-wallet', name: 'Digital Wallet', icon: FiHome, color: 'text-orange-600' },
+    { id: 'investment', name: 'Investment', icon: FiTrendingUp, color: 'text-indigo-600' }
+  ];
+
+  const accountManagementTips = [
+    {
+      icon: FiTarget,
+      title: 'Organize by Purpose',
+      description: 'Group accounts by their primary purpose (daily expenses, savings, investments) for better management.'
+    },
+    {
+      icon: FiEye,
+      title: 'Regular Reconciliation',
+      description: 'Reconcile your account balances regularly to ensure accuracy and catch any discrepancies early.'
+    },
+    {
+      icon: FiShield,
+      title: 'Security First',
+      description: 'Never store actual account passwords in the app. Use nicknames and partial account numbers instead.'
+    },
+    {
+      icon: FiRefreshCw,
+      title: 'Keep Updated',
+      description: 'Update account balances regularly, especially after major transactions or monthly statements.'
+    }
+  ];
+
   if (loading) {
     return (
       <DashboardLayout>
-        <LoadingStates type="accounts" size="large" message="Loading your accounts..." />
+        <LoadingStates />
       </DashboardLayout>
     );
   }
 
   return (
     <DashboardLayout>
-      <div className="space-y-8">
-        {/* Header */}
-        <div className="mb-12">
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center gap-6">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-xl">
-                <FiCreditCard size={36} className="text-white" />
-              </div>
-              <div>
-                <h1 className="text-6xl font-bold mb-3 tracking-tight" style={{ color: 'var(--text-primary)' }}>
-                  My Accounts
-                </h1>
-                <p className="text-xl font-light" style={{ color: 'var(--text-muted)' }}>
-                  Manage your bank accounts, credit cards, and digital wallets
-                </p>
-              </div>
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div className="bg-gradient-to-r from-green-600 to-emerald-600 rounded-2xl p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Account Management</h1>
+              <p className="text-green-100 text-lg">
+                Manage all your financial accounts in one place
+              </p>
             </div>
             <button
-              onClick={handleAddAccount}
-              className="liquid-button py-4 px-8 font-bold text-lg flex items-center gap-3 rounded-2xl hover:scale-105 transition-all duration-300"
-              style={{ color: 'var(--text-primary)' }}
+              onClick={() => setShowHelp(!showHelp)}
+              className="p-3 bg-white/20 rounded-xl hover:bg-white/30 transition-colors"
+              title="Account Management Help"
             >
-              <FiPlus size={24} />
-              Add Account
+              <FiHelpCircle size={24} />
             </button>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
-          <div className="group relative overflow-hidden">
-            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 via-emerald-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <FiDollarSign size={28} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Total Balance</p>
-                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>₱{totalBalance.toLocaleString()}</p>
-                  </div>
+        {/* Help Section */}
+        {showHelp && (
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-200 dark:border-gray-700">
+            <h2 className="text-2xl font-bold mb-4 flex items-center gap-3">
+              <FiBook className="text-green-500" size={28} />
+              Account Management Guide
+            </h2>
+            
+            <div className="grid md:grid-cols-2 gap-6 mb-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Account Types</h3>
+                <div className="space-y-3">
+                  {accountTypes.map((type) => (
+                    <div key={type.id} className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                      <type.icon className={`${type.color}`} size={20} />
+                      <div>
+                        <h4 className="font-medium text-gray-900 dark:text-white text-sm">{type.name}</h4>
+                        <p className="text-gray-500 dark:text-gray-400 text-xs">
+                          {getAccountTypeCount(type.id)} accounts • ₱{getAccountTypeBalance(type.id).toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              </div>
+              
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Management Tips</h3>
+                <div className="space-y-3">
+                  {accountManagementTips.map((tip, index) => (
+                    <div key={index} className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50">
+                      <div className="w-8 h-8 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center flex-shrink-0">
+                        <tip.icon className="text-green-600 dark:text-green-400" size={16} />
+                      </div>
+                      <div>
+                        <h4 className="font-medium text-gray-900 dark:text-white text-sm">{tip.title}</h4>
+                        <p className="text-gray-600 dark:text-gray-300 text-xs">{tip.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Getting Started */}
+            <div className="border-t border-gray-200 dark:border-gray-700 pt-6">
+              <h3 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                <FiInfo className="text-blue-500" size={20} />
+                Getting Started with Accounts
+              </h3>
+              <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-4">
+                <ol className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
+                  <li className="flex items-start gap-2">
+                    <span className="w-5 h-5 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center font-bold flex-shrink-0">1</span>
+                    <span>Add your primary checking and savings accounts</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="w-5 h-5 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center font-bold flex-shrink-0">2</span>
+                    <span>Set accurate current balances for each account</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="w-5 h-5 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center font-bold flex-shrink-0">3</span>
+                    <span>Use descriptive nicknames for easy identification</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="w-5 h-5 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center font-bold flex-shrink-0">4</span>
+                    <span>Regularly update balances and reconcile statements</span>
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Account Summary Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                <FiDollarSign className="text-blue-600 dark:text-blue-400" size={20} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Total Balance</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white">₱{getTotalBalance().toLocaleString()}</p>
               </div>
             </div>
           </div>
           
-          <div className="group relative overflow-hidden">
-            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-cyan-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <FiHome size={28} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Active Accounts</p>
-                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>{activeAccounts.length}</p>
-                  </div>
-                </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                <FiHome className="text-green-600 dark:text-green-400" size={20} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Total Accounts</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white">{accounts.length}</p>
               </div>
             </div>
           </div>
           
-          <div className="group relative overflow-hidden">
-            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-violet-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <FiCreditCard size={28} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Credit Cards</p>
-                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>{accounts.filter(acc => acc.accountType === 'credit-card').length}</p>
-                  </div>
-                </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+                <FiTrendingUp className="text-purple-600 dark:text-purple-400" size={20} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Active Accounts</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white">{accounts.filter(acc => acc.isActive).length}</p>
               </div>
             </div>
           </div>
           
-          <div className="group relative overflow-hidden">
-            <div className="liquid-card p-8 rounded-3xl hover:scale-105 transition-all duration-300">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-blue-500/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="flex items-center gap-6 relative z-10">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                    <FiPieChart size={28} className="text-white" />
-                  </div>
-                  <div>
-                    <p className="text-sm font-medium mb-1" style={{ color: 'var(--text-muted)' }}>Digital Wallets</p>
-                    <p className="font-bold text-3xl" style={{ color: 'var(--text-primary)' }}>{accounts.filter(acc => acc.accountType === 'digital-wallet').length}</p>
-                  </div>
-                </div>
+          <div className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-200 dark:border-gray-700">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                <FiPieChart className="text-orange-600 dark:text-orange-400" size={20} />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Account Types</p>
+                <p className="text-xl font-bold text-gray-900 dark:text-white">{new Set(accounts.map(acc => acc.accountType)).size}</p>
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Account Management Actions */}
+        <div className="flex flex-col sm:flex-row gap-3">
+          <button
+            onClick={handleAddAccount}
+            className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            <FiPlus size={20} />
+            Add New Account
+          </button>
+          
+          <button
+            onClick={loadAccounts}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <FiRefreshCw size={20} />
+            Refresh Accounts
+          </button>
         </div>
 
         {/* Accounts List */}
-        <div className="space-y-6">
-          {loading ? (
-            <div className="text-center py-12">
-              <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin mx-auto mb-4" />
-              <p className="text-white/60">Loading accounts...</p>
-            </div>
-          ) : accounts.length > 0 ? (
-            <>
-              {/* Active Accounts */}
-              {activeAccounts.length > 0 && (
-                <div>
-                  <h2 className="text-display text-2xl font-semibold text-white mb-4">Active Accounts</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {activeAccounts.map((account) => {
-                      const institution = getInstitutionInfo(account);
-                      const accountType = getAccountTypeInfo(account.accountType);
-                      
-                      return (
-                        <div key={account.id} className="liquid-card p-6 hover:scale-105 transition-transform group">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${institution?.color || 'from-gray-500 to-gray-600'} flex items-center justify-center`}>
-                                <span className="text-white text-xl">{institution?.icon || '🏦'}</span>
-                              </div>
-                              <div>
-                                <h3 className="text-white font-semibold text-lg">{account.name}</h3>
-                                <p className="text-white/60 text-sm">{institution?.name || 'Unknown Institution'}</p>
-                              </div>
-                            </div>
-                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                onClick={() => handleEditAccount(account)}
-                                className="p-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 transition-colors"
-                                title="Edit account"
-                              >
-                                <FiEdit3 size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteAccount(account.id)}
-                                className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 transition-colors"
-                                title="Delete account"
-                              >
-                                <FiTrash2 size={16} />
-                              </button>
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <span className="text-white/60 text-sm">Account Type</span>
-                              <span className="text-white font-medium">{accountType?.icon} {accountType?.name}</span>
-                            </div>
-                            
-                            {account.accountNumber && (
-                              <div className="flex items-center justify-between">
-                                <span className="text-white/60 text-sm">Account Number</span>
-                                <span className="text-white font-medium">{account.accountNumber}</span>
-                              </div>
-                            )}
-                            
-                            <div className="flex items-center justify-between">
-                              <span className="text-white/60 text-sm">Current Balance</span>
-                              <span className="text-green-400 font-semibold text-lg">₱{account.currentBalance?.toLocaleString() || '0'}</span>
-                            </div>
-                            
-                            {account.description && (
-                              <div className="pt-2 border-t border-white/10">
-                                <p className="text-white/70 text-sm">{account.description}</p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {/* Inactive Accounts */}
-              {inactiveAccounts.length > 0 && (
-                <div>
-                  <h2 className="text-display text-2xl font-semibold text-white mb-4">Inactive Accounts</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {inactiveAccounts.map((account) => {
-                      const institution = getInstitutionInfo(account);
-                      const accountType = getAccountTypeInfo(account.accountType);
-                      
-                      return (
-                        <div key={account.id} className="liquid-card p-6 opacity-60 group">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex items-center gap-3">
-                              <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${institution?.color || 'from-gray-500 to-gray-600'} flex items-center justify-center`}>
-                                <span className="text-white text-xl">{institution?.icon || '🏦'}</span>
-                              </div>
-                              <div>
-                                <h3 className="text-white font-semibold text-lg">{account.name}</h3>
-                                <p className="text-white/60 text-sm">{institution?.name || 'Unknown Institution'}</p>
-                              </div>
-                            </div>
-                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                onClick={() => handleEditAccount(account)}
-                                className="p-2 rounded-lg bg-blue-500/20 hover:bg-blue-500/30 text-blue-400 transition-colors"
-                                title="Edit account"
-                              >
-                                <FiEdit3 size={16} />
-                              </button>
-                              <button
-                                onClick={() => handleDeleteAccount(account.id)}
-                                className="p-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-red-400 transition-colors"
-                                title="Delete account"
-                              >
-                                <FiTrash2 size={16} />
-                              </button>
-                            </div>
-                          </div>
-                          
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between">
-                              <span className="text-white/60 text-sm">Account Type</span>
-                              <span className="text-white font-medium">{accountType?.icon} {accountType?.name}</span>
-                            </div>
-                            
-                            {account.accountNumber && (
-                              <div className="flex items-center justify-between">
-                                <span className="text-white/60 text-sm">Account Number</span>
-                                <span className="text-white font-medium">{account.accountNumber}</span>
-                              </div>
-                            )}
-                            
-                            <div className="flex items-center justify-between">
-                              <span className="text-white/60 text-sm">Current Balance</span>
-                              <span className="text-green-400 font-semibold text-lg">₱{account.currentBalance?.toLocaleString() || '0'}</span>
-                            </div>
-                            
-                            {account.description && (
-                              <div className="pt-2 border-t border-white/10">
-                                <p className="text-white/70 text-sm">{account.description}</p>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className="liquid-card p-12 text-center">
-              <FiCreditCard size={64} className="text-white/30 mx-auto mb-6" />
-              <h3 className="text-display text-2xl font-semibold text-white mb-4">No Accounts Yet</h3>
-              <p className="text-white/60 mb-8">
-                Add your bank accounts, credit cards, and digital wallets to start tracking your finances.
+        <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Your Accounts</h2>
+            <p className="text-gray-600 dark:text-gray-300">Manage and monitor all your financial accounts</p>
+          </div>
+          
+          {accounts.length === 0 ? (
+            <div className="p-8 text-center">
+              <div className="w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 mx-auto mb-4 flex items-center justify-center">
+                <FiHome className="text-gray-400" size={32} />
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">No accounts yet</h3>
+              <p className="text-gray-500 dark:text-gray-400 mb-4">
+                Get started by adding your first financial account
               </p>
               <button
                 onClick={handleAddAccount}
-                className="liquid-button text-white py-3 px-8 font-medium flex items-center gap-2 mx-auto"
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               >
-                <FiPlus size={20} />
                 Add Your First Account
               </button>
             </div>
+          ) : (
+            <div className="divide-y divide-gray-200 dark:divide-gray-700">
+              {accounts.map((account) => (
+                <div key={account.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
+                        {account.accountType === 'credit-card' ? (
+                          <FiCreditCard className="text-green-600 dark:text-green-400" size={24} />
+                        ) : account.accountType === 'digital-wallet' ? (
+                          <FiHome className="text-green-600 dark:text-green-400" size={24} />
+                        ) : (
+                          <FiDollarSign className="text-green-600 dark:text-green-400" size={24} />
+                        )}
+                      </div>
+                      
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{account.name}</h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {getAccountTypeById(account.accountType)?.name || account.accountType} • {account.accountNumber}
+                        </p>
+                        {account.description && (
+                          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{account.description}</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <p className="text-lg font-bold text-gray-900 dark:text-white">
+                          ₱{account.currentBalance?.toLocaleString() || '0'}
+                        </p>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          {account.isActive ? 'Active' : 'Inactive'}
+                        </p>
+                      </div>
+                      
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleEditAccount(account)}
+                          className="p-2 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                          title="Edit Account"
+                        >
+                          <FiEdit3 size={18} />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteAccount(account.id)}
+                          className="p-2 text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+                          title="Delete Account"
+                        >
+                          <FiTrash2 size={18} />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
-      </div>
 
-      {/* Account Modal */}
-      <AccountModal
-        isOpen={showModal}
-        onClose={() => {
-          setShowModal(false);
-          setEditingAccount(null);
-        }}
-        account={editingAccount}
-        onSave={handleSaveAccount}
-        onDelete={handleDeleteAccount}
-      />
+        {/* Account Modal */}
+        {showModal && (
+          <AccountModal
+            isOpen={showModal}
+            onClose={handleModalClose}
+            onSave={handleAccountUpdate}
+            account={editingAccount}
+            banks={philippineBanks}
+            creditCards={creditCards}
+            digitalWallets={digitalWallets}
+          />
+        )}
+      </div>
     </DashboardLayout>
   );
 };
