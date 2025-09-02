@@ -41,7 +41,6 @@ const DocumentationPage = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSection, setActiveSection] = useState('overview');
 
-
   const features = [
     {
       id: 'overview',
