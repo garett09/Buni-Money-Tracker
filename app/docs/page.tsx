@@ -257,63 +257,6 @@ const DocumentationPage = () => {
           </div>
         </div>
       </div>
-
-      {/* GitHub-style Footer */}
-      <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Buni Money Tracker</h3>
-              <p className="text-gray-600 dark:text-gray-400 text-sm">
-                Your intelligent personal finance companion. Track, analyze, and optimize your money with powerful tools and insights.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Product</h4>
-              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li><Link href="#overview" className="hover:text-gray-900 dark:hover:text-white transition-colors">Features</Link></li>
-                <li><Link href="#pricing" className="hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</Link></li>
-                <li><Link href="#security" className="hover:text-gray-900 dark:hover:text-white transition-colors">Security</Link></li>
-                <li><Link href="#roadmap" className="hover:text-gray-900 dark:hover:text-white transition-colors">Roadmap</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Developers</h4>
-              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li><Link href="#api-reference" className="hover:text-gray-900 dark:hover:text-white transition-colors">API</Link></li>
-                <li><Link href="#deployment" className="hover:text-gray-900 dark:hover:text-white transition-colors">Deployment</Link></li>
-                <li><Link href="#integrations" className="hover:text-gray-900 dark:hover:text-white transition-colors">Integrations</Link></li>
-                <li><Link href="#webhooks" className="hover:text-gray-900 dark:hover:text-white transition-colors">Webhooks</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Support</h4>
-              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-                <li><Link href="#troubleshooting" className="hover:text-gray-900 dark:hover:text-white transition-colors">Help</Link></li>
-                <li><Link href="#community" className="hover:text-gray-900 dark:hover:text-white transition-colors">Community</Link></li>
-                <li><Link href="#status" className="hover:text-gray-900 dark:hover:text-white transition-colors">Status</Link></li>
-                <li><Link href="#contact" className="hover:text-gray-900 dark:hover:text-white transition-colors">Contact</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-200 dark:border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400">
-              © 2024 Buni Money Tracker. Built with ❤️ using Next.js and modern web technologies.
-            </p>
-            <div className="flex items-center gap-4 mt-4 md:mt-0">
-              <Link href="/privacy" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-              <Link href="/terms" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                Terms of Service
-              </Link>
-              <Link href="/dashboard" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                Dashboard
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
