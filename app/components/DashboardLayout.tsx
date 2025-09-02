@@ -19,7 +19,7 @@ import {
   FiList,
   FiDatabase,
   FiSettings,
-
+  FiHelpCircle,
   FiSearch,
   FiPlus,
   FiHeart,
@@ -31,6 +31,7 @@ import {
   FiDollarSign
 } from 'react-icons/fi';
 import ThemePicker from './ThemePicker';
+import TutorialButton from './TutorialButton';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -297,6 +298,34 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               })}
             </nav>
 
+            {/* Enhanced Tutorial Section */}
+            <div className="mb-6 p-5 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-blue-500/15 to-purple-500/15 backdrop-blur-xl border border-emerald-500/30 shadow-xl">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center shadow-lg">
+                  <FiHelpCircle size={18} className="text-white" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-emerald-300">Need Help?</h3>
+                  <p className="text-xs text-emerald-200/60">Master the platform</p>
+                </div>
+              </div>
+              <p className="text-xs text-emerald-200/80 mb-4 leading-relaxed">
+                Learn how to use all the features and unlock your financial potential with our interactive guide
+              </p>
+              <button
+                onClick={() => {
+                  // This will be handled by the TutorialButton component
+                  const tutorialButton = document.querySelector('[data-tutorial-trigger]');
+                  if (tutorialButton) {
+                    (tutorialButton as HTMLElement).click();
+                  }
+                }}
+                className="w-full px-4 py-3 bg-gradient-to-r from-emerald-500/30 to-blue-500/30 hover:from-emerald-500/40 hover:to-blue-500/40 text-emerald-200 hover:text-white rounded-xl transition-all duration-300 text-sm font-semibold border border-emerald-500/40 hover:border-emerald-500/60 shadow-lg hover:shadow-emerald-500/25 hover:scale-[1.02]"
+              >
+                🚀 Open Tutorial
+              </button>
+            </div>
+
             {/* Bottom Actions */}
             <div className="space-y-2 pt-4 border-t border-white/10">
               <Link
@@ -347,6 +376,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
               {/* Right Side Actions */}
               <div className="flex items-center gap-4">
+                {/* Tutorial Button */}
+                <TutorialButton currentPage={pathname.split('/').pop() || 'dashboard'} isLoading={false} />
+                
                 {/* Theme Picker */}
                 <ThemePicker />
                 
