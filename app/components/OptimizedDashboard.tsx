@@ -11,7 +11,6 @@ import {
   FiTarget, 
   FiRefreshCw,
   FiSettings,
-  FiBell,
   FiDownload,
   FiUpload,
   FiFilter,
@@ -20,7 +19,7 @@ import {
 } from 'react-icons/fi';
 
 // Lazy load heavy components
-const SmartNotifications = lazy(() => import('./SmartNotifications'));
+
 const BudgetSettings = lazy(() => import('./BudgetSettings'));
 const EnhancedDashboard = lazy(() => import('./EnhancedDashboard'));
 
@@ -404,13 +403,7 @@ const OptimizedDashboard: React.FC = () => {
             <span>Budget</span>
           </button>
 
-          {/* Smart Notifications - Moved to header */}
-          <SmartNotifications
-            incomeTransactions={data.income.transactions || []}
-            expenseTransactions={data.expenses.transactions || []}
-            savingsGoals={data.savings.goals || []}
-            selectedPeriod={selectedPeriod}
-          />
+
         </div>
       </div>
 

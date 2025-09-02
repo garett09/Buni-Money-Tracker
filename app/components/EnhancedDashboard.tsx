@@ -4,6 +4,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import BudgetSettings from './BudgetSettings';
 import { IntelligentBudget } from '@/app/lib/intelligentBudget';
 import { getUserMonthlyBudget } from '@/app/lib/currency';
+import { HistoricalDataManager } from '@/app/lib/historicalData';
+import { NotificationManager } from '@/app/lib/notificationManager';
 import {
   LineChart,
   Line,
@@ -42,7 +44,6 @@ import {
   FiInfo,
   FiRefreshCw,
   FiSettings,
-  FiBell,
   FiDownload,
   FiUpload,
   FiFilter,
@@ -87,6 +88,10 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
   const [showBudgetSettings, setShowBudgetSettings] = useState(false);
   const [intelligentBudget, setIntelligentBudget] = useState<IntelligentBudget | null>(null);
   const [budgetForecast, setBudgetForecast] = useState<any>(null);
+  const [showHistoricalData, setShowHistoricalData] = useState(false);
+  const [userId, setUserId] = useState<string>('default-user');
+
+
 
   // Memoized calculations for better performance
   const analytics = useMemo(() => {
@@ -539,8 +544,117 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
       
       const forecast = ib.generateForecast();
       setBudgetForecast(forecast);
+
+      // Archive current month's data for historical analysis
+      if (analytics) {
+        const currentData = {
+          budgetPerformance: {
+            monthlyBudget: getUserMonthlyBudget(),
+            totalExpenses: analytics.totalExpenses,
+            totalIncome: analytics.totalIncome,
+            netBalance: analytics.netBalance,
+            budgetUsagePercent: analytics.budgetUsagePercent,
+            savingsRate: analytics.savingsRate,
+            financialHealthScore: analytics.healthScore,
+            status: analytics.budgetUsagePercent > 100 ? 'over-budget' :
+                   analytics.budgetUsagePercent > 90 ? 'critical' :
+                   analytics.budgetUsagePercent > 80 ? 'on-track' : 'under-budget',
+            categoryBreakdown: analytics.topCategories.reduce((acc, cat) => {
+              acc[cat.category] = cat.amount;
+              return acc;
+            }, {} as { [key: string]: number }),
+            unusualTransactions: analytics.unusualSpending.length,
+            recommendations: []
+          },
+          spendingTrends: {
+            dailyAverage: analytics.dailySpending,
+            weeklyAverage: analytics.weeklySpending,
+            monthlyTotal: analytics.totalExpenses,
+            topCategories: analytics.topCategories,
+            spendingVelocity: analytics.dailySpending,
+            seasonalFactor: 1
+          },
+          financialHealth: {
+            overallScore: analytics.healthScore,
+            savingsScore: analytics.savingsRate,
+            budgetScore: 100 - analytics.budgetUsagePercent,
+            incomeStabilityScore: 20,
+            emergencyFundScore: Math.min(analytics.netBalance / (analytics.totalExpenses * 3), 1) * 15,
+            debtScore: Math.max(0, (1 - (analytics.totalExpenses / analytics.totalIncome))) * 10,
+            cashFlowScore: analytics.netBalance > 0 ? 20 : 10,
+            insights: []
+          }
+        };
+
+        // Archive data in background for historical analysis
+        HistoricalDataManager.archiveMonthlyData(userId, currentData).catch(console.error);
+
+        // Generate persistent notifications
+        generateNotifications(userId, analytics, currentData);
+      }
     }
-  }, [incomeTransactions, expenseTransactions]);
+  }, [incomeTransactions, expenseTransactions, analytics, userId]);
+
+  // Generate persistent notifications
+  const generateNotifications = async (userId: string, analytics: any, currentData: any) => {
+    try {
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      const currentYear = new Date().getFullYear();
+
+      // Generate budget notifications
+      await NotificationManager.generateBudgetNotifications(userId, {
+        monthlyBudget: getUserMonthlyBudget(),
+        totalExpenses: analytics.totalExpenses,
+        budgetUsagePercent: analytics.budgetUsagePercent,
+        month: currentMonth,
+        year: currentYear
+      });
+
+      // Generate spending notifications
+      await NotificationManager.generateSpendingNotifications(userId, {
+        totalExpenses: analytics.totalExpenses,
+        dailyAverage: analytics.dailySpending,
+        unusualTransactions: analytics.unusualSpending.length,
+        topCategories: analytics.topCategories,
+        month: currentMonth,
+        year: currentYear
+      });
+
+      // Generate savings notifications
+      await NotificationManager.generateSavingsNotifications(userId, {
+        totalIncome: analytics.totalIncome,
+        netBalance: analytics.netBalance,
+        savingsRate: analytics.savingsRate,
+        month: currentMonth,
+        year: currentYear
+      });
+
+      // Generate historical notifications if we have historical data
+      try {
+        const historicalData = await HistoricalDataManager.getHistoricalBudgetPerformance(userId, 2);
+        if (historicalData.length >= 2) {
+          const currentMonthData = historicalData[0];
+          const previousMonthData = historicalData[1];
+          
+          const budgetAdherenceChange = (100 - currentMonthData.budgetUsagePercent) - (100 - previousMonthData.budgetUsagePercent);
+          
+          await NotificationManager.generateHistoricalNotifications(userId, {
+            month: currentMonth,
+            year: currentYear,
+            budgetAdherenceChange,
+            savingsTrend: currentMonthData.savingsRate > previousMonthData.savingsRate ? 'increasing' : 'decreasing',
+            spendingTrend: currentMonthData.totalExpenses < previousMonthData.totalExpenses ? 'decreasing' : 'increasing',
+            insights: []
+          });
+        }
+      } catch (error) {
+        // Historical notifications are optional, don't fail if they can't be generated
+        console.log('Could not generate historical notifications:', error);
+      }
+    } catch (error) {
+      console.error('Failed to generate notifications:', error);
+    }
+  };
 
   const handleRefresh = () => {
     setRefreshKey(prev => prev + 1);
@@ -633,7 +747,8 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
           { id: 'trends', label: 'Trends', icon: FiTrendingUp },
           { id: 'insights', label: 'Insights', icon: FiZap },
           { id: 'budget', label: 'Budget', icon: FiShield },
-          { id: 'predictions', label: 'Predictions', icon: FiTarget }
+          { id: 'predictions', label: 'Predictions', icon: FiTarget },
+          { id: 'historical', label: 'Historical', icon: FiCalendar }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -1671,6 +1786,53 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Historical Data Tab */}
+      {activeTab === 'historical' && (
+        <div className="space-y-8">
+          <div className="liquid-card p-8 rounded-3xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                Historical Data Analysis
+              </h3>
+              <FiCalendar size={24} style={{ color: 'var(--text-muted)' }} />
+            </div>
+            
+            <div className="text-center py-12">
+              <FiCalendar size={48} className="mx-auto mb-4" style={{ color: 'var(--text-muted)' }} />
+              <p className="text-lg font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>
+                Historical Data Features
+              </p>
+              <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
+                This system automatically archives your monthly financial data for long-term analysis.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                <div className="p-4 rounded-xl bg-white/5">
+                  <FiTrendingUp size={24} className="mx-auto mb-2 text-green-400" />
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>Budget Performance</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Track monthly budget adherence over time</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/5">
+                  <FiBarChart size={24} className="mx-auto mb-2 text-blue-400" />
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>Year-over-Year</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Compare performance across years</p>
+                </div>
+                <div className="p-4 rounded-xl bg-white/5">
+                  <FiTarget size={24} className="mx-auto mb-2 text-purple-400" />
+                  <p className="font-medium" style={{ color: 'var(--text-primary)' }}>Trend Analysis</p>
+                  <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Identify long-term spending patterns</p>
+                </div>
+              </div>
+              <div className="mt-6 p-4 rounded-xl bg-green-500/10">
+                <p className="text-sm text-green-400">
+                  <strong>Auto-archiving enabled:</strong> Your data is automatically saved monthly for comprehensive analysis.
+                  Historical data is retained for 3 years to provide insights into your financial journey.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       )}

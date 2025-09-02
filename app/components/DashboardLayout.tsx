@@ -42,6 +42,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [showQuickActions, setShowQuickActions] = useState(false);
+  const [showNotifications, setShowNotifications] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -56,12 +57,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
     setUser(JSON.parse(userData));
     
-    // Simulate notifications
-    setNotifications([
-      { id: 1, type: 'success', message: 'Budget goal achieved! 🎉', time: '2m ago' },
-      { id: 2, type: 'info', message: 'New spending insights available', time: '1h ago' },
-      { id: 3, type: 'warning', message: 'Approaching monthly budget limit', time: '3h ago' }
-    ]);
+    // Initialize empty notifications - will be populated by dashboard analytics
+    setNotifications([]);
   }, [router]);
 
   const handleLogout = () => {
@@ -70,6 +67,105 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     toast.success('Logged out successfully! 👋');
     router.push('/login');
   };
+
+  // Function to generate intelligent notifications based on user data
+  const generateIntelligentNotifications = (analytics: any) => {
+    if (!analytics) return [];
+
+    const newNotifications = [];
+
+    // Budget-related notifications
+    if (analytics.budgetUsagePercent > 90) {
+      newNotifications.push({
+        id: Date.now() + 1,
+        type: 'warning',
+        message: `Budget alert: ${analytics.budgetUsagePercent.toFixed(1)}% of monthly budget used`,
+        time: 'Just now',
+        priority: 'high'
+      });
+    } else if (analytics.budgetUsagePercent > 80) {
+      newNotifications.push({
+        id: Date.now() + 2,
+        type: 'info',
+        message: `Budget update: ${analytics.budgetUsagePercent.toFixed(1)}% of monthly budget used`,
+        time: 'Just now',
+        priority: 'medium'
+      });
+    }
+
+    // Savings-related notifications
+    if (analytics.savingsRate > 30) {
+      newNotifications.push({
+        id: Date.now() + 3,
+        type: 'success',
+        message: `Great job! You're saving ${analytics.savingsRate.toFixed(1)}% of your income`,
+        time: 'Just now',
+        priority: 'medium'
+      });
+    } else if (analytics.savingsRate < 10) {
+      newNotifications.push({
+        id: Date.now() + 4,
+        type: 'warning',
+        message: `Consider increasing savings - currently at ${analytics.savingsRate.toFixed(1)}%`,
+        time: 'Just now',
+        priority: 'medium'
+      });
+    }
+
+    // Spending velocity notifications
+    if (analytics.dailySpending > 0) {
+      const monthlyProjection = analytics.dailySpending * 30;
+      if (monthlyProjection > analytics.totalExpenses * 1.2) {
+        newNotifications.push({
+          id: Date.now() + 5,
+          type: 'warning',
+          message: 'Spending pace suggests higher monthly expenses ahead',
+          time: 'Just now',
+          priority: 'medium'
+        });
+      }
+    }
+
+    // Unusual spending notifications
+    if (analytics.unusualSpending && analytics.unusualSpending.length > 0) {
+      newNotifications.push({
+        id: Date.now() + 6,
+        type: 'info',
+        message: `${analytics.unusualSpending.length} unusual transactions detected`,
+        time: 'Just now',
+        priority: 'low'
+      });
+    }
+
+    return newNotifications;
+  };
+
+  // Function to update notifications from dashboard
+  const updateNotifications = (analytics: any) => {
+    const newNotifications = generateIntelligentNotifications(analytics);
+    setNotifications(newNotifications);
+  };
+
+  // Expose updateNotifications function globally so dashboard can call it
+  useEffect(() => {
+    (window as any).updateDashboardNotifications = updateNotifications;
+    
+    return () => {
+      delete (window as any).updateDashboardNotifications;
+    };
+  }, []);
+
+  // Close notifications dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (showNotifications && !(event.target as Element).closest('.notifications-container')) {
+        setShowNotifications(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showNotifications]);
 
   const navigation = [
     { 
@@ -355,8 +451,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 <ThemePicker />
                 
                 {/* Notifications */}
-                <div className="relative">
-                  <button className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 relative">
+                <div className="relative notifications-container">
+                  <button 
+                    className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 relative"
+                    onClick={() => setShowNotifications(!showNotifications)}
+                  >
                     <FiBell size={20} className="text-white/60" />
                     {notifications.length > 0 && (
                       <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">
@@ -364,6 +463,54 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                       </span>
                     )}
                   </button>
+                  
+                  {/* Notifications Dropdown */}
+                  {showNotifications && notifications.length > 0 && (
+                    <div className="absolute right-0 top-full mt-2 w-80 bg-white/95 backdrop-blur-lg border border-white/20 rounded-2xl shadow-2xl z-50 max-h-96 overflow-y-auto">
+                      <div className="p-4 border-b border-white/10 flex items-center justify-between">
+                        <h3 className="font-semibold text-gray-800">Notifications</h3>
+                        <button
+                          onClick={() => setNotifications([])}
+                          className="text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                        >
+                          Clear all
+                        </button>
+                      </div>
+                      <div className="p-2">
+                        {notifications.map((notification) => (
+                          <div
+                            key={notification.id}
+                            className={`p-3 rounded-xl mb-2 transition-all duration-200 ${
+                              notification.type === 'success' ? 'bg-green-50 border border-green-200' :
+                              notification.type === 'warning' ? 'bg-yellow-50 border border-yellow-200' :
+                              notification.type === 'info' ? 'bg-blue-50 border border-blue-200' :
+                              'bg-gray-50 border border-gray-200'
+                            }`}
+                          >
+                            <div className="flex items-start gap-3">
+                              <div className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 ${
+                                notification.type === 'success' ? 'bg-green-500' :
+                                notification.type === 'warning' ? 'bg-yellow-500' :
+                                notification.type === 'info' ? 'bg-blue-500' :
+                                'bg-gray-500'
+                              }`} />
+                              <div className="flex-1 min-w-0">
+                                <p className={`text-sm font-medium ${
+                                  notification.type === 'success' ? 'text-green-800' :
+                                  notification.type === 'warning' ? 'text-yellow-800' :
+                                  notification.type === 'info' ? 'text-blue-800' :
+                                  'text-gray-800'
+                                }`}>
+                                  {notification.message}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">{notification.time}</p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* User Menu */}
