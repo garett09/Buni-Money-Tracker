@@ -19,7 +19,13 @@
     "test:all": "npm run test:unit && npm run test:components && npm run test:integration && npm run test:performance",
     "css:build": "postcss app/globals.css -o app/styles/compiled.css",
     "css:watch": "postcss app/globals.css -o app/styles/compiled.css --watch",
-    "css:optimize": "postcss app/globals.css -o app/styles/compiled.css --env production"
+    "css:optimize": "postcss app/globals.css -o app/styles/compiled.css --env production",
+    "analyze": "ANALYZE=true npm run build",
+    "build:analyze": "cross-env ANALYZE=true next build",
+    "lighthouse": "lighthouse http://localhost:3000 --output=json --output-path=./lighthouse-report.json",
+    "performance:check": "npm run build && npm run lighthouse",
+    "bundle:analyze": "npm run build && npx @next/bundle-analyzer",
+    "optimize": "npm run css:optimize && npm run build"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
