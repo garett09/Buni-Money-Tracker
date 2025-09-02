@@ -20,6 +20,9 @@ interface AccountModalProps {
   account?: any;
   onSave: (accountData: any) => void;
   onDelete?: (accountId: number) => void;
+  banks?: any[];
+  creditCards?: any[];
+  digitalWallets?: any[];
 }
 
 const AccountModal: React.FC<AccountModalProps> = ({
@@ -27,7 +30,10 @@ const AccountModal: React.FC<AccountModalProps> = ({
   onClose,
   account,
   onSave,
-  onDelete
+  onDelete,
+  banks = [],
+  creditCards = [],
+  digitalWallets = []
 }) => {
   const [formData, setFormData] = useState({
     name: '',
