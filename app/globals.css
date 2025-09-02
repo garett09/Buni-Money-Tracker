@@ -662,14 +662,15 @@ html.light-theme .liquid-card .font-bold {
     --bg-gradient: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 25%, #BAE6FD 50%, #7DD3FC 75%, #38BDF8 100%);
     --card-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 50%, rgba(241, 245, 249, 0.85) 100%);
   
-    /* Enhanced Light Theme Accent Colors - Darker for Better Visibility */
-    --accent-blue: #1D4ED8;
-    --accent-green: #059669;
-    --accent-purple: #7C3AED;
-      --accent-orange: #D97706;
-  --accent-pink: #DB2777;
-  --accent-red: #B91C1C;
-  --accent-blue-hover: #1D4ED8;
+    /* Enhanced Light Theme Accent Colors - Vibrant and Colorful */
+    --accent-blue: #3B82F6;
+    --accent-green: #10B981;
+    --accent-purple: #8B5CF6;
+    --accent-orange: #F59E0B;
+    --accent-pink: #EC4899;
+    --accent-red: #DC2626;
+    --accent-yellow: #F59E0B;
+    --accent-blue-hover: #2563EB;
   
   /* Notification-specific accent colors with backgrounds and borders */
   --accent-green-bg: rgba(5, 150, 105, 0.1);
