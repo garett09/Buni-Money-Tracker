@@ -5,7 +5,7 @@ import './styles/performance.css'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/app/contexts/ThemeContext'
 import { PerformanceOptimizer } from '@/app/components/PerformanceOptimizer'
-import { PerformanceDashboard } from '@/app/components/PerformanceDashboard'
+
 
 // Optimize font loading with display: swap
 const inter = Inter({ 
