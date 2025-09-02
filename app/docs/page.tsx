@@ -21,7 +21,18 @@ import {
   FiMonitor,
   FiGift,
   FiSun,
-  FiMoon
+  FiMoon,
+  FiDollarSign,
+  FiShield,
+  FiMessageCircle,
+  FiHome,
+  FiUser,
+  FiCreditCard,
+  FiBarChart,
+  FiCalendar,
+  FiFileText,
+  FiHelpCircle,
+  FiExternalLink
 } from 'react-icons/fi';
 import Link from 'next/link';
 
