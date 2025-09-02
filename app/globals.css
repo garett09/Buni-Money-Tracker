@@ -1333,6 +1333,135 @@ html.dark-theme {
   color: var(--input-placeholder) !important;
 }
 
+/* Override common hardcoded background patterns */
+*[class*="bg-white/5"] {
+  background: var(--overlay-light) !important;
+}
+
+*[class*="bg-white/10"] {
+  background: var(--overlay-medium) !important;
+}
+
+*[class*="bg-white/20"] {
+  background: var(--overlay-heavy) !important;
+}
+
+*[class*="bg-white/30"] {
+  background: var(--overlay-heavy) !important;
+}
+
+*[class*="bg-white/40"] {
+  background: var(--overlay-heavy) !important;
+}
+
+*[class*="bg-white/50"] {
+  background: var(--overlay-heavy) !important;
+}
+
+/* Override common hardcoded border patterns */
+*[class*="border-white/10"] {
+  border-color: var(--card-border) !important;
+}
+
+*[class*="border-white/20"] {
+  border-color: var(--card-border) !important;
+}
+
+*[class*="border-white/30"] {
+  border-color: var(--card-border) !important;
+}
+
+/* Override common hardcoded text patterns */
+*[class*="text-white/30"] {
+  color: var(--text-muted) !important;
+}
+
+*[class*="text-white/40"] {
+  color: var(--text-muted) !important;
+}
+
+*[class*="text-white/50"] {
+  color: var(--text-muted) !important;
+}
+
+*[class*="text-white/60"] {
+  color: var(--text-muted) !important;
+}
+
+*[class*="text-white/70"] {
+  color: var(--text-secondary) !important;
+}
+
+*[class*="text-white/80"] {
+  color: var(--text-secondary) !important;
+}
+
+*[class*="text-white/90"] {
+  color: var(--text-primary) !important;
+}
+
+/* Override common hardcoded gray patterns */
+*[class*="bg-gray-50"] {
+  background: var(--bg-secondary) !important;
+}
+
+*[class*="bg-gray-100"] {
+  background: var(--bg-secondary) !important;
+}
+
+*[class*="bg-gray-200"] {
+  background: var(--card-border) !important;
+}
+
+*[class*="bg-gray-800"] {
+  background: var(--card-bg) !important;
+}
+
+*[class*="text-gray-900"] {
+  color: var(--text-primary) !important;
+}
+
+*[class*="text-gray-600"] {
+  color: var(--text-muted) !important;
+}
+
+*[class*="text-gray-300"] {
+  color: var(--text-muted) !important;
+}
+
+*[class*="border-gray-200"] {
+  border-color: var(--card-border) !important;
+}
+
+*[class*="border-gray-700"] {
+  border-color: var(--card-border) !important;
+}
+
+/* Override hover states for hardcoded patterns */
+*[class*="hover:bg-white/5"]:hover {
+  background: var(--overlay-medium) !important;
+}
+
+*[class*="hover:bg-white/10"]:hover {
+  background: var(--overlay-heavy) !important;
+}
+
+*[class*="hover:bg-white/20"]:hover {
+  background: var(--overlay-heavy) !important;
+}
+
+*[class*="hover:text-white"]:hover {
+  color: var(--text-primary) !important;
+}
+
+*[class*="hover:bg-gray-100"]:hover {
+  background: var(--overlay-medium) !important;
+}
+
+*[class*="hover:bg-gray-50"]:hover {
+  background: var(--overlay-light) !important;
+}
+
 /* Override small status badges and buttons */
 *[class*="text-green-300"],
 *[class*="text-green-400"] {
@@ -1362,6 +1491,229 @@ html.dark-theme {
 *[class*="text-cyan-300"],
 *[class*="text-cyan-400"] {
   color: #06B6D4 !important;
+}
+
+/* Override accent colors for financial data visualization - Works in ALL themes */
+*[class*="text-green-400"],
+*[class*="text-green-500"],
+*[class*="text-green-600"] {
+  color: var(--accent-green) !important;
+}
+
+*[class*="text-red-400"],
+*[class*="text-red-500"],
+*[class*="text-red-600"] {
+  color: var(--accent-red) !important;
+}
+
+*[class*="text-blue-400"],
+*[class*="text-blue-500"],
+*[class*="text-blue-600"] {
+  color: var(--accent-blue) !important;
+}
+
+*[class*="text-yellow-400"],
+*[class*="text-yellow-500"],
+*[class*="text-yellow-600"] {
+  color: var(--accent-yellow) !important;
+}
+
+*[class*="text-purple-400"],
+*[class*="text-purple-500"],
+*[class*="text-purple-600"] {
+  color: var(--accent-purple) !important;
+}
+
+*[class*="text-pink-400"],
+*[class*="text-pink-500"],
+*[class*="text-pink-600"] {
+  color: var(--accent-pink) !important;
+}
+
+*[class*="text-orange-400"],
+*[class*="text-orange-500"],
+*[class*="text-orange-600"] {
+  color: var(--accent-orange) !important;
+}
+
+/* Force accent colors for common financial elements regardless of theme */
+*[class*="text-emerald-500"],
+*[class*="text-emerald-600"] {
+  color: var(--accent-green) !important;
+}
+
+*[class*="text-rose-500"],
+*[class*="text-rose-600"] {
+  color: var(--accent-red) !important;
+}
+
+*[class*="text-sky-500"],
+*[class*="text-sky-600"] {
+  color: var(--accent-blue) !important;
+}
+
+/* Override chart and graph colors - Works in ALL themes */
+*[class*="bg-green-400"],
+*[class*="bg-green-500"],
+*[class*="bg-green-600"] {
+  background-color: var(--accent-green) !important;
+}
+
+*[class*="bg-red-400"],
+*[class*="bg-red-500"],
+*[class*="bg-red-600"] {
+  background-color: var(--accent-red) !important;
+}
+
+*[class*="bg-blue-400"],
+*[class*="bg-blue-500"],
+*[class*="bg-blue-600"] {
+  background-color: var(--accent-blue) !important;
+}
+
+*[class*="bg-yellow-400"],
+*[class*="bg-yellow-500"],
+*[class*="bg-yellow-600"] {
+  background-color: var(--accent-yellow) !important;
+}
+
+*[class*="bg-purple-400"],
+*[class*="bg-purple-500"],
+*[class*="bg-purple-600"] {
+  background-color: var(--accent-purple) !important;
+}
+
+*[class*="bg-pink-400"],
+*[class*="bg-pink-500"],
+*[class*="bg-pink-600"] {
+  background-color: var(--accent-pink) !important;
+}
+
+*[class*="bg-orange-400"],
+*[class*="bg-orange-500"],
+*[class*="bg-orange-600"] {
+  background-color: var(--accent-orange) !important;
+}
+
+/* Force accent backgrounds for common financial elements regardless of theme */
+*[class*="bg-emerald-500"],
+*[class*="bg-emerald-600"] {
+  background-color: var(--accent-green) !important;
+}
+
+*[class*="bg-rose-500"],
+*[class*="bg-rose-600"] {
+  background-color: var(--accent-red) !important;
+}
+
+*[class*="bg-sky-500"],
+*[class*="bg-sky-600"] {
+  background-color: var(--accent-blue) !important;
+}
+
+/* Force colors for navigation icons and UI elements */
+*[class*="text-gray-400"],
+*[class*="text-gray-500"],
+*[class*="text-gray-600"] {
+  color: var(--text-muted) !important;
+}
+
+/* Ensure financial icons have proper colors */
+*[class*="text-emerald-400"],
+*[class*="text-emerald-500"] {
+  color: var(--accent-green) !important;
+}
+
+*[class*="text-rose-400"],
+*[class*="text-rose-500"] {
+  color: var(--accent-red) !important;
+}
+
+*[class*="text-sky-400"],
+*[class*="text-sky-500"] {
+  color: var(--accent-blue) !important;
+}
+
+*[class*="text-amber-400"],
+*[class*="text-amber-500"] {
+  color: var(--accent-yellow) !important;
+}
+
+*[class*="text-violet-400"],
+*[class*="text-violet-500"] {
+  color: var(--accent-purple) !important;
+}
+
+/* Override border colors for accent elements */
+*[class*="border-green-400"],
+*[class*="border-green-500"] {
+  border-color: var(--accent-green) !important;
+}
+
+*[class*="border-red-400"],
+*[class*="border-red-500"] {
+  border-color: var(--accent-red) !important;
+}
+
+*[class*="border-blue-400"],
+*[class*="border-blue-500"] {
+  border-color: var(--accent-blue) !important;
+}
+
+*[class*="border-yellow-400"],
+*[class*="border-yellow-500"] {
+  border-color: var(--accent-yellow) !important;
+}
+
+*[class*="border-purple-400"],
+*[class*="border-purple-500"] {
+  border-color: var(--accent-purple) !important;
+}
+
+*[class*="border-pink-400"],
+*[class*="border-pink-500"] {
+  border-color: var(--accent-pink) !important;
+}
+
+*[class*="border-orange-400"],
+*[class*="border-orange-500"] {
+  border-color: var(--accent-orange) !important;
+}
+
+/* Dark mode specific card background overrides for better contrast */
+html.dark-theme *[class*="bg-green-500"],
+html.dark-theme *[class*="bg-green-600"] {
+  background-color: rgba(52, 211, 153, 0.2) !important;
+}
+
+html.dark-theme *[class*="bg-red-500"],
+html.dark-theme *[class*="bg-red-600"] {
+  background-color: rgba(248, 113, 113, 0.2) !important;
+}
+
+html.dark-theme *[class*="bg-blue-500"],
+html.dark-theme *[class*="bg-blue-600"] {
+  background-color: rgba(96, 165, 250, 0.2) !important;
+}
+
+html.dark-theme *[class*="bg-purple-500"],
+html.dark-theme *[class*="bg-purple-600"] {
+  background-color: rgba(167, 139, 250, 0.2) !important;
+}
+
+html.dark-theme *[class*="bg-yellow-500"],
+html.dark-theme *[class*="bg-yellow-600"] {
+  background-color: rgba(251, 191, 36, 0.2) !important;
+}
+
+html.dark-theme *[class*="bg-pink-500"],
+html.dark-theme *[class*="bg-pink-600"] {
+  background-color: rgba(244, 114, 182, 0.2) !important;
+}
+
+html.dark-theme *[class*="bg-orange-500"],
+html.dark-theme *[class*="bg-orange-600"] {
+  background-color: rgba(251, 191, 36, 0.2) !important;
 }
 
 /* Ensure liquid components use theme-aware glass effects */
