@@ -57,6 +57,7 @@ interface EnhancedDashboardProps {
   incomeTransactions: any[];
   expenseTransactions: any[];
   selectedPeriod: string;
+  setSelectedPeriod?: React.Dispatch<React.SetStateAction<string>>;
   loading?: boolean;
 }
 
@@ -64,6 +65,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
   incomeTransactions,
   expenseTransactions,
   selectedPeriod,
+  setSelectedPeriod,
   loading = false
 }) => {
   // Utility functions - defined at the top to avoid hoisting issues
@@ -863,6 +865,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
               </label>
               <select 
                 value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod?.(e.target.value)}
                 className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-emerald-500/50"
               >
                 <option value="week">Last Week</option>
@@ -912,6 +915,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
             </button>
             <button
               onClick={() => {
+                setSelectedPeriod?.('month');
                 setShowFilters(false);
               }}
               className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"

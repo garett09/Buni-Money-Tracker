@@ -1,7 +1,7 @@
 // Enhanced Budget Tracking System
 // Provides comprehensive budget monitoring, historical analysis, and intelligent recommendations
 
-import { HistoricalDataManager, HistoricalBudgetPerformance, HistoricalSpendingTrend, HistoricalFinancialHealth } from './historicalData';
+import { HistoricalDataManager, HistoricalBudgetPerformance, HistoricalSpendingTrends, HistoricalFinancialHealth } from './historicalData';
 
 export interface BudgetAlert {
   id: string;
@@ -174,7 +174,7 @@ export class EnhancedBudgetTracker {
       const startMonth = startDate.toISOString().slice(0, 7);
       const endMonth = endDate.toISOString().slice(0, 7);
       
-      const historicalData = await HistoricalDataManager.getBudgetPerformanceRange(this.userId, startMonth, endMonth);
+      const historicalData = await HistoricalDataManager.getHistoricalBudgetPerformance(this.userId, 12);
       
       if (historicalData.length < 2) {
         return { trend: 'stable', confidence: 50 };

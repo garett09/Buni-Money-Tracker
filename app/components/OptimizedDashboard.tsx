@@ -453,6 +453,7 @@ const OptimizedDashboard: React.FC = () => {
           incomeTransactions={data.income.transactions || []}
           expenseTransactions={data.expenses.transactions || []}
           selectedPeriod={selectedPeriod}
+          setSelectedPeriod={setSelectedPeriod}
           loading={loading}
         />
       </Suspense>

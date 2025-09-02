@@ -727,7 +727,7 @@ const HistoricalDataView: React.FC<HistoricalDataViewProps> = ({
                         </div>
                       </div>
                       <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                        {change.percentage.toFixed(1)}% change from {historicalData.yearOverYear.previousYear}
+                        {change.percentage.toFixed(1)}% change from {historicalData.yearOverYear?.previousYear || 'previous year'}
                       </div>
                     </div>
                   ))}
