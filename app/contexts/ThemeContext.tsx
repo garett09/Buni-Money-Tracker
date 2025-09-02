@@ -35,13 +35,13 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
   }, []);
 
-  // Apply theme to document
+  // Apply theme to document for Tailwind CSS
   useEffect(() => {
     // Remove existing theme classes
-    document.documentElement.classList.remove('light-theme', 'dark-theme');
+    document.documentElement.classList.remove('light', 'dark');
     
-    // Add the appropriate theme class
-    document.documentElement.classList.add(`${theme}-theme`);
+    // Add the appropriate theme class for Tailwind
+    document.documentElement.classList.add(theme);
     
     localStorage.setItem('theme', theme);
   }, [theme]);
