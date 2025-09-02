@@ -226,6 +226,54 @@ const DocumentationPage = () => {
                   >
                     🚀 Quick Start
                   </button>
+                  <button
+                    onClick={() => setActiveSection('core-features')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    💰 Core Features
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('savings-goals')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    🎯 Savings Goals
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('reports')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    📊 Reports & Analytics
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('security')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    🔒 Security & Privacy
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('mobile-app')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    📱 Mobile App
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('faq')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    ❓ FAQ
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('api')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    🔌 API & Integrations
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('support')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    📞 Support
+                  </button>
                 </div>
               </div>
             </div>
