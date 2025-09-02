@@ -300,17 +300,17 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             </nav>
 
                           {/* Documentation Section */}
-              <div className="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-500/15 via-purple-500/15 to-indigo-500/15 backdrop-blur-xl border border-blue-500/30 shadow-xl">
+              <div className="mb-6 p-4 sm:p-5 rounded-2xl bg-white/80 dark:bg-gradient-to-r dark:from-blue-500/15 dark:via-purple-500/15 dark:to-indigo-500/15 backdrop-blur-xl border border-gray-200 dark:border-blue-500/30 shadow-xl">
                 <div className="flex items-center gap-3 mb-3 sm:mb-4">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
                     <FiBook size={16} className="sm:text-lg text-white" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-blue-700 dark:text-blue-200">Need Help?</h3>
-                    <p className="text-xs text-blue-600 dark:text-blue-100">Master the platform</p>
+                    <h3 className="text-sm font-bold text-gray-900 dark:text-blue-200">Need Help?</h3>
+                    <p className="text-xs text-gray-800 dark:text-blue-100">Master the platform</p>
                   </div>
                 </div>
-                <p className="text-xs text-blue-700 dark:text-blue-100 mb-3 sm:mb-4 leading-relaxed">
+                <p className="text-xs text-gray-800 dark:text-blue-100 mb-3 sm:mb-4 leading-relaxed">
                   Learn how to use all the features and unlock your financial potential with our step-by-step tutorial
                 </p>
                 <Link
@@ -374,7 +374,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 {/* Documentation Button - Hidden on mobile, shown on tablet+ */}
                 <Link
                   href="/docs"
-                  className="hidden sm:flex items-center gap-3 px-4 sm:px-5 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 text-blue-700 dark:text-blue-200 hover:text-blue-800 dark:hover:text-blue-100 rounded-2xl transition-all duration-300 group border border-blue-500/30 hover:border-blue-500/50 backdrop-blur-lg shadow-lg hover:shadow-blue-500/25 hover:scale-105"
+                  className="hidden sm:flex items-center gap-3 px-4 sm:px-5 py-3 bg-white/90 dark:bg-gradient-to-r dark:from-blue-500/20 dark:to-purple-500/20 hover:bg-white dark:hover:from-blue-500/30 dark:hover:to-purple-500/30 text-gray-900 dark:text-blue-200 hover:text-gray-800 dark:hover:text-blue-100 rounded-2xl transition-all duration-300 group border border-gray-200 dark:border-blue-500/30 hover:border-gray-300 dark:hover:border-blue-500/50 backdrop-blur-lg shadow-lg hover:shadow-lg hover:scale-105"
                 >
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <FiBook size={18} className="text-white" />
