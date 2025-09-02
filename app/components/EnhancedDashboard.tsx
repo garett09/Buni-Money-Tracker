@@ -1,11 +1,13 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { toast } from 'react-hot-toast';
 import BudgetSettings from './BudgetSettings';
 import { IntelligentBudget } from '@/app/lib/intelligentBudget';
 import { getUserMonthlyBudget } from '@/app/lib/currency';
 import { HistoricalDataManager } from '@/app/lib/historicalData';
 import { NotificationManager } from '@/app/lib/notificationManager';
+import SmartNotifications from './SmartNotifications';
 import {
   LineChart,
   Line,
@@ -47,7 +49,8 @@ import {
   FiDownload,
   FiUpload,
   FiFilter,
-  FiSearch
+  FiSearch,
+  FiX
 } from 'react-icons/fi';
 
 interface EnhancedDashboardProps {
@@ -656,8 +659,57 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
     }
   };
 
-  const handleRefresh = () => {
-    setRefreshKey(prev => prev + 1);
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+    
+    setIsRefreshing(true);
+    try {
+      setRefreshKey(prev => prev + 1);
+      toast.success('Data refreshed successfully! 🔄');
+    } catch (error) {
+      toast.error('Refresh failed. Please try again.');
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  const [isDownloading, setIsDownloading] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  const handleDownload = async () => {
+    if (isDownloading) return;
+    
+    setIsDownloading(true);
+    try {
+      // Create CSV data for export
+      const csvData = [
+        ['Category', 'Amount', 'Type', 'Date'],
+        ...incomeTransactions.map(t => [t.category || 'Income', t.amount, 'Income', t.date]),
+        ...expenseTransactions.map(t => [t.category || 'Expense', t.amount, 'Expense', t.date])
+      ];
+      
+      const csvContent = csvData.map(row => row.join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `financial-data-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('Data exported successfully! 📊');
+    } catch (error) {
+      console.error('Export failed:', error);
+      toast.error('Export failed. Please try again.');
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  const handleSettings = () => {
+    setShowBudgetSettings(true);
   };
 
   if (loading) {
@@ -715,10 +767,15 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handleRefresh}
-              className="p-2 rounded-lg liquid-button transition-all duration-300"
+              disabled={isRefreshing}
+              className="p-2 rounded-lg liquid-button transition-all duration-300 disabled:opacity-50"
               title="Refresh data"
             >
-              <FiRefreshCw size={16} style={{ color: 'var(--text-muted)' }} />
+              <FiRefreshCw 
+                size={16} 
+                className={`${isRefreshing ? 'animate-spin' : ''}`}
+                style={{ color: 'var(--text-muted)' }} 
+              />
             </button>
             <button
               onClick={() => setShowFilters(!showFilters)}
@@ -731,10 +788,29 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         </div>
         
         <div className="flex items-center gap-2">
-          <button className="p-2 rounded-lg liquid-button transition-all duration-300" title="Export data">
-            <FiDownload size={16} style={{ color: 'var(--text-muted)' }} />
+          <SmartNotifications 
+            incomeTransactions={incomeTransactions}
+            expenseTransactions={expenseTransactions}
+            savingsGoals={[]}
+            selectedPeriod={selectedPeriod}
+          />
+          <button 
+            onClick={handleDownload}
+            disabled={isDownloading}
+            className="p-2 rounded-lg liquid-button transition-all duration-300 disabled:opacity-50" 
+            title="Export data"
+          >
+            <FiDownload 
+              size={16} 
+              className={`${isDownloading ? 'animate-pulse' : ''}`}
+              style={{ color: 'var(--text-muted)' }} 
+            />
           </button>
-          <button className="p-2 rounded-lg liquid-button transition-all duration-300" title="Settings">
+          <button 
+            onClick={handleSettings}
+            className="p-2 rounded-lg liquid-button transition-all duration-300" 
+            title="Settings"
+          >
             <FiSettings size={16} style={{ color: 'var(--text-muted)' }} />
           </button>
         </div>
@@ -764,6 +840,87 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
           </button>
         ))}
       </div>
+
+      {/* Filters Section */}
+      {showFilters && (
+        <div className="liquid-card p-6 rounded-2xl">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
+              Data Filters
+            </h3>
+            <button
+              onClick={() => setShowFilters(false)}
+              className="p-2 rounded-lg hover:bg-white/10 transition-colors"
+            >
+              <FiX size={16} style={{ color: 'var(--text-muted)' }} />
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-muted)' }}>
+                Date Range
+              </label>
+              <select 
+                value={selectedPeriod}
+                className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-emerald-500/50"
+              >
+                <option value="week">Last Week</option>
+                <option value="month">Last Month</option>
+                <option value="quarter">Last Quarter</option>
+                <option value="year">Last Year</option>
+                <option value="all-time">All Time</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-muted)' }}>
+                Transaction Type
+              </label>
+              <select 
+                className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-emerald-500/50"
+              >
+                <option value="all">All Transactions</option>
+                <option value="income">Income Only</option>
+                <option value="expenses">Expenses Only</option>
+              </select>
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-muted)' }}>
+                Category
+              </label>
+              <select 
+                className="w-full p-3 rounded-lg bg-white/5 border border-white/10 text-white focus:outline-none focus:border-emerald-500/50"
+              >
+                <option value="all">All Categories</option>
+                <option value="food">Food & Dining</option>
+                <option value="transport">Transportation</option>
+                <option value="entertainment">Entertainment</option>
+                <option value="shopping">Shopping</option>
+                <option value="utilities">Utilities</option>
+              </select>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-3 mt-4">
+            <button
+              onClick={() => setShowFilters(false)}
+              className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600 transition-colors"
+            >
+              Apply Filters
+            </button>
+            <button
+              onClick={() => {
+                setShowFilters(false);
+              }}
+              className="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
+            >
+              Reset to Default
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Overview Tab */}
       {activeTab === 'overview' && (

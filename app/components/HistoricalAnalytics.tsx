@@ -60,15 +60,15 @@ const HistoricalAnalytics: React.FC<HistoricalAnalyticsProps> = ({
       const startMonth = startDate.toISOString().slice(0, 7);
       const endMonth = endDate.toISOString().slice(0, 7);
       
-      const budgetPerformance = await HistoricalDataManager.getBudgetPerformanceRange(userId, startMonth, endMonth);
-      const spendingTrends = await HistoricalDataManager.getSpendingTrendsRange(userId, startMonth, endMonth);
-      const financialHealth = await HistoricalDataManager.getFinancialHealthRange(userId, startMonth, endMonth);
+      const budgetPerformance = await HistoricalDataManager.getHistoricalBudgetPerformance(userId, parseInt(selectedPeriod));
+      const spendingTrends = await HistoricalDataManager.getHistoricalSpendingTrends(userId, parseInt(selectedPeriod));
+      const financialHealth = await HistoricalDataManager.getHistoricalFinancialHealth(userId, parseInt(selectedPeriod));
       
       // Get year-over-year comparison
       const yearOverYear = await HistoricalDataManager.generateYearOverYearComparison(userId, selectedYear);
       
-      // Get budget insights
-      const budgetInsights = await HistoricalDataManager.getBudgetInsights(userId, parseInt(selectedPeriod));
+      // Get long-term trends instead of budget insights
+      const longTermTrends = await HistoricalDataManager.generateLongTermTrends(userId, parseInt(selectedPeriod));
       
       setHistoricalData({
         insights,
@@ -76,7 +76,7 @@ const HistoricalAnalytics: React.FC<HistoricalAnalyticsProps> = ({
         spendingTrends,
         financialHealth,
         yearOverYear,
-        budgetInsights
+        longTermTrends
       });
     } catch (error) {
       console.error('Failed to load historical data:', error);
