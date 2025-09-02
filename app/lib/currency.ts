@@ -71,6 +71,20 @@ export const parsePeso = (pesoString: string): number => {
 export const getDefaultMonthlyBudget = (): number => {
   // Get user's saved budget or use a reasonable default
   if (typeof window !== 'undefined') {
+    // First check for the new budgetSettings format
+    const savedBudgetSettings = localStorage.getItem('budgetSettings');
+    if (savedBudgetSettings) {
+      try {
+        const budgetData = JSON.parse(savedBudgetSettings);
+        if (budgetData.monthlyBudget && typeof budgetData.monthlyBudget === 'number') {
+          return budgetData.monthlyBudget;
+        }
+      } catch (e) {
+        // If parsing fails, fall back to old format
+      }
+    }
+    
+    // Fall back to old userMonthlyBudget format
     const savedBudget = localStorage.getItem('userMonthlyBudget');
     if (savedBudget) {
       return parseFloat(savedBudget);
@@ -85,7 +99,24 @@ export const getDefaultMonthlyBudget = (): number => {
  */
 export const setUserMonthlyBudget = (amount: number): void => {
   if (typeof window !== 'undefined') {
+    // Save to both places for backward compatibility
     localStorage.setItem('userMonthlyBudget', amount.toString());
+    
+    // Also update the budgetSettings if it exists
+    const existingSettings = localStorage.getItem('budgetSettings');
+    if (existingSettings) {
+      try {
+        const settings = JSON.parse(existingSettings);
+        settings.monthlyBudget = amount;
+        localStorage.setItem('budgetSettings', JSON.stringify(settings));
+      } catch (e) {
+        // If parsing fails, create new budgetSettings
+        localStorage.setItem('budgetSettings', JSON.stringify({ monthlyBudget: amount }));
+      }
+    } else {
+      // Create new budgetSettings if it doesn't exist
+      localStorage.setItem('budgetSettings', JSON.stringify({ monthlyBudget: amount }));
+    }
   }
 };
 
