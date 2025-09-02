@@ -1789,21 +1789,102 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                     tickLine={false}
                     axisLine={false}
                     tickFormatter={(value) => `₱${value.toLocaleString()}`}
+                    tick={{ fill: 'var(--text-muted)' }}
+                    domain={[0, 'dataMax + 1000']} // Ensure Y-axis starts at 0 and has some padding
                   />
                   <Tooltip 
                     contentStyle={{
                       backgroundColor: 'var(--card-bg)',
                       border: '1px solid var(--card-border)',
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       color: 'var(--text-primary)',
-                      boxShadow: 'var(--shadow-lg)'
+                      boxShadow: 'var(--shadow-lg)',
+                      fontSize: '14px',
+                      padding: '12px'
                     }}
-                    formatter={(value: any) => [`₱${value.toLocaleString()}`, 'Amount']}
+                    formatter={(value: any, name: string) => [
+                      value === 0 ? '₱0' : `₱${value.toLocaleString()}`, 
+                      name === 'income' ? 'Income' : 'Expenses'
+                    ]}
+                    labelStyle={{ fontWeight: 'bold', marginBottom: '8px' }}
+                    cursor={{ fill: 'var(--overlay-light)' }}
                   />
-                  <Bar dataKey="income" fill="var(--accent-green)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="expenses" fill="var(--accent-red)" radius={[4, 4, 0, 0]} />
+                  <Bar 
+                    dataKey="income" 
+                    fill="var(--accent-green)" 
+                    radius={[6, 6, 0, 0]}
+                    stroke="var(--accent-green)"
+                    strokeWidth={1}
+                    opacity={0.9}
+                    minPointSize={3} // Ensure minimum height for zero values
+                    // Custom bar shape to handle zero values gracefully
+                    shape={(props: any) => {
+                      const { x, y, width, height } = props;
+                      // Ensure minimum height for zero values
+                      const minHeight = 3;
+                      const actualHeight = Math.max(height, minHeight);
+                      const actualY = height === 0 ? y + height - minHeight : y;
+                      
+                      return (
+                        <rect
+                          x={x}
+                          y={actualY}
+                          width={width}
+                          height={actualHeight}
+                          fill="var(--accent-green)"
+                          stroke="var(--accent-green)"
+                          strokeWidth={1}
+                          rx={6}
+                          ry={6}
+                        />
+                      );
+                    }}
+                  />
+                  <Bar 
+                    dataKey="expenses" 
+                    fill="var(--accent-red)" 
+                    radius={[6, 6, 0, 0]}
+                    stroke="var(--accent-red)"
+                    strokeWidth={1}
+                    opacity={0.9}
+                    minPointSize={3} // Ensure minimum height for zero values
+                    // Custom bar shape to handle zero values gracefully
+                    shape={(props: any) => {
+                      const { x, y, width, height } = props;
+                      // Ensure minimum height for zero values
+                      const minHeight = 3;
+                      const actualHeight = Math.max(height, minHeight);
+                      const actualY = height === 0 ? y + height - minHeight : y;
+                      
+                      return (
+                        <rect
+                          x={x}
+                          y={actualY}
+                          width={width}
+                          height={actualHeight}
+                          fill="var(--accent-red)"
+                          stroke="var(--accent-red)"
+                          strokeWidth={1}
+                          rx={6}
+                          ry={6}
+                        />
+                      );
+                    }}
+                  />
                 </BarChart>
               </ResponsiveContainer>
+              
+              {/* Enhanced Chart Legend */}
+              <div className="flex items-center justify-center gap-6 mt-4 pt-4 border-t border-white/10">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-sm bg-green-400"></div>
+                  <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Income</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 rounded-sm bg-red-400"></div>
+                  <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Expenses</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
