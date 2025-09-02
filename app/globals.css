@@ -475,6 +475,85 @@ html.light-theme .liquid-card .font-bold {
   font-weight: 700 !important;
 }
 
+/* Quick Budget Modal Styling */
+.quick-budget-modal {
+  background: var(--card-bg);
+  border-color: var(--card-border);
+  box-shadow: 0 25px 50px -12px var(--card-shadow);
+}
+
+.quick-budget-title {
+  color: var(--text-primary);
+}
+
+.quick-budget-close-icon {
+  color: var(--text-muted);
+}
+
+.quick-budget-description {
+  color: var(--text-secondary);
+}
+
+.quick-budget-preset-btn {
+  padding: 12px;
+  text-align: center;
+  border-radius: 8px;
+  background: var(--overlay-light);
+  border: 1px solid var(--overlay-medium);
+  transition: all 0.3s ease;
+}
+
+.quick-budget-preset-btn:hover {
+  background: var(--overlay-medium);
+  border-color: var(--overlay-heavy);
+  transform: translateY(-1px);
+}
+
+.quick-budget-amount {
+  color: var(--text-primary);
+}
+
+.quick-budget-label {
+  color: var(--text-muted);
+}
+
+.quick-budget-input {
+  background: var(--input-bg);
+  border-color: var(--input-border);
+  color: var(--input-text);
+}
+
+.quick-budget-input::placeholder {
+  color: var(--input-placeholder);
+}
+
+.quick-budget-input:focus {
+  border-color: var(--theme-primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.quick-budget-currency {
+  color: var(--text-muted);
+}
+
+.quick-budget-cancel-btn {
+  background: var(--overlay-medium);
+  color: var(--text-secondary);
+}
+
+.quick-budget-cancel-btn:hover {
+  background: var(--overlay-heavy);
+  color: var(--text-primary);
+}
+
+.quick-budget-close-btn {
+  background: var(--theme-primary);
+}
+
+.quick-budget-close-btn:hover {
+  background: var(--theme-primary-hover);
+}
+
 /* ========================================
    CSS CUSTOM PROPERTIES (VARIABLES)
    ======================================== */
@@ -577,25 +656,25 @@ html.light-theme .liquid-card .font-bold {
     
     --overlay-light: rgba(0, 0, 0, 0.05);
     --overlay-medium: rgba(0, 0, 0, 0.1);
-      --overlay-heavy: rgba(0, 0, 0, 0.2);
+    --overlay-heavy: rgba(0, 0, 0, 0.2);
   
-  /* Enhanced Light Theme Gradients */
-  --bg-gradient: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 25%, #BAE6FD 50%, #7DD3FC 75%, #38BDF8 100%);
-  --card-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 50%, rgba(241, 245, 249, 0.85) 100%);
+    /* Enhanced Light Theme Gradients */
+    --bg-gradient: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 25%, #BAE6FD 50%, #7DD3FC 75%, #38BDF8 100%);
+    --card-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 50%, rgba(241, 245, 249, 0.85) 100%);
   
-  /* Enhanced Light Theme Accent Colors - Darker for Better Visibility */
-  --accent-blue: #1D4ED8;
-  --accent-green: #059669;
-  --accent-purple: #7C3AED;
-  --accent-orange: #D97706;
-  --accent-pink: #DB2777;
-  --accent-red: #B91C1C;
+    /* Enhanced Light Theme Accent Colors - Darker for Better Visibility */
+    --accent-blue: #1D4ED8;
+    --accent-green: #059669;
+    --accent-purple: #7C3AED;
+    --accent-orange: #D97706;
+    --accent-pink: #DB2777;
+    --accent-red: #B91C1C;
   
-  /* Enhanced Light Theme Borders - Darker for Better Visibility */
-  --border-light: rgba(0, 0, 0, 0.08);
-  --border-medium: rgba(0, 0, 0, 0.12);
-  --border-heavy: rgba(0, 0, 0, 0.18);
-}
+    /* Enhanced Light Theme Borders - Darker for Better Visibility */
+    --border-light: rgba(0, 0, 0, 0.08);
+    --border-medium: rgba(0, 0, 0, 0.12);
+    --border-heavy: rgba(0, 0, 0, 0.18);
+  }
 }
 
 /* Manual Light Theme Class */

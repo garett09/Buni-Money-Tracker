@@ -58,12 +58,23 @@ const StatsCard = React.memo(({
         <p className="text-sm text-muted-foreground">{title}</p>
         <p className="text-2xl font-bold mt-1">{value}</p>
         {change && (
-          <p className={`text-sm mt-1 ${change.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
+          <p 
+            className="text-sm mt-1" 
+            style={{ 
+              color: change.startsWith('+') ? 'var(--accent-green)' : 'var(--accent-red)' 
+            }}
+          >
             {change}
           </p>
         )}
       </div>
-      <div className={`p-3 rounded-full bg-${color}-100 text-${color}-600`}>
+      <div 
+        className="p-3 rounded-full" 
+        style={{
+          background: `var(--accent-${color === 'green' ? 'green' : color === 'red' ? 'red' : color === 'blue' ? 'blue' : 'purple'})`,
+          color: 'white'
+        }}
+      >
         <Icon className="w-6 h-6" />
       </div>
     </div>
@@ -352,7 +363,7 @@ const OptimizedDashboard: React.FC = () => {
     return (
       <div className="container mx-auto px-4 py-8">
         <div className="text-center">
-          <p className="text-red-500 mb-4">{error}</p>
+          <p className="mb-4" style={{ color: 'var(--accent-red)' }}>{error}</p>
           <button
             onClick={() => loadData()}
             className="liquid-button px-6 py-2"
@@ -379,11 +390,24 @@ const OptimizedDashboard: React.FC = () => {
           {/* Current Budget Display */}
           <button
             onClick={() => setShowQuickBudgetAdjust(true)}
-            className="flex items-center gap-3 px-4 py-2 bg-white/90 dark:bg-white/10 rounded-lg border border-gray-200 dark:border-white/20 hover:bg-white dark:hover:bg-white/20 transition-all duration-300 cursor-pointer"
+            className="flex items-center gap-3 px-4 py-2 rounded-lg border transition-all duration-300 cursor-pointer hover:scale-105"
+            style={{
+              background: 'var(--card-bg)',
+              borderColor: 'var(--card-border)',
+              color: 'var(--text-primary)'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'var(--overlay-light)';
+              e.currentTarget.style.borderColor = 'var(--accent-green)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'var(--card-bg)';
+              e.currentTarget.style.borderColor = 'var(--card-border)';
+            }}
             title="Click to adjust budget"
           >
-            <span className="text-sm text-gray-700 dark:text-muted-foreground">Monthly Budget:</span>
-            <span className="font-semibold text-green-600 dark:text-green-400">{formatPeso(getUserMonthlyBudget())}</span>
+            <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>Monthly Budget:</span>
+            <span className="font-semibold" style={{ color: 'var(--accent-green)' }}>{formatPeso(getUserMonthlyBudget())}</span>
           </button>
           
           <button
@@ -475,21 +499,30 @@ const OptimizedDashboard: React.FC = () => {
       {/* Quick Budget Adjustment Modal */}
       {showQuickBudgetAdjust && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white/95 dark:bg-white/10 backdrop-blur-lg rounded-2xl border border-gray-200 dark:border-white/20 p-6 max-w-md w-full mx-4">
+          <div className="quick-budget-modal backdrop-blur-lg rounded-2xl border p-6 max-w-md w-full mx-4 shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-bold quick-budget-title">
                 Quick Budget Adjustment
               </h3>
               <button
                 onClick={() => setShowQuickBudgetAdjust(false)}
-                className="p-2 hover:bg-gray-100 dark:hover:bg-white/10 rounded-lg transition-colors"
+                className="p-2 rounded-lg transition-colors"
+                style={{
+                  background: 'transparent'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'var(--overlay-light)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                }}
               >
-                <FiX size={20} className="text-gray-600 dark:text-white/60" />
+                <FiX size={20} className="quick-budget-close-icon" />
               </button>
             </div>
             
             <div className="space-y-4">
-              <p className="text-sm text-gray-700 dark:text-white/70">
+              <p className="text-sm quick-budget-description">
                 Choose a preset budget or enter your own amount:
               </p>
               
@@ -499,12 +532,12 @@ const OptimizedDashboard: React.FC = () => {
                   <button
                     key={preset}
                     onClick={() => handleQuickBudgetAdjust(preset)}
-                    className="p-3 text-center rounded-lg bg-gray-50 dark:bg-white/10 hover:bg-gray-100 dark:hover:bg-white/20 transition-all duration-300 border border-gray-200 dark:border-white/20"
+                    className="quick-budget-preset-btn"
                   >
-                    <div className="font-semibold text-gray-900 dark:text-white">
+                    <div className="font-semibold quick-budget-amount">
                       ₱{preset.toLocaleString()}
                     </div>
-                    <div className="text-xs text-gray-600 dark:text-white/70">
+                    <div className="text-xs quick-budget-label">
                       {preset === 20000 ? 'Starter' : 
                        preset === 30000 ? 'Basic' : 
                        preset === 40000 ? 'Standard' : 
@@ -523,7 +556,7 @@ const OptimizedDashboard: React.FC = () => {
                   max="1000000"
                   step="1000"
                   placeholder="Custom amount"
-                  className="flex-1 p-2 bg-gray-50 dark:bg-white/10 rounded-lg border border-gray-200 dark:border-white/20 focus:border-blue-500 focus:outline-none transition-all duration-300 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-white/50"
+                  className="flex-1 p-2 quick-budget-input rounded-lg border focus:outline-none transition-all duration-300"
                   onKeyPress={(e) => {
                     if (e.key === 'Enter') {
                       const value = parseInt(e.currentTarget.value);
@@ -533,19 +566,19 @@ const OptimizedDashboard: React.FC = () => {
                     }
                   }}
                 />
-                <span className="text-sm text-gray-600 dark:text-white/60">₱</span>
+                <span className="text-sm quick-budget-currency">₱</span>
               </div>
               
               <div className="flex gap-2 pt-2">
                 <button
                   onClick={() => setShowQuickBudgetAdjust(false)}
-                  className="flex-1 p-2 rounded-lg bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 transition-all duration-300 text-gray-700 dark:text-white/70"
+                  className="flex-1 p-2 rounded-lg quick-budget-cancel-btn transition-all duration-300"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => setShowQuickBudgetAdjust(false)}
-                  className="flex-1 p-2 rounded-lg bg-blue-500 hover:bg-blue-600 transition-all duration-300 text-white"
+                  className="flex-1 p-2 rounded-lg quick-budget-close-btn transition-all duration-300 text-white"
                 >
                   Close
                 </button>
