@@ -251,15 +251,15 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             )}
 
             {/* Enhanced Navigation */}
-            <nav className="flex-1 space-y-2">
-              {navigation.map((item) => {
+            <nav className="flex-1 space-y-4">
+              {navigation.map((item, index) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`group relative p-4 rounded-2xl transition-colors duration-200 ${
+                    className={`group relative p-4 rounded-2xl transition-all duration-300 ${
                       isActive 
                         ? 'nav-item-glass active' 
                         : 'nav-item-glass'
@@ -267,18 +267,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     onClick={() => setSidebarOpen(false)}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-200 ${
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                         isActive 
                           ? 'bg-gradient-to-br from-emerald-500 to-blue-600 shadow-lg' 
                           : 'bg-white/10'
                       }`}>
-                        <Icon size={20} className={`transition-colors duration-200 ${
+                        <Icon size={20} className={`transition-colors duration-300 ${
                           isActive ? 'text-white' : 'text-white/60'
                         }`} />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className={`font-medium transition-colors duration-200 ${
+                          <span className={`font-medium transition-colors duration-300 ${
                             isActive ? 'text-white' : 'text-white/80'
                           }`}>
                             {item.name}
@@ -289,7 +289,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                             </span>
                           )}
                         </div>
-                        <p className={`text-sm transition-colors duration-200 ${
+                        <p className={`text-sm transition-colors duration-300 ${
                           isActive ? 'text-white/80' : 'text-white/40'
                         }`}>
                           {item.description}

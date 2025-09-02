@@ -91,12 +91,12 @@
   outline-offset: 2px;
 }
 
-/* Prevent any lingering hover effects */
+/* Enhanced transitions for all elements */
 .nav-item-glass * {
-  transition: color 0.2s ease, background-color 0.2s ease;
+  transition: all 0.3s ease;
 }
 
-/* Force clean rendering and prevent artifacts */
+/* Clean rendering and prevent artifacts */
 .nav-item-glass {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
@@ -129,10 +129,26 @@ html.light-theme .nav-item-glass {
   position: relative;
 }
 
-/* Remove connecting lines and artifacts */
-html.light-theme .nav-item-glass::before,
-html.light-theme .nav-item-glass::after {
-  display: none !important;
+/* Enhanced navigation styling with proper spacing and visual hierarchy */
+html.light-theme .nav-item-glass {
+  position: relative;
+  margin-bottom: 12px !important;
+  border-radius: 12px !important;
+  overflow: visible !important;
+}
+
+/* Add connecting lines between navigation items */
+html.light-theme .nav-item-glass:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  width: 2px;
+  height: 12px;
+  background: linear-gradient(to bottom, rgba(59, 130, 246, 0.3), rgba(16, 185, 129, 0.3));
+  transform: translateX(-50%);
+  display: block !important;
+  z-index: 1;
 }
 
 html.light-theme .nav-item-glass:hover {
@@ -149,35 +165,56 @@ html.light-theme .nav-item-glass.active {
   transform: translateY(-2px);
 }
 
-/* Clean spacing between nav items */
+/* Enhanced spacing and visual hierarchy */
 html.light-theme .nav-item-glass + .nav-item-glass {
-  margin-top: 8px !important;
+  margin-top: 12px !important;
 }
 
-/* Remove any remaining connecting lines or visual artifacts */
-html.light-theme .nav-item-glass *::before,
-html.light-theme .nav-item-glass *::after {
-  display: none !important;
+/* Dark theme connecting lines */
+.nav-item-glass:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -12px;
+  width: 2px;
+  height: 12px;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  transform: translateX(-50%);
+  display: block !important;
+  z-index: 1;
+  border-radius: 1px;
 }
 
-html.light-theme .sidebar-glass *::before,
-html.light-theme .sidebar-glass *::after {
-  content: none !important;
+/* Enhanced navigation container spacing */
+.nav-item-glass {
+  margin-bottom: 16px;
+  position: relative;
 }
 
-/* Clean up any border artifacts */
-html.light-theme .nav-item-glass {
-  border-radius: 12px !important;
-  overflow: hidden !important;
+/* Ensure proper positioning for connecting lines */
+.nav-item-glass:last-child {
+  margin-bottom: 0;
 }
 
-/* Remove any pseudo-element lines */
-html.light-theme .nav-item-glass::before,
-html.light-theme .nav-item-glass::after,
-html.light-theme .sidebar-glass::before,
-html.light-theme .sidebar-glass::after {
-  display: none !important;
-  content: none !important;
+/* Active state enhancement */
+.nav-item-glass.active::after {
+  background: linear-gradient(to bottom, rgba(16, 185, 129, 0.4), rgba(59, 130, 246, 0.4));
+  width: 3px;
+  height: 16px;
+}
+
+/* Hover state enhancement for connecting lines */
+.nav-item-glass:hover::after {
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+  width: 3px;
+  height: 16px;
+}
+
+/* Ensure connecting lines are visible on all themes */
+.nav-item-glass:not(:last-child)::after {
+  opacity: 1 !important;
+  visibility: visible !important;
+  display: block !important;
 }
 
 /* Enhanced Light Mode Financial Data Colors - Darker for Better Visibility */
