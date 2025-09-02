@@ -8,6 +8,7 @@ import { getUserMonthlyBudget } from '@/app/lib/currency';
 import { HistoricalDataManager } from '@/app/lib/historicalData';
 import { NotificationManager } from '@/app/lib/notificationManager';
 import SmartNotifications from './SmartNotifications';
+import LoadingStates from './LoadingStates';
 import {
   LineChart,
   Line,
@@ -895,6 +896,11 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
     }
     return 'building';
   };
+
+  // Show loading state while data is being processed
+  if (loading) {
+    return <LoadingStates type="dashboard" size="large" message="Loading your financial dashboard..." />;
+  }
 
   return (
     <div className="space-y-8" key={refreshKey}>

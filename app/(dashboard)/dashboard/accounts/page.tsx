@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/app/components/DashboardLayout';
 import AccountModal from '@/app/components/AccountModal';
+import LoadingStates from '@/app/components/LoadingStates';
 import { toast } from 'react-hot-toast';
 import { 
   FiPlus, 
@@ -202,6 +203,15 @@ const AccountsPage = () => {
   const totalBalance = accounts.reduce((sum, account) => sum + (account.currentBalance || 0), 0);
   const activeAccounts = accounts.filter(acc => acc.isActive);
   const inactiveAccounts = accounts.filter(acc => !acc.isActive);
+
+  // Show loading state while accounts are being loaded
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <LoadingStates type="accounts" size="large" message="Loading your accounts..." />
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
