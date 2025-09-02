@@ -9,6 +9,7 @@ import { HistoricalDataManager } from '@/app/lib/historicalData';
 import { NotificationManager } from '@/app/lib/notificationManager';
 import SmartNotifications from './SmartNotifications';
 import LoadingStates from './LoadingStates';
+import MobileResponsivenessTest from './MobileResponsivenessTest';
 import {
   LineChart,
   Line,
@@ -51,7 +52,8 @@ import {
   FiUpload,
   FiFilter,
   FiSearch,
-  FiX
+  FiX,
+  FiSmartphone
 } from 'react-icons/fi';
 
 interface EnhancedDashboardProps {
@@ -96,6 +98,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
   const [budgetForecast, setBudgetForecast] = useState<any>(null);
   const [showHistoricalData, setShowHistoricalData] = useState(false);
   const [userId, setUserId] = useState<string>('default-user');
+  const [showMobileTest, setShowMobileTest] = useState(false);
 
 
 
@@ -905,9 +908,9 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
   return (
     <div className="space-y-8" key={refreshKey}>
       {/* Enhanced Header with Actions */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <h2 className="text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <h2 className="text-2xl sm:text-3xl font-bold" style={{ color: 'var(--text-primary)' }}>
             Financial Analytics
           </h2>
           <div className="flex items-center gap-2">
@@ -959,11 +962,18 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
           >
             <FiSettings size={16} style={{ color: 'var(--text-muted)' }} />
           </button>
+          <button 
+            onClick={() => setShowMobileTest(!showMobileTest)}
+            className="p-2 rounded-lg liquid-button transition-all duration-300" 
+            title="Mobile Responsiveness Test"
+          >
+            <FiSmartphone size={16} style={{ color: 'var(--text-muted)' }} />
+          </button>
         </div>
       </div>
 
       {/* Enhanced Analytics Tabs */}
-      <div className="flex items-center gap-2 liquid-card rounded-xl p-1">
+      <div className="flex items-center gap-1 sm:gap-2 liquid-card rounded-xl p-1 overflow-x-auto">
         {[
           { id: 'overview', label: 'Overview', icon: FiEye },
           { id: 'trends', label: 'Trends', icon: FiTrendingUp },
@@ -975,23 +985,24 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
+            className={`px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 flex items-center gap-1 sm:gap-2 whitespace-nowrap ${
               activeTab === tab.id
                 ? 'liquid-button text-white'
                 : 'text-white/60 hover:text-white hover:bg-white/5'
             }`}
           >
-            <tab.icon size={16} />
-            {tab.label}
+            <tab.icon size={14} className="sm:text-base" />
+            <span className="hidden sm:inline">{tab.label}</span>
+            <span className="sm:hidden">{tab.label.charAt(0)}</span>
           </button>
         ))}
       </div>
 
       {/* Filters Section */}
       {showFilters && (
-        <div className="liquid-card p-6 rounded-2xl">
+        <div className="liquid-card p-4 sm:p-6 rounded-2xl">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
+            <h3 className="text-base sm:text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>
               Data Filters
             </h3>
             <button
@@ -2404,6 +2415,23 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                   Historical data is retained for 3 years to provide insights into your financial journey.
                 </p>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Responsiveness Test */}
+      {showMobileTest && (
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <MobileResponsivenessTest />
+            <div className="text-center mt-4">
+              <button
+                onClick={() => setShowMobileTest(false)}
+                className="liquid-button px-6 py-3 rounded-xl"
+              >
+                Close Test
+              </button>
             </div>
           </div>
         </div>

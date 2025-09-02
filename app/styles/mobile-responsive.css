@@ -1,0 +1,254 @@
+/* ========================================
+   MOBILE RESPONSIVE ENHANCEMENTS
+   ======================================== */
+
+/* Mobile-First Responsive Design */
+
+/* Extra Small Devices (phones, 320px and up) */
+@media (max-width: 479px) {
+  /* Typography adjustments */
+  .text-3xl { font-size: 1.5rem !important; line-height: 2rem !important; }
+  .text-2xl { font-size: 1.25rem !important; line-height: 1.75rem !important; }
+  .text-xl { font-size: 1.125rem !important; line-height: 1.75rem !important; }
+  .text-lg { font-size: 1rem !important; line-height: 1.5rem !important; }
+  
+  /* Spacing adjustments */
+  .space-y-8 > * + * { margin-top: 1.5rem !important; }
+  .space-y-6 > * + * { margin-top: 1.25rem !important; }
+  .space-y-4 > * + * { margin-top: 1rem !important; }
+  
+  /* Padding adjustments */
+  .p-6 { padding: 1rem !important; }
+  .p-8 { padding: 1.25rem !important; }
+  .px-6 { padding-left: 1rem !important; padding-right: 1rem !important; }
+  .py-6 { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+  
+  /* Grid adjustments */
+  .grid-cols-4 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+  .grid-cols-3 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+  .grid-cols-2 { grid-template-columns: repeat(1, minmax(0, 1fr)) !important; }
+  
+  /* Sidebar adjustments */
+  .md\:ml-80 { margin-left: 0 !important; }
+  
+  /* Chart container adjustments */
+  .recharts-wrapper { width: 100% !important; height: 200px !important; }
+  
+  /* Button adjustments */
+  .px-4 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+  .py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+  
+  /* Icon adjustments */
+  .w-10 { width: 2rem !important; }
+  .h-10 { height: 2rem !important; }
+  .w-12 { width: 2.5rem !important; }
+  .h-12 { height: 2.5rem !important; }
+}
+
+/* Small Devices (landscape phones, 480px and up) */
+@media (min-width: 480px) and (max-width: 639px) {
+  /* Typography adjustments */
+  .text-3xl { font-size: 1.875rem !important; line-height: 2.25rem !important; }
+  .text-2xl { font-size: 1.5rem !important; line-height: 2rem !important; }
+  
+  /* Grid adjustments */
+  .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .grid-cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  
+  /* Chart container adjustments */
+  .recharts-wrapper { height: 250px !important; }
+}
+
+/* Medium Devices (tablets, 640px and up) */
+@media (min-width: 640px) and (max-width: 767px) {
+  /* Grid adjustments */
+  .grid-cols-4 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .grid-cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  
+  /* Chart container adjustments */
+  .recharts-wrapper { height: 300px !important; }
+}
+
+/* Large Devices (tablets, 768px and up) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Grid adjustments */
+  .grid-cols-4 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; }
+  
+  /* Chart container adjustments */
+  .recharts-wrapper { height: 350px !important; }
+}
+
+/* Extra Large Devices (desktops, 1024px and up) */
+@media (min-width: 1024px) {
+  /* Full desktop experience */
+  .recharts-wrapper { height: 400px !important; }
+}
+
+/* Touch Device Optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Larger touch targets */
+  button, a, [role="button"] {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+  
+  /* Enhanced touch feedback */
+  .liquid-button:active {
+    transform: scale(0.95) !important;
+    transition: transform 0.1s ease !important;
+  }
+  
+  /* Better scrolling on mobile */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none !important;
+  }
+  
+  .overflow-x-auto::-webkit-scrollbar {
+    display: none !important;
+  }
+}
+
+/* Landscape Orientation Adjustments */
+@media (orientation: landscape) and (max-height: 500px) {
+  /* Reduce vertical spacing */
+  .space-y-8 > * + * { margin-top: 1rem !important; }
+  .space-y-6 > * + * { margin-top: 0.75rem !important; }
+  
+  /* Adjust chart heights */
+  .recharts-wrapper { height: 150px !important; }
+  
+  /* Reduce padding */
+  .p-6 { padding: 0.75rem !important; }
+  .p-8 { padding: 1rem !important; }
+}
+
+/* High DPI Displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Crisp borders and shadows */
+  .border { border-width: 0.5px !important; }
+  .shadow-lg { box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important; }
+}
+
+/* Dark Mode Mobile Adjustments */
+@media (prefers-color-scheme: dark) {
+  @media (max-width: 768px) {
+    /* Enhanced contrast for mobile dark mode */
+    .liquid-card {
+      background: rgba(0, 0, 0, 0.4) !important;
+      border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    .text-white\/60 { color: rgba(255, 255, 255, 0.8) !important; }
+    .text-white\/40 { color: rgba(255, 255, 255, 0.7) !important; }
+  }
+}
+
+/* Mobile Navigation Enhancements */
+@media (max-width: 767px) {
+  /* Sidebar mobile optimizations */
+  .sidebar-glass {
+    width: 100vw !important;
+    max-width: 320px !important;
+  }
+  
+  /* Mobile menu button positioning */
+  .fixed.top-4.left-4 {
+    top: 1rem !important;
+    left: 1rem !important;
+  }
+  
+  /* Mobile overlay enhancements */
+  .fixed.inset-0.bg-black\/50 {
+    backdrop-filter: blur(4px) !important;
+  }
+  
+  /* Mobile content spacing */
+  .p-6 { padding: 1rem !important; }
+  .p-8 { padding: 1.25rem !important; }
+  
+  /* Mobile grid layouts */
+  .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
+  }
+  
+  /* Mobile chart responsiveness */
+  .recharts-responsive-container {
+    width: 100% !important;
+    height: 250px !important;
+  }
+  
+  /* Mobile button groups */
+  .flex.items-center.gap-2 {
+    gap: 0.5rem !important;
+  }
+  
+  /* Mobile text sizing */
+  .text-sm { font-size: 0.875rem !important; }
+  .text-xs { font-size: 0.75rem !important; }
+}
+
+/* Tablet Optimizations */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Tablet grid layouts */
+  .grid.grid-cols-1.md\:grid-cols-2.lg\:grid-cols-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 1.5rem !important;
+  }
+  
+  /* Tablet chart responsiveness */
+  .recharts-responsive-container {
+    height: 300px !important;
+  }
+  
+  /* Tablet spacing */
+  .space-y-8 > * + * { margin-top: 2rem !important; }
+  .p-6 { padding: 1.5rem !important; }
+}
+
+/* Performance Optimizations for Mobile */
+@media (max-width: 767px) {
+  /* Reduce animations on mobile for better performance */
+  .animate-pulse { animation: none !important; }
+  .animate-spin { animation: none !important; }
+  
+  /* Optimize backdrop filters for mobile */
+  .backdrop-blur-lg { backdrop-filter: blur(8px) !important; }
+  .backdrop-blur-xl { backdrop-filter: blur(12px) !important; }
+  
+  /* Reduce shadow complexity on mobile */
+  .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important; }
+}
+
+/* Accessibility Enhancements for Mobile */
+@media (max-width: 767px) {
+  /* Ensure sufficient contrast */
+  .text-white\/60 { color: rgba(255, 255, 255, 0.8) !important; }
+  .text-white\/40 { color: rgba(255, 255, 255, 0.7) !important; }
+  
+  /* Larger focus indicators */
+  .focus\:outline-none:focus {
+    outline: 2px solid #3B82F6 !important;
+    outline-offset: 2px !important;
+  }
+  
+  /* Better touch feedback */
+  .active\:scale-95:active {
+    transform: scale(0.98) !important;
+  }
+}
+
+/* Print Styles for Mobile */
+@media print {
+  /* Hide mobile-specific elements when printing */
+  .md\:hidden { display: none !important; }
+  
+  /* Ensure proper page breaks */
+  .page-break-inside-avoid { page-break-inside: avoid !important; }
+  
+  /* Optimize colors for printing */
+  .bg-gradient-to-br { background: #ffffff !important; }
+  .text-white { color: #000000 !important; }
+}

@@ -28,10 +28,11 @@ import {
   FiShield,
   FiBarChart,
   FiPieChart,
-  FiDollarSign
+  FiDollarSign,
+  FiBook
 } from 'react-icons/fi';
 import ThemePicker from './ThemePicker';
-import TutorialButton from './TutorialButton';
+
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -180,10 +181,10 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
       <div className="relative z-10 flex">
         {/* Mobile menu button */}
         <button
-          className="md:hidden fixed top-4 left-4 z-50 liquid-button p-3 rounded-xl backdrop-blur-lg border border-white/10"
+          className="md:hidden fixed top-4 left-4 z-50 liquid-button p-2 sm:p-3 rounded-xl backdrop-blur-lg border border-white/10"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
-          {sidebarOpen ? <FiX size={20} /> : <FiMenu size={20} />}
+          {sidebarOpen ? <FiX size={18} className="sm:text-xl" /> : <FiMenu size={18} className="sm:text-xl" />}
         </button>
 
         {/* Enhanced Sidebar */}
@@ -192,33 +193,33 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         }`}>
           <div className="flex flex-col h-full">
             {/* Enhanced Logo */}
-            <div className="mb-8">
+            <div className="mb-6 sm:mb-8 p-4">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center shadow-lg">
-                  <FiHeart size={24} className="text-white" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center shadow-lg">
+                  <FiHeart size={20} className="sm:text-2xl text-white" />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
+                  <h2 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-emerald-400 to-blue-500 bg-clip-text text-transparent">
                     Buni Tracker
                   </h2>
-                  <p className="text-white/60 text-sm">Financial Freedom</p>
+                  <p className="text-white/60 text-xs sm:text-sm">Financial Freedom</p>
                 </div>
               </div>
             </div>
 
             {/* User Profile */}
-            <div className="mb-8 p-4 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg">
+            <div className="mb-6 sm:mb-8 p-3 sm:p-4 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
-                  <FiUser size={20} className="text-white" />
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center shadow-lg">
+                  <FiUser size={18} className="sm:text-xl text-white" />
                 </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-white">{user.name || 'User'}</p>
-                  <p className="text-white/60 text-sm">{user.email}</p>
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-white text-sm sm:text-base truncate">{user.name || 'User'}</p>
+                  <p className="text-white/60 text-xs sm:text-sm truncate">{user.email}</p>
                 </div>
                 <button
                   onClick={() => setShowQuickActions(!showQuickActions)}
-                  className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-300"
+                  className="p-2 rounded-lg hover:bg-white/10 transition-colors duration-300 flex-shrink-0"
                 >
                   <FiPlus size={16} className="text-white/60" />
                 </button>
@@ -227,18 +228,18 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
             {/* Quick Actions */}
             {showQuickActions && (
-              <div className="mb-6 p-4 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg">
+              <div className="mb-6 p-3 sm:p-4 rounded-2xl bg-white/5 backdrop-blur-lg border border-white/10 shadow-lg">
                 <h3 className="text-sm font-semibold text-white/80 mb-3">Quick Actions</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {quickActions.map((action) => (
                     <Link
                       key={action.name}
                       href={action.href}
-                      className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group shadow-sm"
+                      className="p-2 sm:p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group shadow-sm"
                       onClick={() => setSidebarOpen(false)}
                     >
-                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-2 transition-all duration-200 shadow-md`}>
-                        <action.icon size={16} className="text-white" />
+                      <div className={`w-6 h-6 sm:w-8 sm:h-8 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-2 transition-all duration-200 shadow-md`}>
+                        <action.icon size={14} className="sm:text-base text-white" />
                       </div>
                       <p className="text-xs font-medium text-white/80">{action.name}</p>
                     </Link>
@@ -248,7 +249,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
             )}
 
             {/* Enhanced Navigation */}
-            <nav className="flex-1 space-y-4">
+            <nav className="flex-1 space-y-3 sm:space-y-4 px-2 sm:px-0">
               {navigation.map((item, index) => {
                 const Icon = item.icon;
                 const isActive = pathname === item.href;
@@ -256,26 +257,26 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`group relative p-4 rounded-2xl transition-all duration-300 ${
+                    className={`group relative p-3 sm:p-4 rounded-2xl transition-all duration-300 ${
                       isActive 
                         ? 'nav-item-glass active' 
                         : 'nav-item-glass'
                     }`}
                     onClick={() => setSidebarOpen(false)}
                   >
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
                         isActive 
                           ? 'bg-gradient-to-br from-emerald-500 to-blue-600 shadow-lg' 
                           : 'bg-white/10'
                       }`}>
-                        <Icon size={20} className={`transition-colors duration-300 ${
+                        <Icon size={18} className={`transition-colors duration-300 ${
                           isActive ? 'text-white' : 'text-white/60'
                         }`} />
                       </div>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className={`font-medium transition-colors duration-300 ${
+                          <span className={`font-medium transition-colors duration-300 text-sm sm:text-base ${
                             isActive ? 'text-white' : 'text-white/80'
                           }`}>
                             {item.name}
@@ -286,7 +287,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                             </span>
                           )}
                         </div>
-                        <p className={`text-sm transition-colors duration-300 ${
+                        <p className={`text-xs sm:text-sm transition-colors duration-300 ${
                           isActive ? 'text-white/80' : 'text-white/40'
                         }`}>
                           {item.description}
@@ -298,56 +299,50 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
               })}
             </nav>
 
-            {/* Enhanced Tutorial Section */}
-            <div className="mb-6 p-5 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-blue-500/15 to-purple-500/15 backdrop-blur-xl border border-emerald-500/30 shadow-xl">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-blue-600 flex items-center justify-center shadow-lg">
-                  <FiHelpCircle size={18} className="text-white" />
+                          {/* Documentation Section */}
+              <div className="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-blue-500/15 via-purple-500/15 to-indigo-500/15 backdrop-blur-xl border border-blue-500/30 shadow-xl">
+                <div className="flex items-center gap-3 mb-3 sm:mb-4">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-lg">
+                    <FiBook size={16} className="sm:text-lg text-white" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-blue-300">Need Help?</h3>
+                    <p className="text-xs text-blue-200/60">Master the platform</p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-sm font-bold text-emerald-300">Need Help?</h3>
-                  <p className="text-xs text-emerald-200/60">Master the platform</p>
-                </div>
+                <p className="text-xs text-blue-200/80 mb-3 sm:mb-4 leading-relaxed">
+                  Learn how to use all the features and unlock your financial potential with our step-by-step tutorial
+                </p>
+                <Link
+                  href="/docs"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-blue-500/30 to-purple-500/30 hover:from-blue-500/40 hover:to-purple-500/40 text-blue-200 hover:text-white rounded-xl transition-all duration-300 text-xs sm:text-sm font-semibold border border-blue-500/40 hover:border-blue-500/60 shadow-lg hover:shadow-blue-500/25 hover:scale-[1.02] flex items-center justify-center"
+                >
+                  🎓 Start Tutorial
+                </Link>
               </div>
-              <p className="text-xs text-emerald-200/80 mb-4 leading-relaxed">
-                Learn how to use all the features and unlock your financial potential with our interactive guide
-              </p>
-              <button
-                onClick={() => {
-                  // This will be handled by the TutorialButton component
-                  const tutorialButton = document.querySelector('[data-tutorial-trigger]');
-                  if (tutorialButton) {
-                    (tutorialButton as HTMLElement).click();
-                  }
-                }}
-                className="w-full px-4 py-3 bg-gradient-to-r from-emerald-500/30 to-blue-500/30 hover:from-emerald-500/40 hover:to-blue-500/40 text-emerald-200 hover:text-white rounded-xl transition-all duration-300 text-sm font-semibold border border-emerald-500/40 hover:border-emerald-500/60 shadow-lg hover:shadow-emerald-500/25 hover:scale-[1.02]"
-              >
-                🚀 Open Tutorial
-              </button>
-            </div>
 
             {/* Bottom Actions */}
-            <div className="space-y-2 pt-4 border-t border-white/10">
+            <div className="space-y-2 pt-4 border-t border-white/10 px-2 sm:px-0">
               <Link
                 href="/dashboard/settings"
-                className="flex items-center gap-4 p-4 rounded-2xl hover:bg-white/10 transition-all duration-300 group shadow-sm"
+                className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl hover:bg-white/10 transition-all duration-300 group shadow-sm"
               >
-                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors duration-300 shadow-sm">
-                  <FiSettings size={20} className="text-white/60 group-hover:text-white transition-colors duration-300" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors duration-300 shadow-sm">
+                  <FiSettings size={18} className="sm:text-xl text-white/60 group-hover:text-white transition-colors duration-300" />
                 </div>
-                <span className="font-medium text-white/80 group-hover:text-white transition-colors duration-300">
+                <span className="font-medium text-white/80 group-hover:text-white transition-colors duration-300 text-sm sm:text-base">
                   Settings
                 </span>
               </Link>
               
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-red-500/20 transition-all duration-300 group shadow-sm"
+                className="w-full flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-2xl hover:bg-red-500/20 transition-all duration-300 group shadow-sm"
               >
-                <div className="w-10 h-10 rounded-xl bg-red-500/20 flex items-center justify-center group-hover:bg-red-500/30 transition-colors duration-300 shadow-sm">
-                  <FiLogOut size={20} className="text-red-400 group-hover:text-red-300 transition-colors duration-300" />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-red-500/20 flex items-center justify-center group-hover:bg-red-500/30 transition-colors duration-300 shadow-sm">
+                  <FiLogOut size={18} className="sm:text-xl text-red-400 group-hover:text-red-300 transition-colors duration-300" />
                 </div>
-                <span className="font-medium text-red-400 group-hover:text-red-300 transition-colors duration-300">
+                <span className="font-medium text-red-400 group-hover:text-red-300 transition-colors duration-300 text-sm sm:text-base">
                   Logout
                 </span>
               </button>
@@ -359,9 +354,9 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
         <div className="flex-1 md:ml-80">
           {/* Enhanced Top Bar */}
           <header className="sticky top-0 z-30 liquid-card backdrop-blur-lg border-b border-white/10">
-            <div className="flex items-center justify-between p-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between p-4 sm:p-6 gap-4">
               {/* Search Bar */}
-              <div className="flex-1 max-w-md">
+              <div className="flex-1 w-full sm:max-w-md order-2 sm:order-1">
                 <div className="relative">
                   <FiSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white/40" size={20} />
                   <input
@@ -369,24 +364,32 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     placeholder="Search transactions, goals, accounts..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300"
+                    className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white placeholder-white/40 focus:outline-none focus:border-emerald-500/50 focus:bg-white/10 transition-all duration-300 text-sm sm:text-base"
                   />
                 </div>
               </div>
 
               {/* Right Side Actions */}
-              <div className="flex items-center gap-4">
-                {/* Tutorial Button */}
-                <TutorialButton currentPage={pathname.split('/').pop() || 'dashboard'} isLoading={false} />
+              <div className="flex items-center gap-2 sm:gap-4 order-1 sm:order-2 w-full sm:w-auto justify-between sm:justify-end">
+                {/* Documentation Button - Hidden on mobile, shown on tablet+ */}
+                <Link
+                  href="/docs"
+                  className="hidden sm:flex items-center gap-3 px-4 sm:px-5 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 text-blue-400 hover:text-blue-300 rounded-2xl transition-all duration-300 group border border-blue-500/30 hover:border-blue-500/50 backdrop-blur-lg shadow-lg hover:shadow-blue-500/25 hover:scale-105"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <FiBook size={18} className="text-white" />
+                  </div>
+                  <span className="font-semibold text-sm">
+                    Tutorial
+                  </span>
+                </Link>
                 
                 {/* Theme Picker */}
                 <ThemePicker />
-                
-
 
                 {/* User Menu */}
-                <div className="flex items-center gap-3">
-                  <div className="text-right hidden md:block">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="text-right hidden lg:block">
                     <p className="text-sm font-medium text-white">{user.name || 'User'}</p>
                     <p className="text-xs text-white/60">Welcome back!</p>
                   </div>
@@ -399,7 +402,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
           </header>
 
           {/* Main Content Area */}
-          <main className="p-6">
+          <main className="p-3 sm:p-4 md:p-6">
             {children}
           </main>
         </div>

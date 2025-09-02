@@ -6,6 +6,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700;800;900&display=swap');
 
+/* Import mobile responsive styles */
+@import './styles/mobile-responsive.css';
+
 /* Tailwind CSS Directives */
 @tailwind base;
 @tailwind components;
@@ -1363,4 +1366,144 @@ html.dark-theme {
   .liquid-shape-3 {
     transition: none;
   }
+}
+
+/* ========================================
+   TUTORIAL MODAL CENTERING
+   ======================================== */
+.tutorial-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 9999 !important;
+  min-height: 100vh !important;
+}
+
+/* Force modal to always be visible and centered */
+body .tutorial-modal-overlay,
+html .tutorial-modal-overlay,
+#__next .tutorial-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 99999 !important;
+  min-height: 100vh !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+/* Ultimate fallback for modal positioning */
+div[class*="tutorial-modal-overlay"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  z-index: 99999 !important;
+  min-height: 100vh !important;
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+.tutorial-modal-content {
+  position: relative !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+  margin: auto !important;
+  overflow: hidden !important;
+}
+
+/* Ensure modal is always visible and centered */
+.tutorial-modal-overlay > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Force center positioning for all screen sizes */
+@media (max-width: 768px) {
+  .tutorial-modal-overlay {
+    padding: 1rem !important;
+  }
+  
+  .tutorial-modal-content {
+    max-width: 95vw !important;
+    max-height: 95vh !important;
+    margin: 0 auto !important;
+  }
+}
+
+/* Ensure modal is above all other elements */
+.tutorial-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 99999 !important;
+}
+
+/* Light theme specific overrides for tutorial modal */
+html.light-theme .tutorial-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 99999 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 100vh !important;
+}
+
+html.light-theme .tutorial-modal-content {
+  position: relative !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+  margin: auto !important;
+  overflow: hidden !important;
+}
+
+/* Force light theme modal positioning */
+html.light-theme .tutorial-modal-overlay > div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Override any light theme conflicts */
+html.light-theme .tutorial-modal-overlay * {
+  box-sizing: border-box !important;
+}
+
+/* Ensure modal backdrop works in light theme */
+html.light-theme .tutorial-modal-overlay {
+  background: rgba(0, 0, 0, 0.8) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Force modal content visibility in light theme */
+html.light-theme .tutorial-modal-content {
+  background: rgba(17, 24, 39, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
 }

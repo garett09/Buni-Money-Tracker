@@ -15,7 +15,7 @@ import {
   FiAlertTriangle,
   FiCheckCircle
 } from 'react-icons/fi';
-import { IntelligentBudget, BudgetSettings as IBudgetSettings } from '@/app/lib/intelligentBudget';
+import { IntelligentBudget, BudgetSettings as BudgetSettingsInterface } from '@/app/lib/intelligentBudget';
 import { toast } from 'react-hot-toast';
 import { getDefaultMonthlyBudget, getUserMonthlyBudget, setUserMonthlyBudget } from '@/app/lib/currency';
 
@@ -32,7 +32,7 @@ const BudgetSettings: React.FC<BudgetSettingsProps> = ({
   incomeTransactions,
   expenseTransactions
 }) => {
-  const [settings, setSettings] = useState<IBudgetSettings>({
+  const [settings, setSettings] = useState<BudgetSettingsInterface>({
     monthlyBudget: getUserMonthlyBudget(), // User's saved budget or default
     categoryBudgets: {},
     autoAdjust: true,
@@ -79,7 +79,7 @@ const BudgetSettings: React.FC<BudgetSettingsProps> = ({
     }
   }, [incomeTransactions, expenseTransactions]);
 
-  const handleSettingChange = (key: keyof IBudgetSettings, value: any) => {
+  const handleSettingChange = (key: keyof BudgetSettingsInterface, value: any) => {
     const newSettings = { ...settings, [key]: value };
     setSettings(newSettings);
     
