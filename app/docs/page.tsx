@@ -864,21 +864,34 @@ const DocumentationPage = () => {
               </Link>
             </div>
             <div className="flex items-center gap-3 sm:gap-4">
+              {/* Beautiful Theme Toggle Button */}
               <button
                 onClick={toggleTheme}
-                className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                className="relative p-3 rounded-2xl bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-700 dark:hover:to-gray-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105"
                 title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
               >
-                {theme === 'dark' ? (
-                  <FiSun size={20} className="text-yellow-500" />
-                ) : (
-                  <FiMoon size={20} className="text-gray-600" />
-                )}
+                <div className="relative">
+                  {theme === 'dark' ? (
+                    <FiSun size={22} className="text-yellow-500 drop-shadow-lg animate-pulse" />
+                  ) : (
+                    <FiMoon size={22} className="text-indigo-600 drop-shadow-lg" />
+                  )}
+                  {/* Glow effect */}
+                  <div className={`absolute inset-0 rounded-full blur-md ${
+                    theme === 'dark' 
+                      ? 'bg-yellow-400/30 animate-ping' 
+                      : 'bg-indigo-400/30'
+                  }`}></div>
+                </div>
               </button>
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
-                <FiBook size={16} className="sm:text-xl text-white" />
+              
+              {/* Logo */}
+              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-blue-500 via-purple-600 to-indigo-700 flex items-center justify-center shadow-lg transform hover:scale-105 transition-transform duration-200">
+                <FiBook size={20} className="text-white drop-shadow-md" />
               </div>
-              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Buni Money Tracker Docs</h1>
+              <h1 className="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent">
+                Buni Money Tracker Docs
+              </h1>
             </div>
           </div>
         </div>
