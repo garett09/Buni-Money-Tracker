@@ -34,8 +34,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    console.log(`Syncing ${dataType} for user ${user.userId} from ${new Date(lastSyncTime).toISOString()}`);
-    
     // Sync data
     const syncResult = await DataPersistence.syncData(user.userId, dataType, lastSyncTime);
     
@@ -54,7 +52,6 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error syncing data:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }

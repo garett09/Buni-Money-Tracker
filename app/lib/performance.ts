@@ -50,7 +50,6 @@ class PerformanceMonitor {
         const observer = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
             if (entry.duration > 50) { // Tasks longer than 50ms
-              console.warn('Long task detected:', entry);
               this.recordMetric('longTasks', {
                 loadTime: entry.duration,
                 renderTime: 0,
@@ -60,7 +59,7 @@ class PerformanceMonitor {
         });
         observer.observe({ entryTypes: ['longtask'] });
       } catch (error) {
-        console.warn('PerformanceObserver not supported');
+        // PerformanceObserver not supported
       }
     }
 
@@ -135,7 +134,7 @@ class PerformanceMonitor {
       clsObserver.observe({ entryTypes: ['layout-shift'] });
 
     } catch (error) {
-      console.warn('Web Vitals monitoring not supported:', error);
+      // Web Vitals monitoring not supported
     }
   }
 
@@ -201,7 +200,7 @@ class PerformanceMonitor {
       try {
         observer.callback(metrics);
       } catch (error) {
-        console.error('Error in performance observer:', error);
+        // Error in performance observer
       }
     });
   }
@@ -291,9 +290,8 @@ export const registerServiceWorker = async () => {
 
   try {
     const registration = await navigator.serviceWorker.register('/sw.js');
-    console.log('Service Worker registered:', registration);
   } catch (error) {
-    console.warn('Service Worker registration failed:', error);
+    // Service Worker registration failed
   }
 };
 
@@ -313,7 +311,7 @@ export const inlineCriticalCSS = async () => {
       };
     });
   } catch (error) {
-    console.warn('Critical CSS optimization failed:', error);
+    // Critical CSS optimization failed
   }
 };
 

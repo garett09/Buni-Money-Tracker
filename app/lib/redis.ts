@@ -8,7 +8,6 @@ const isServer = typeof window === 'undefined';
 const hasRedisCredentials = process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN;
 
 if (!isServer || !hasRedisCredentials) {
-  console.log('Using in-memory storage (Redis credentials not found or client-side)');
   const memoryStore = {
     data: new Map(),
     async hset(key: string, obj: any) {
@@ -99,12 +98,10 @@ if (!isServer || !hasRedisCredentials) {
     url: process.env.UPSTASH_REDIS_REST_URL!,
     token: process.env.UPSTASH_REDIS_REST_TOKEN!,
   });
-  console.log('✅ Connected to Redis database');
 }
 
 // Ensure redis is properly initialized
 if (!redis) {
-  console.error('Redis client not initialized properly');
   throw new Error('Redis client initialization failed');
 }
 

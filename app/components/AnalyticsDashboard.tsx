@@ -90,7 +90,6 @@ const AnalyticsDashboard: React.FC<AnalyticsDashboardProps> = ({
         merchantAnalysis: analyticsEngine.getMerchantAnalysis(selectedPeriod)
       };
     } catch (err) {
-      console.error('Analytics calculation error:', err);
       setError('Failed to calculate analytics. Please try again.');
       return null;
     }

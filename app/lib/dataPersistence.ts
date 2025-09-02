@@ -36,10 +36,8 @@ export class DataPersistence {
       // Store in user's data index
       await redis.sadd(`user:${userId}:dataIndex`, dataType);
 
-      console.log(`✅ Data stored successfully: ${dataType} for user ${userId}`);
       return true;
     } catch (error) {
-      console.error(`❌ Failed to store data: ${dataType}`, error);
       return false;
     }
   }
@@ -55,10 +53,9 @@ export class DataPersistence {
         
         // Verify data integrity
         if (this.verifyChecksum(parsed.data, parsed.checksum)) {
-          console.log(`✅ Data retrieved successfully: ${dataType} for user ${userId}`);
           return parsed.data;
         } else {
-          console.warn(`⚠️ Data corruption detected: ${dataType}, attempting backup recovery`);
+          // Data corruption detected, attempting backup recovery
         }
       }
 
@@ -70,10 +67,8 @@ export class DataPersistence {
         return backupData;
       }
 
-      console.log(`ℹ️ No data found: ${dataType} for user ${userId}`);
       return null;
     } catch (error) {
-      console.error(`❌ Failed to retrieve data: ${dataType}`, error);
       return null;
     }
   }
@@ -107,10 +102,8 @@ export class DataPersistence {
       // Store in user's data index
       await redis.sadd(`user:${userId}:dataIndex`, dataType);
 
-      console.log(`✅ List data stored successfully: ${dataType} (${items.length} items) for user ${userId}`);
       return true;
     } catch (error) {
-      console.error(`❌ Failed to store list data: ${dataType}`, error);
       return false;
     }
   }
@@ -126,10 +119,9 @@ export class DataPersistence {
         
         // Verify data integrity
         if (this.verifyChecksum(parsed.items, parsed.checksum)) {
-          console.log(`✅ List data retrieved successfully: ${dataType} (${parsed.items.length} items) for user ${userId}`);
           return parsed.items;
         } else {
-          console.warn(`⚠️ List data corruption detected: ${dataType}, attempting backup recovery`);
+          // List data corruption detected, attempting backup recovery
         }
       }
 
@@ -141,10 +133,8 @@ export class DataPersistence {
         return backupData;
       }
 
-      console.log(`ℹ️ No list data found: ${dataType} for user ${userId}`);
       return [];
     } catch (error) {
-      console.error(`❌ Failed to retrieve list data: ${dataType}`, error);
       return [];
     }
   }
@@ -156,7 +146,6 @@ export class DataPersistence {
       items.unshift(item); // Add to beginning
       return await this.storeListData(userId, dataType, items);
     } catch (error) {
-      console.error(`❌ Failed to add list item: ${dataType}`, error);
       return false;
     }
   }
@@ -174,7 +163,6 @@ export class DataPersistence {
       
       return false;
     } catch (error) {
-      console.error(`❌ Failed to update list item: ${dataType}`, error);
       return false;
     }
   }
@@ -186,7 +174,6 @@ export class DataPersistence {
       const filteredItems = items.filter(item => item.id !== itemId);
       return await this.storeListData(userId, dataType, filteredItems);
     } catch (error) {
-      console.error(`❌ Failed to delete list item: ${dataType}`, error);
       return false;
     }
   }
@@ -211,7 +198,7 @@ export class DataPersistence {
       // Clean old backups
       await this.cleanOldBackups(userId, dataType);
     } catch (error) {
-      console.error(`❌ Failed to create backup: ${dataType}`, error);
+      // Failed to create backup
     }
   }
 
@@ -228,14 +215,12 @@ export class DataPersistence {
         const backupData = await redis.get(backupKeys[0]);
         if (backupData) {
           const backup: DataBackup = JSON.parse(backupData);
-          console.log(`✅ Data recovered from backup: ${dataType} for user ${userId}`);
           return backup.data;
         }
       }
 
       return null;
     } catch (error) {
-      console.error(`❌ Failed to recover from backup: ${dataType}`, error);
       return null;
     }
   }
@@ -254,10 +239,10 @@ export class DataPersistence {
       }
 
       if (oldBackupKeys.length > 0) {
-        console.log(`🧹 Cleaned ${oldBackupKeys.length} old backup snapshots for ${dataType} (main data preserved)`);
+        // Cleaned old backup snapshots
       }
     } catch (error) {
-      console.error(`❌ Failed to clean old backups: ${dataType}`, error);
+      // Failed to clean old backups
     }
   }
 
@@ -283,7 +268,6 @@ export class DataPersistence {
     try {
       return await redis.smembers(`user:${userId}:dataIndex`);
     } catch (error) {
-      console.error(`❌ Failed to get user data index for user ${userId}`, error);
       return [];
     }
   }
@@ -308,7 +292,6 @@ export class DataPersistence {
 
       return exportData;
     } catch (error) {
-      console.error(`❌ Failed to export user data for user ${userId}`, error);
       return null;
     }
   }
@@ -326,10 +309,8 @@ export class DataPersistence {
         }
       }
 
-      console.log(`✅ User data imported successfully for user ${userId}`);
       return true;
     } catch (error) {
-      console.error(`❌ Failed to import user data for user ${userId}`, error);
       return false;
     }
   }
@@ -354,7 +335,6 @@ export class DataPersistence {
 
       return null;
     } catch (error) {
-      console.error(`❌ Failed to sync data: ${dataType}`, error);
       return null;
     }
   }
@@ -403,7 +383,6 @@ export class DataPersistence {
         details: healthDetails
       };
     } catch (error) {
-      console.error(`❌ Health check failed for user ${userId}`, error);
       return {
         status: 'unhealthy',
         details: { error: error instanceof Error ? error.message : 'Unknown error' }

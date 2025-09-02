@@ -69,8 +69,6 @@ export async function POST(request: NextRequest) {
       { expiresIn: '7d' }
     );
 
-    console.log(`New user registered: ${email} (ID: ${userId})`);
-
     return NextResponse.json({
       message: 'Account created successfully',
       token,
@@ -83,7 +81,6 @@ export async function POST(request: NextRequest) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Registration error:', error);
     return NextResponse.json(
       { 
         message: 'Registration failed. Please try again.',

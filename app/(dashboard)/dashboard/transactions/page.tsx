@@ -87,7 +87,6 @@ const TransactionsPage = () => {
         setExpenseTransactions(validTransactions);
       }
     } catch (error) {
-      console.error('Failed to load transactions:', error);
       toast.error('Failed to load transactions');
       
       // Fallback to localStorage
@@ -105,7 +104,7 @@ const TransactionsPage = () => {
           setExpenseTransactions(parsed.map((t: any) => ({ ...t, type: 'expense' as const })));
         }
       } catch (localStorageError) {
-        console.error('Failed to load from localStorage:', localStorageError);
+        // Failed to load from localStorage
       }
     } finally {
       setLoading(false);
@@ -266,7 +265,6 @@ const TransactionsPage = () => {
       
       toast.success(`Successfully exported ${allTransactions.length} transactions`);
     } catch (error) {
-      console.error('Export failed:', error);
       toast.error('Failed to export transactions');
     }
   };
@@ -296,7 +294,7 @@ const TransactionsPage = () => {
       try {
         setSettings(JSON.parse(savedSettings));
       } catch (error) {
-        console.error('Failed to load settings:', error);
+        // Failed to load settings
       }
     }
   }, []);

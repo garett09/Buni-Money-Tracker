@@ -25,8 +25,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    console.log('Exporting data for user:', user.userId);
-    
     // Export all user data
     const exportData = await DataPersistence.exportUserData(user.userId);
     
@@ -48,7 +46,6 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error exporting user data:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }

@@ -6,8 +6,6 @@ export class DataMigration {
   // Migrate localStorage data to database
   static async migrateLocalDataToDatabase() {
     try {
-      console.log('Starting data migration from localStorage to database...');
-      
       // Get localStorage data
       const localIncome = localStorage.getItem('incomeTransactions');
       const localExpenses = localStorage.getItem('expenseTransactions');
@@ -24,7 +22,7 @@ export class DataMigration {
             await ApiClient.addIncomeTransaction(transactionData);
             migratedCount++;
           } catch (error) {
-            console.error('Error migrating income transaction:', error);
+            // Error migrating income transaction
           }
         }
       }
@@ -39,16 +37,14 @@ export class DataMigration {
             await ApiClient.addExpenseTransaction(transactionData);
             migratedCount++;
           } catch (error) {
-            console.error('Error migrating expense transaction:', error);
+            // Error migrating expense transaction
           }
         }
       }
       
-      console.log(`Data migration completed. ${migratedCount} transactions migrated.`);
       return { success: true, migratedCount };
       
     } catch (error) {
-      console.error('Data migration failed:', error);
       return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
     }
   }
@@ -75,6 +71,5 @@ export class DataMigration {
   static clearLocalData() {
     localStorage.removeItem('incomeTransactions');
     localStorage.removeItem('expenseTransactions');
-    console.log('LocalStorage data cleared after migration');
   }
 }

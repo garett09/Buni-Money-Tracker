@@ -295,11 +295,11 @@ export const updateAccountBalance = async (accountId: string, transactionType: '
       const { ApiClient } = await import('./api');
       await ApiClient.updateAccount(account.id, { currentBalance: accounts[accountIndex].currentBalance });
     } catch (error) {
-      console.log('API update failed, changes saved locally only');
+      // API update failed, changes saved locally only
     }
     
     return accounts[accountIndex];
   } catch (error) {
-    console.error('Error updating account balance:', error);
+    // Error updating account balance
   }
 };

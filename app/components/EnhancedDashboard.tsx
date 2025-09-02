@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import SmartNotifications from './SmartNotifications';
 import BudgetSettings from './BudgetSettings';
 import { IntelligentBudget } from '@/app/lib/intelligentBudget';
+import { getUserMonthlyBudget } from '@/app/lib/currency';
 import {
   LineChart,
   Line,
@@ -62,6 +62,25 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
   selectedPeriod,
   loading = false
 }) => {
+  // Utility functions - defined at the top to avoid hoisting issues
+  const getCategoryColor = (index: number) => {
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#84CC16', '#F97316'];
+    return colors[index % colors.length];
+  };
+
+  // Safe percentage calculation utility
+  const safePercentage = (value: number, total: number, decimals: number = 1): string => {
+    if (!total || total <= 0 || !value || value <= 0) return '0';
+    const percentage = (value / total) * 100;
+    return Math.min(100, Math.max(0, percentage)).toFixed(decimals);
+  };
+
+  // Safe division utility
+  const safeDivide = (numerator: number, denominator: number, defaultValue: number = 0): number => {
+    if (!denominator || denominator <= 0) return defaultValue;
+    return numerator / denominator;
+  };
+
   const [activeTab, setActiveTab] = useState('overview');
   const [refreshKey, setRefreshKey] = useState(0);
   const [showFilters, setShowFilters] = useState(false);
@@ -82,30 +101,45 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
       ];
 
       const filteredTransactions = allTransactions.filter(t => {
-        const transactionDate = new Date(t.date);
-        const now = new Date();
-        const startDate = new Date();
-        
-        switch (selectedPeriod) {
-          case 'week':
-            startDate.setDate(now.getDate() - 7);
-            break;
-          case 'month':
-            startDate.setMonth(now.getMonth() - 1);
-            break;
-          case 'quarter':
-            startDate.setMonth(now.getMonth() - 3);
-            break;
-          case 'year':
-            startDate.setFullYear(now.getFullYear() - 1);
-            break;
-          case 'all-time':
-            return true;
-          default:
-            startDate.setMonth(now.getMonth() - 1);
+        // Ensure transaction has valid data
+        if (!t || !t.date || typeof t.amount !== 'number' || isNaN(t.amount)) {
+          return false;
         }
-        
-        return transactionDate >= startDate;
+
+        try {
+          const transactionDate = new Date(t.date);
+          if (isNaN(transactionDate.getTime())) {
+            return false;
+          }
+
+          const now = new Date();
+          const startDate = new Date();
+          
+          switch (selectedPeriod) {
+            case 'week':
+              startDate.setDate(now.getDate() - 7);
+              break;
+            case 'month':
+              startDate.setMonth(now.getMonth() - 1);
+              break;
+            case 'quarter':
+              startDate.setMonth(now.getMonth() - 3);
+              break;
+            case 'year':
+              startDate.setFullYear(now.getFullYear() - 1);
+              break;
+            case 'all-time':
+              return true;
+            default:
+              startDate.setMonth(now.getMonth() - 1);
+          }
+          
+          const isInRange = transactionDate >= startDate;
+          
+          return isInRange;
+        } catch (error) {
+          return false;
+        }
       });
 
       const income = filteredTransactions.filter(t => t.type === 'income');
@@ -115,28 +149,52 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
       const totalExpenses = expenses.reduce((sum, t) => sum + Math.abs(t.amount), 0);
       const netBalance = totalIncome - totalExpenses;
       
-      // Enhanced financial health calculation
-      const savingsRate = totalIncome > 0 ? (netBalance / totalIncome) * 100 : 0;
+      // Enhanced financial health calculation with safety checks
+      const savingsRate = totalIncome > 0 ? Math.max(0, Math.min(100, (netBalance / totalIncome) * 100)) : 0;
       
       // Get budget from intelligent system or use default
       const savedSettings = localStorage.getItem('budgetSettings');
-      const budgetSettings = savedSettings ? JSON.parse(savedSettings) : { monthlyBudget: 50000 };
-      const monthlyBudget = budgetSettings.monthlyBudget || 50000;
-      const budgetUsagePercent = selectedPeriod === 'all-time' ? 0 : (totalExpenses / monthlyBudget) * 100;
+      const budgetSettings = savedSettings ? JSON.parse(savedSettings) : { monthlyBudget: getUserMonthlyBudget() };
+      const monthlyBudget = budgetSettings.monthlyBudget || getUserMonthlyBudget();
       
-      // Calculate financial health score
+      // Safe budget usage calculation
+      const budgetUsagePercent = selectedPeriod === 'all-time' || monthlyBudget <= 0 ? 0 : 
+        Math.min(100, Math.max(0, (totalExpenses / monthlyBudget) * 100));
+      
+      // Calculate financial health score with safety checks
       let healthScore = 0;
-      healthScore += Math.min(savingsRate / 20, 1) * 30; // Savings rate (30% weight)
-      healthScore += selectedPeriod === 'all-time' ? 25 : Math.max(0, (100 - budgetUsagePercent) / 100) * 25; // Budget adherence (25% weight)
-      healthScore += 20; // Income stability (simplified)
-      healthScore += Math.min(netBalance / (totalExpenses * 3), 1) * 15; // Emergency fund (15% weight)
-      healthScore += Math.max(0, (1 - (totalExpenses / totalIncome))) * 10; // Debt ratio (10% weight)
+      
+      // Savings rate (30% weight) - capped at 100%
+      healthScore += Math.min(savingsRate / 20, 1) * 30;
+      
+      // Budget adherence (25% weight) - capped at 100%
+      healthScore += selectedPeriod === 'all-time' ? 25 : Math.max(0, (100 - budgetUsagePercent) / 100) * 25;
+      
+      // Income stability (20% weight) - simplified but safe
+      healthScore += 20;
+      
+      // Emergency fund (15% weight) - safe calculation
+      if (totalExpenses > 0) {
+        healthScore += Math.min(netBalance / (totalExpenses * 3), 1) * 15;
+      } else {
+        healthScore += 15; // Full points if no expenses
+      }
+      
+      // Debt ratio (10% weight) - safe calculation
+      if (totalIncome > 0) {
+        healthScore += Math.max(0, (1 - (totalExpenses / totalIncome))) * 10;
+      } else {
+        healthScore += 10; // Full points if no income
+      }
       
       // Category analysis
       const categoryBreakdown: { [key: string]: number } = {};
       expenses.forEach(t => {
-        const category = t.category || 'Other';
-        categoryBreakdown[category] = (categoryBreakdown[category] || 0) + Math.abs(t.amount);
+        // Ensure we have valid transaction data
+        if (t && typeof t.amount === 'number' && !isNaN(t.amount)) {
+          const category = t.category || 'Other';
+          categoryBreakdown[category] = (categoryBreakdown[category] || 0) + Math.abs(t.amount);
+        }
       });
       
       const topCategories = Object.entries(categoryBreakdown)
@@ -144,8 +202,9 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         .sort((a, b) => b.amount - a.amount)
         .slice(0, 5);
 
-      // Spending velocity
-      const dailySpending = expenses.reduce((sum, t) => sum + Math.abs(t.amount), 0) / 30;
+      // Spending velocity with safe calculations
+      const totalExpenseAmount = expenses.reduce((sum, t) => sum + Math.abs(t.amount), 0);
+      const dailySpending = safeDivide(totalExpenseAmount, 30, 0);
       const weeklySpending = dailySpending * 7;
       const monthlyProjection = dailySpending * 30;
 
@@ -156,13 +215,13 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
       const standardDeviation = Math.sqrt(variance);
       const unusualSpending = expenses.filter(t => Math.abs(t.amount) > mean + (2 * standardDeviation));
 
-      return {
+      const result = {
         totalIncome,
         totalExpenses,
         netBalance,
-        savingsRate,
-        budgetUsagePercent,
-        healthScore: Math.round(healthScore),
+        savingsRate: Math.max(0, Math.min(100, savingsRate)), // Ensure savings rate is between 0-100%
+        budgetUsagePercent: Math.max(0, Math.min(100, budgetUsagePercent)), // Ensure budget usage is between 0-100%
+        healthScore: Math.max(0, Math.min(100, Math.round(healthScore))), // Ensure health score is between 0-100%
         topCategories,
         dailySpending,
         weeklySpending,
@@ -172,8 +231,9 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         incomeCount: income.length,
         expenseCount: expenses.length
       };
+
+      return result;
     } catch (error) {
-      console.error('Analytics calculation error:', error);
       return null;
     }
   }, [incomeTransactions, expenseTransactions, selectedPeriod, loading]);
@@ -226,7 +286,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         date.setDate(date.getDate() - (6 - i));
         return {
           date: date.toLocaleDateString(),
-          amount: Math.floor(Math.random() * 5000) + 1000 // Random spending between 1000-6000
+          amount: Math.floor(Math.random() * 5000) + 1000 // Random spending between ₱1,000-₱6,000
         };
       });
     }
@@ -250,11 +310,6 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
       name: category.category,
       value: category.amount
     }));
-  };
-
-  const getCategoryColor = (index: number) => {
-    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#84CC16', '#F97316'];
-    return colors[index % colors.length];
   };
 
   const getIncomeExpenseData = () => {
@@ -320,7 +375,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
       return [
         {
           category: 'Income',
-          income: 50000,
+          income: getUserMonthlyBudget(), // User's current budget
           expenses: 0
         },
         {
@@ -355,7 +410,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
     return months.map((month, index) => {
       const isCurrentOrFuture = index >= currentMonth;
       const currentTrend = isCurrentOrFuture ? analytics.monthlyProjection : analytics.totalExpenses;
-      const recommendedBudget = budgetForecast?.recommendedBudget || 50000;
+      const recommendedBudget = budgetForecast?.recommendedBudget || getUserMonthlyBudget(); // User's current budget
       
       return {
         month,
@@ -391,7 +446,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
       const isCurrentOrFuture = index >= currentMonth;
       const actualSpending = isCurrentOrFuture ? analytics.monthlyProjection : analytics.totalExpenses;
       const predictedSpending = actualSpending * (1 + (index - currentMonth) * 0.05); // 5% monthly growth
-      const budgetLimit = 50000; // Default budget
+      const budgetLimit = getUserMonthlyBudget(); // User's current budget
       
       return {
         month,
@@ -546,14 +601,14 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handleRefresh}
-              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300"
+              className="p-2 rounded-lg liquid-button transition-all duration-300"
               title="Refresh data"
             >
               <FiRefreshCw size={16} style={{ color: 'var(--text-muted)' }} />
             </button>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300"
+              className="p-2 rounded-lg liquid-button transition-all duration-300"
               title="Show filters"
             >
               <FiFilter size={16} style={{ color: 'var(--text-muted)' }} />
@@ -562,23 +617,17 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         </div>
         
         <div className="flex items-center gap-2">
-          <button className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300" title="Export data">
+          <button className="p-2 rounded-lg liquid-button transition-all duration-300" title="Export data">
             <FiDownload size={16} style={{ color: 'var(--text-muted)' }} />
           </button>
-          <button className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300" title="Settings">
+          <button className="p-2 rounded-lg liquid-button transition-all duration-300" title="Settings">
             <FiSettings size={16} style={{ color: 'var(--text-muted)' }} />
           </button>
-          <SmartNotifications
-            incomeTransactions={incomeTransactions}
-            expenseTransactions={expenseTransactions}
-            savingsGoals={[]}
-            selectedPeriod={selectedPeriod}
-          />
         </div>
       </div>
 
       {/* Enhanced Analytics Tabs */}
-      <div className="flex items-center gap-2 bg-white/10 rounded-xl p-1">
+      <div className="flex items-center gap-2 liquid-card rounded-xl p-1">
         {[
           { id: 'overview', label: 'Overview', icon: FiEye },
           { id: 'trends', label: 'Trends', icon: FiTrendingUp },
@@ -591,8 +640,8 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
               activeTab === tab.id
-                ? 'bg-white/20 text-white'
-                : 'text-white/60 hover:text-white'
+                ? 'liquid-button text-white'
+                : 'text-white/60 hover:text-white hover:bg-white/5'
             }`}
           >
             <tab.icon size={16} />
@@ -627,7 +676,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                       cy="60"
                       r="54"
                       fill="none"
-                      stroke="rgba(255,255,255,0.1)"
+                      stroke="var(--text-muted)"
                       strokeWidth="8"
                     />
                     <circle
@@ -635,8 +684,8 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                       cy="60"
                       r="54"
                       fill="none"
-                      stroke={analytics.healthScore >= 80 ? '#10b981' : 
-                             analytics.healthScore >= 60 ? '#f59e0b' : '#ef4444'}
+                      stroke={analytics.healthScore >= 80 ? 'var(--accent-green)' : 
+                             analytics.healthScore >= 60 ? 'var(--accent-orange)' : 'var(--accent-red)'}
                       strokeWidth="8"
                       strokeDasharray={((analytics.healthScore / 100) * 339.292) + ' 339.292'}
                       strokeLinecap="round"
@@ -690,7 +739,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
               </div>
               
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-3 rounded-xl liquid-card">
                   <div className="flex items-center gap-2">
                     <FiCreditCard size={16} className="text-yellow-400" />
                     <span style={{ color: 'var(--text-muted)' }}>Total Transactions</span>
@@ -699,7 +748,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                     {analytics.transactionCount}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-3 rounded-xl liquid-card">
                   <div className="flex items-center gap-2">
                     <FiClock size={16} className="text-green-400" />
                     <span style={{ color: 'var(--text-muted)' }}>Income Count</span>
@@ -708,7 +757,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                     {analytics.incomeCount}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-3 rounded-xl liquid-card">
                   <div className="flex items-center gap-2">
                     <FiAlertCircle size={16} className="text-red-400" />
                     <span style={{ color: 'var(--text-muted)' }}>Expense Count</span>
@@ -784,28 +833,28 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
               </div>
               
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-4 rounded-xl liquid-card">
                   <span style={{ color: 'var(--text-muted)' }}>Daily Average</span>
                   <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
                     ₱{analytics.dailySpending.toLocaleString()}
                   </span>
                 </div>
                 
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-4 rounded-xl liquid-card">
                   <span style={{ color: 'var(--text-muted)' }}>Weekly Average</span>
                   <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
                     ₱{analytics.weeklySpending.toLocaleString()}
                   </span>
                 </div>
                 
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-4 rounded-xl liquid-card">
                   <span style={{ color: 'var(--text-muted)' }}>Monthly Projection</span>
                   <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
                     ₱{analytics.monthlyProjection.toLocaleString()}
                   </span>
                 </div>
                 
-                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-4 rounded-xl liquid-card">
                   <span style={{ color: 'var(--text-muted)' }}>Unusual Transactions</span>
                   <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
                     {analytics.unusualSpending.length}
@@ -824,29 +873,53 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
               <FiPieChart size={24} style={{ color: 'var(--text-muted)' }} />
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {analytics.topCategories.map((category, index) => (
-                <div key={index} className="p-4 rounded-xl bg-white/5">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
-                      {category.category}
-                    </span>
-                    <span className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                      {((category.amount / analytics.totalExpenses) * 100).toFixed(1)}%
-                    </span>
+            {analytics && analytics.topCategories && analytics.topCategories.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {analytics.topCategories.map((category, index) => (
+                  <div key={index} className="p-4 rounded-xl bg-white/5">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                        {category.category}
+                      </span>
+                      <span className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                        {analytics.totalExpenses > 0 ? ((category.amount / analytics.totalExpenses) * 100).toFixed(1) : '0'}%
+                      </span>
+                    </div>
+                    <div className="text-lg font-bold text-blue-400">
+                      ₱{category.amount.toLocaleString()}
+                    </div>
+                    <div className="w-full bg-white/10 rounded-full h-2 mt-2">
+                      <div 
+                        className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                        style={{ 
+                          width: `${analytics.totalExpenses > 0 ? (category.amount / analytics.totalExpenses) * 100 : 0}%` 
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="text-lg font-bold text-blue-400">
-                    ₱{category.amount.toLocaleString()}
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-12">
+                <FiPieChart size={48} className="mx-auto mb-4" style={{ color: 'var(--text-muted)' }} />
+                <p className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}>
+                  {loading ? 'Loading spending data...' : 'No spending categories found'}
+                </p>
+                <p className="text-sm mt-2" style={{ color: 'var(--text-muted)' }}>
+                  {loading ? 'Please wait while we process your transactions' : 
+                   'Add some expense transactions with categories to see your spending breakdown'}
+                </p>
+                {!loading && (
+                  <div className="mt-4 p-4 bg-white/5 rounded-lg">
+                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                      Debug Info: {analytics ? 
+                        `Analytics exists, topCategories: ${analytics.topCategories?.length || 0}` : 
+                        'Analytics is null/undefined'}
+                    </p>
                   </div>
-                  <div className="w-full bg-white/10 rounded-full h-2 mt-2">
-                    <div 
-                      className="bg-blue-500 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(category.amount / analytics.totalExpenses) * 100}%` }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -866,7 +939,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={getDailySpendingData()}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--text-muted)" />
                   <XAxis 
                     dataKey="date" 
                     stroke="var(--text-muted)"
@@ -883,10 +956,11 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                   />
                   <Tooltip 
                     contentStyle={{
-                      backgroundColor: 'rgba(0,0,0,0.8)',
-                      border: 'none',
+                      backgroundColor: 'var(--card-bg)',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
-                      color: 'var(--text-primary)'
+                      color: 'var(--text-primary)',
+                      boxShadow: 'var(--shadow-lg)'
                     }}
                     formatter={(value: any) => [`₱${value.toLocaleString()}`, 'Spending']}
                     labelFormatter={(label) => `Date: ${label}`}
@@ -894,10 +968,10 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                   <Line 
                     type="monotone" 
                     dataKey="amount" 
-                    stroke="#3B82F6" 
+                    stroke="var(--accent-blue)" 
                     strokeWidth={3}
-                    dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
-                    activeDot={{ r: 6, stroke: '#3B82F6', strokeWidth: 2 }}
+                    dot={{ fill: 'var(--accent-blue)', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 6, stroke: 'var(--accent-blue)', strokeWidth: 2 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -933,10 +1007,11 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                     </Pie>
                     <Tooltip 
                       contentStyle={{
-                        backgroundColor: 'rgba(0,0,0,0.8)',
-                        border: 'none',
+                        backgroundColor: 'var(--card-bg)',
+                        border: '1px solid var(--card-border)',
                         borderRadius: '8px',
-                        color: 'var(--text-primary)'
+                        color: 'var(--text-primary)',
+                        boxShadow: 'var(--shadow-lg)'
                       }}
                       formatter={(value: any) => [`₱${value.toLocaleString()}`, 'Amount']}
                     />
@@ -961,7 +1036,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                     { category: 'Entertainment', amount: 800 },
                     { category: 'Utilities', amount: 600 }
                   ]).map((category, index) => (
-                    <div key={index} className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                    <div key={index} className="flex items-center justify-between p-4 rounded-xl liquid-card">
                       <div className="flex items-center gap-3">
                         <div 
                           className="w-4 h-4 rounded-full"
@@ -976,7 +1051,8 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                           ₱{category.amount.toLocaleString()}
                         </div>
                         <div className="text-sm" style={{ color: 'var(--text-muted)' }}>
-                          {analytics?.totalExpenses ? ((category.amount / analytics.totalExpenses) * 100).toFixed(1) : '0'}%
+                          {analytics?.totalExpenses && analytics.totalExpenses > 0 ? 
+                            ((category.amount / analytics.totalExpenses) * 100).toFixed(1) : '0'}%
                         </div>
                       </div>
                     </div>
@@ -997,7 +1073,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={getIncomeExpenseData()}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--text-muted)" />
                   <XAxis 
                     dataKey="category" 
                     stroke="var(--text-muted)"
@@ -1014,15 +1090,16 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                   />
                   <Tooltip 
                     contentStyle={{
-                      backgroundColor: 'rgba(0,0,0,0.8)',
-                      border: 'none',
+                      backgroundColor: 'var(--card-bg)',
+                      border: '1px solid var(--card-border)',
                       borderRadius: '8px',
-                      color: 'var(--text-primary)'
+                      color: 'var(--text-primary)',
+                      boxShadow: 'var(--shadow-lg)'
                     }}
                     formatter={(value: any) => [`₱${value.toLocaleString()}`, 'Amount']}
                   />
-                  <Bar dataKey="income" fill="#10B981" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="expenses" fill="#EF4444" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="income" fill="var(--accent-green)" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="expenses" fill="var(--accent-red)" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -1138,9 +1215,9 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
               
               <div className="text-center p-6 rounded-xl bg-white/5">
                 <div className={`text-2xl font-bold mb-2 ${
-                  (50000 - analytics.totalExpenses) >= 0 ? 'text-green-400' : 'text-red-400'
+                  (getUserMonthlyBudget() - analytics.totalExpenses) >= 0 ? 'text-green-400' : 'text-red-400'
                 }`}>
-                  ₱{(50000 - analytics.totalExpenses).toLocaleString()}
+                  ₱{(getUserMonthlyBudget() - analytics.totalExpenses).toLocaleString()}
                 </div>
                 <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Remaining</div>
               </div>
@@ -1151,18 +1228,18 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
               <div className="flex justify-between text-sm mb-2">
                 <span style={{ color: 'var(--text-muted)' }}>Budget Usage</span>
                 <span style={{ color: 'var(--text-muted)' }}>
-                  {((analytics.totalExpenses / 50000) * 100).toFixed(1)}%
+                  {((analytics.totalExpenses / getUserMonthlyBudget()) * 100).toFixed(1)}%
                 </span>
               </div>
               <div className="w-full bg-white/10 rounded-full h-3">
                 <div 
                   className={`h-3 rounded-full transition-all duration-500 ${
-                    (analytics.totalExpenses / 50000) > 1 ? 'bg-red-500' :
-                    (analytics.totalExpenses / 50000) > 0.9 ? 'bg-yellow-500' :
+                    (analytics.totalExpenses / getUserMonthlyBudget()) > 1 ? 'bg-red-500' :
+                    (analytics.totalExpenses / getUserMonthlyBudget()) > 0.9 ? 'bg-yellow-500' :
                     'bg-green-500'
                   }`}
                   style={{ 
-                    width: `${Math.min((analytics.totalExpenses / 50000) * 100, 100)}%` 
+                    width: `${Math.min((analytics.totalExpenses / getUserMonthlyBudget()) * 100, 100)}%` 
                   }}
                 />
               </div>

@@ -24,7 +24,6 @@ export async function GET(request: NextRequest) {
     
     // For development, if no user is authenticated, return sample accounts
     if (!user) {
-      console.log('No valid token found in request - returning sample accounts for development');
       const sampleAccounts = [
         {
           id: 1,
@@ -52,17 +51,14 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ accounts: sampleAccounts });
     }
 
-    console.log('User authenticated:', user.userId);
     const accounts = await DataPersistence.getListData(user.userId, 'accounts');
     
     // Filter only active accounts
     const activeAccounts = accounts.filter(account => account.isActive !== false);
 
-    console.log(`Found ${activeAccounts.length} active accounts for user ${user.userId}`);
     return NextResponse.json({ accounts: activeAccounts });
 
   } catch (error) {
-    console.error('Error fetching accounts:', error);
     return NextResponse.json(
       { message: `Server error: ${error instanceof Error ? error.message : 'Unknown error'}` },
       { status: 500 }
@@ -77,7 +73,6 @@ export async function POST(request: NextRequest) {
     
     // For development, if no user is authenticated, return success but don't save to database
     if (!user) {
-      console.log('No valid token found in request - returning success for development');
       const accountData = await request.json();
       const account = {
         id: Date.now(),
@@ -116,7 +111,6 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error adding account:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -151,7 +145,6 @@ export async function PUT(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error updating account:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -181,7 +174,6 @@ export async function DELETE(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error deleting account:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }

@@ -28,7 +28,6 @@ const ExpenseSharingSettings: React.FC<ExpenseSharingSettingsProps> = ({ onShari
       setPartnerInfo(response.partnerInfo);
       onSharingChange?.(response.sharingEnabled, response.partnerInfo);
     } catch (error) {
-      console.log('Failed to load sharing status:', error);
       // Fallback to localStorage
       const savedSharing = localStorage.getItem('expenseSharing');
       if (savedSharing) {
@@ -65,7 +64,6 @@ const ExpenseSharingSettings: React.FC<ExpenseSharingSettingsProps> = ({ onShari
       onSharingChange?.(true, response.partnerInfo);
       toast.success(`Expense sharing enabled with ${response.partnerInfo.name}!`);
     } catch (error: any) {
-      console.error('Failed to enable sharing:', error);
       toast.error(error.message || 'Failed to enable expense sharing');
     } finally {
       setLoading(false);
@@ -86,7 +84,6 @@ const ExpenseSharingSettings: React.FC<ExpenseSharingSettingsProps> = ({ onShari
       onSharingChange?.(false);
       toast.success('Expense sharing disabled');
     } catch (error: any) {
-      console.error('Failed to disable sharing:', error);
       toast.error(error.message || 'Failed to disable expense sharing');
     } finally {
       setLoading(false);

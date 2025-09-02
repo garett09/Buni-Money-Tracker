@@ -74,7 +74,6 @@ const IncomePage = () => {
         const response = await ApiClient.getAccounts();
         setAccounts(response.accounts || []);
       } catch (error) {
-        console.log('API not available, using localStorage fallback for accounts');
         // Fallback to localStorage
         const savedAccounts = localStorage.getItem('userAccounts');
         if (savedAccounts) {
@@ -109,7 +108,6 @@ const IncomePage = () => {
         const response = await ApiClient.getIncomeTransactions();
         setTransactions(response.transactions || []);
       } catch (error) {
-        console.log('API not available, using localStorage fallback');
         // Fallback to localStorage for development or when API is not available
         const savedTransactions = localStorage.getItem('incomeTransactions');
         if (savedTransactions) {
@@ -167,7 +165,6 @@ const IncomePage = () => {
         await ApiClient.addIncomeTransaction(transactionData);
         toast.success('Income transaction added successfully! 💰');
       } catch (apiError) {
-        console.log('API not available, saving to localStorage');
         // Fallback to localStorage
         const existingTransactions = JSON.parse(localStorage.getItem('incomeTransactions') || '[]');
         const updatedTransactions = [transactionData, ...existingTransactions];
@@ -180,7 +177,7 @@ const IncomePage = () => {
         try {
           await updateAccountBalance(formData.accountId, 'income', parseFloat(formData.amount), 'add');
         } catch (error) {
-          console.error('Failed to update account balance:', error);
+          // Failed to update account balance
         }
       }
 
@@ -203,7 +200,6 @@ const IncomePage = () => {
       });
       setShowForm(false);
     } catch (error) {
-      console.error('Error adding transaction:', error);
       toast.error('Failed to add transaction. Please try again.');
     } finally {
       setLoading(false);
@@ -219,7 +215,6 @@ const IncomePage = () => {
         await ApiClient.deleteIncomeTransaction(transactionId);
         toast.success('Transaction deleted successfully! 🗑️');
       } catch (apiError) {
-        console.log('API not available, deleting from localStorage');
         // Fallback to localStorage
         const existingTransactions = JSON.parse(localStorage.getItem('incomeTransactions') || '[]');
         const updatedTransactions = existingTransactions.filter((t: any) => t.id !== transactionId);
@@ -229,7 +224,6 @@ const IncomePage = () => {
 
       setTransactions(prev => prev.filter(t => t.id !== transactionId));
     } catch (error) {
-      console.error('Error deleting transaction:', error);
       toast.error('Failed to delete transaction. Please try again.');
     }
   };
@@ -241,7 +235,6 @@ const IncomePage = () => {
       setTransactions(response.transactions || []);
       toast.success('Data refreshed successfully! 🔄');
     } catch (error) {
-      console.error('Error refreshing data:', error);
       toast.error('Failed to refresh data. Please try again.');
     } finally {
       setRefreshing(false);

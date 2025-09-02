@@ -65,7 +65,6 @@ const AccountsPage = () => {
       const response = await ApiClient.getAccounts();
       setAccounts(response.accounts || []);
     } catch (error) {
-      console.log('API not available, using localStorage fallback');
       // Fallback to localStorage
       const savedAccounts = localStorage.getItem('userAccounts');
       if (savedAccounts) {
@@ -133,7 +132,6 @@ const AccountsPage = () => {
         toast.success('Account added successfully and saved to database!');
       }
     } catch (error) {
-      console.log('API not available, using localStorage fallback');
       // Fallback to localStorage
       if (editingAccount) {
         const updatedAccounts = accounts.map(acc => 
@@ -158,7 +156,6 @@ const AccountsPage = () => {
 
   const handleDeleteAccount = async (accountId: number) => {
     try {
-      console.log('Attempting to delete account:', accountId);
       await ApiClient.deleteAccount(accountId);
       
       const updatedAccounts = accounts.filter(acc => acc.id !== accountId);
@@ -169,8 +166,6 @@ const AccountsPage = () => {
       
       toast.success('Account deleted successfully and removed from database!');
     } catch (error) {
-      console.error('Failed to delete account via API:', error);
-      console.log('API not available, using localStorage fallback');
       // Fallback to localStorage
       const updatedAccounts = accounts.filter(acc => acc.id !== accountId);
       setAccounts(updatedAccounts);

@@ -108,7 +108,6 @@ class EnhancedApiClient {
         return result;
       } catch (error) {
         lastError = error as Error;
-        console.warn(`API request failed (attempt ${attempt}/${this.MAX_RETRIES}):`, error);
         
         if (attempt < this.MAX_RETRIES) {
           const delay = this.RETRY_DELAY * Math.pow(2, attempt - 1); // Exponential backoff
@@ -208,7 +207,6 @@ class EnhancedApiClient {
         timestamp: Date.now()
       };
     } catch (error) {
-      console.error('Failed to fetch income transactions:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -257,7 +255,6 @@ class EnhancedApiClient {
         timestamp: Date.now()
       };
     } catch (error) {
-      console.error('Failed to fetch expense transactions:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -306,7 +303,6 @@ class EnhancedApiClient {
         timestamp: Date.now()
       };
     } catch (error) {
-      console.error('Failed to fetch savings goals:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -344,7 +340,6 @@ class EnhancedApiClient {
         timestamp: Date.now()
       };
     } catch (error) {
-      console.error('Failed to add income transaction:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -382,7 +377,6 @@ class EnhancedApiClient {
         timestamp: Date.now()
       };
     } catch (error) {
-      console.error('Failed to add expense transaction:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -420,7 +414,6 @@ class EnhancedApiClient {
         timestamp: Date.now()
       };
     } catch (error) {
-      console.error('Failed to add savings goal:', error);
       return {
         success: false,
         error: error instanceof Error ? error.message : 'Unknown error',
@@ -457,7 +450,6 @@ class EnhancedApiClient {
       });
       return response.ok;
     } catch (error) {
-      console.error('Health check failed:', error);
       return false;
     }
   }

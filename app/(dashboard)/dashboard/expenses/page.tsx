@@ -43,7 +43,6 @@ const ExpensesPage = () => {
         const response = await ApiClient.getAccounts();
         setAccounts(response.accounts || []);
       } catch (error) {
-        console.log('API not available, using localStorage fallback for accounts');
         // Fallback to localStorage
         const savedAccounts = localStorage.getItem('userAccounts');
         if (savedAccounts) {
@@ -78,7 +77,6 @@ const ExpensesPage = () => {
         const response = await ApiClient.getExpenseTransactions();
         setTransactions(response.transactions || []);
       } catch (error) {
-        console.log('API not available, using localStorage fallback');
         // Fallback to localStorage for development or when API is not available
         const savedTransactions = localStorage.getItem('expenseTransactions');
         if (savedTransactions) {
@@ -163,7 +161,6 @@ const ExpensesPage = () => {
       
       toast.success('Expense added successfully and saved to database!');
     } catch (error) {
-      console.log('API not available, using localStorage fallback');
       // Fallback to localStorage for development
       const newTransaction = {
         id: Date.now(),
@@ -239,7 +236,6 @@ const ExpensesPage = () => {
       
       toast.success('Expense updated successfully and saved to database!');
     } catch (error) {
-      console.log('API not available, using localStorage fallback');
       // Fallback to localStorage
       const originalTransaction = transactions.find(t => t.id === updatedTransaction.id);
       
@@ -294,7 +290,6 @@ const ExpensesPage = () => {
       
       toast.success('Expense deleted successfully and removed from database!');
     } catch (error) {
-      console.log('API not available, using localStorage fallback');
       // Fallback to localStorage
       const transactionToDelete = transactions.find(t => t.id === transactionId);
       

@@ -25,15 +25,12 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    console.log('Checking data health for user:', user.userId);
-    
     // Perform health check
     const healthStatus = await DataPersistence.healthCheck(user.userId);
     
     return NextResponse.json(healthStatus);
 
   } catch (error) {
-    console.error('Error checking data health:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }

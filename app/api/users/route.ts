@@ -39,7 +39,6 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching user profile:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -105,7 +104,6 @@ export async function PUT(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error updating user profile:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -140,14 +138,11 @@ export async function DELETE(request: NextRequest) {
     await redis.del(`user:${user.userId}:expenses`);
     await redis.del(`user:${user.userId}:savings-goals`);
 
-    console.log(`User account deleted: ${userData.email} (ID: ${user.userId})`);
-
     return NextResponse.json({
       message: 'Account deleted successfully'
     });
 
   } catch (error) {
-    console.error('Error deleting user account:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }

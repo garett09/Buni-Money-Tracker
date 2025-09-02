@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback, Suspense, lazy } from 'react';
 import { OptimizedApiClient } from '@/app/lib/optimizedApi';
 import { toast } from 'react-hot-toast';
+import { formatPeso, getUserMonthlyBudget, setUserMonthlyBudget } from '@/app/lib/currency';
 import { 
   FiTrendingUp, 
   FiTrendingDown, 
@@ -121,23 +122,24 @@ FilterBar.displayName = 'FilterBar';
 const OptimizedDashboard: React.FC = () => {
   const [user, setUser] = useState<any>(null);
   const [data, setData] = useState<{
-    income: any[];
-    expenses: any[];
-    accounts: any[];
-    savings: any[];
-    shared: any[];
+    income: { transactions: any[] };
+    expenses: { transactions: any[] };
+    accounts: { accounts: any[] };
+    savings: { goals: any[] };
+    shared: { expenses: any[] };
   }>({
-    income: [],
-    expenses: [],
-    accounts: [],
-    savings: [],
-    shared: [],
+    income: { transactions: [] },
+    expenses: { transactions: [] },
+    accounts: { accounts: [] },
+    savings: { goals: [] },
+    shared: { expenses: [] },
   });
   const [selectedPeriod, setSelectedPeriod] = useState('month');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [showBudgetSettings, setShowBudgetSettings] = useState(false);
+  const [showQuickBudgetAdjust, setShowQuickBudgetAdjust] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Memoized data loading function
@@ -148,9 +150,20 @@ const OptimizedDashboard: React.FC = () => {
     try {
       // Use batch operation for better performance
       const batchData = await OptimizedApiClient.batchGetAllData();
-      setData(batchData);
+      
+      // Ensure we have the expected data structure
+      const safeData = {
+        income: { transactions: batchData.income?.transactions || [] },
+        expenses: { transactions: batchData.expenses?.transactions || [] },
+        accounts: { accounts: batchData.accounts?.accounts || [] },
+        savings: { goals: batchData.savings?.goals || [] },
+        shared: { expenses: batchData.shared?.expenses || [] },
+      };
+      
+
+      
+      setData(safeData);
     } catch (err) {
-      console.error('Error loading data:', err);
       setError('Failed to load data. Please try again.');
       toast.error('Failed to load data');
     } finally {
@@ -181,16 +194,27 @@ const OptimizedDashboard: React.FC = () => {
     setShowBudgetSettings(prev => !prev);
   }, []);
 
+  // Quick budget adjustment
+  const handleQuickBudgetAdjust = useCallback((newBudget: number) => {
+    setUserMonthlyBudget(newBudget);
+    toast.success(`Monthly budget updated to ${formatPeso(newBudget)}`);
+    setShowQuickBudgetAdjust(false);
+  }, []);
+
   // Memoized analytics calculations
   const analytics = useMemo(() => {
-    if (loading || (data.income.length === 0 && data.expenses.length === 0)) {
+    // Ensure we have valid data structures
+    const incomeTransactions = data.income?.transactions || [];
+    const expenseTransactions = data.expenses?.transactions || [];
+    
+    if (loading || (incomeTransactions.length === 0 && expenseTransactions.length === 0)) {
       return null;
     }
 
     try {
       const allTransactions = [
-        ...data.income.map(t => ({ ...t, type: 'income' as const })),
-        ...data.expenses.map(t => ({ ...t, type: 'expense' as const }))
+        ...incomeTransactions.map(t => ({ ...t, type: 'income' as const })),
+        ...expenseTransactions.map(t => ({ ...t, type: 'expense' as const }))
       ];
 
       const filteredTransactions = allTransactions.filter(t => {
@@ -287,7 +311,6 @@ const OptimizedDashboard: React.FC = () => {
         expenseCount: expenses.length,
       };
     } catch (error) {
-      console.error('Error calculating analytics:', error);
       return null;
     }
   }, [data.income, data.expenses, selectedPeriod, loading]);
@@ -299,7 +322,6 @@ const OptimizedDashboard: React.FC = () => {
       try {
         setUser(JSON.parse(userData));
       } catch (error) {
-        console.error('Error parsing user data:', error);
         setUser(null);
       }
     }
@@ -355,6 +377,16 @@ const OptimizedDashboard: React.FC = () => {
         </div>
         
         <div className="flex items-center space-x-4">
+          {/* Current Budget Display */}
+          <button
+            onClick={() => setShowQuickBudgetAdjust(true)}
+            className="flex items-center gap-3 px-4 py-2 bg-white/10 rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer"
+            title="Click to adjust budget"
+          >
+            <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Monthly Budget:</span>
+            <span className="font-semibold text-green-400">{formatPeso(getUserMonthlyBudget())}</span>
+          </button>
+          
           <button
             onClick={handleRefresh}
             disabled={refreshing}
@@ -371,6 +403,14 @@ const OptimizedDashboard: React.FC = () => {
             <FiSettings className="w-4 h-4" />
             <span>Budget</span>
           </button>
+
+          {/* Smart Notifications - Moved to header */}
+          <SmartNotifications
+            incomeTransactions={data.income.transactions || []}
+            expenseTransactions={data.expenses.transactions || []}
+            savingsGoals={data.savings.goals || []}
+            selectedPeriod={selectedPeriod}
+          />
         </div>
       </div>
 
@@ -387,21 +427,21 @@ const OptimizedDashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <StatsCard
             title="Total Income"
-            value={`$${analytics.totalIncome.toLocaleString()}`}
+            value={formatPeso(analytics.totalIncome)}
             change={analytics.incomeChange}
             icon={FiTrendingUp}
             color="green"
           />
           <StatsCard
             title="Total Expenses"
-            value={`$${analytics.totalExpenses.toLocaleString()}`}
+            value={formatPeso(analytics.totalExpenses)}
             change={analytics.expenseChange}
             icon={FiTrendingDown}
             color="red"
           />
           <StatsCard
             title="Net Income"
-            value={`$${analytics.netIncome.toLocaleString()}`}
+            value={formatPeso(analytics.netIncome)}
             icon={FiDollarSign}
             color="blue"
           />
@@ -417,8 +457,8 @@ const OptimizedDashboard: React.FC = () => {
       {/* Main Dashboard Content */}
       <Suspense fallback={<LoadingSkeleton />}>
         <EnhancedDashboard
-          incomeTransactions={data.income}
-          expenseTransactions={data.expenses}
+          incomeTransactions={data.income.transactions || []}
+          expenseTransactions={data.expenses.transactions || []}
           selectedPeriod={selectedPeriod}
           loading={loading}
         />
@@ -427,24 +467,101 @@ const OptimizedDashboard: React.FC = () => {
       {/* Budget Settings Modal */}
       {showBudgetSettings && (
         <Suspense fallback={<div>Loading...</div>}>
-          <BudgetSettings
-            isOpen={showBudgetSettings}
-            onClose={handleToggleBudgetSettings}
-            incomeTransactions={data.income}
-            expenseTransactions={data.expenses}
-          />
+                  <BudgetSettings
+          isOpen={showBudgetSettings}
+          onClose={handleToggleBudgetSettings}
+          incomeTransactions={data.income.transactions || []}
+          expenseTransactions={data.expenses.transactions || []}
+        />
         </Suspense>
       )}
 
-      {/* Smart Notifications */}
-      <Suspense fallback={<div>Loading notifications...</div>}>
-        <SmartNotifications
-          incomeTransactions={data.income}
-          expenseTransactions={data.expenses}
-          savingsGoals={data.savings}
-          selectedPeriod={selectedPeriod}
-        />
-      </Suspense>
+
+
+      {/* Quick Budget Adjustment Modal */}
+      {showQuickBudgetAdjust && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white/10 backdrop-blur-lg rounded-2xl border border-white/20 p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                Quick Budget Adjustment
+              </h3>
+              <button
+                onClick={() => setShowQuickBudgetAdjust(false)}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <FiX size={20} style={{ color: 'var(--text-muted)' }} />
+              </button>
+            </div>
+            
+            <div className="space-y-4">
+              <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                Choose a preset budget or enter your own amount:
+              </p>
+              
+              {/* Quick Presets */}
+              <div className="grid grid-cols-2 gap-2">
+                {[20000, 30000, 40000, 50000, 60000, 80000].map((preset) => (
+                  <button
+                    key={preset}
+                    onClick={() => handleQuickBudgetAdjust(preset)}
+                    className="p-3 text-center rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300 border border-white/20"
+                  >
+                    <div className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                      ₱{preset.toLocaleString()}
+                    </div>
+                    <div className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                      {preset === 20000 ? 'Starter' : 
+                       preset === 30000 ? 'Basic' : 
+                       preset === 40000 ? 'Standard' : 
+                       preset === 50000 ? 'Comfortable' : 
+                       preset === 60000 ? 'Premium' : 'Luxury'}
+                    </div>
+                  </button>
+                ))}
+              </div>
+              
+              {/* Custom Amount */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min="1000"
+                  max="1000000"
+                  step="1000"
+                  placeholder="Custom amount"
+                  className="flex-1 p-2 bg-white/10 rounded-lg border border-white/20 focus:border-blue-500/50 focus:outline-none transition-all duration-300"
+                  style={{ color: 'var(--text-primary)' }}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      const value = parseInt(e.currentTarget.value);
+                      if (value >= 1000) {
+                        handleQuickBudgetAdjust(value);
+                      }
+                    }
+                  }}
+                />
+                <span className="text-sm" style={{ color: 'var(--text-muted)' }}>₱</span>
+              </div>
+              
+              <div className="flex gap-2 pt-2">
+                <button
+                  onClick={() => setShowQuickBudgetAdjust(false)}
+                  className="flex-1 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-all duration-300"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => setShowQuickBudgetAdjust(false)}
+                  className="flex-1 p-2 rounded-lg bg-blue-500 hover:bg-blue-600 transition-all duration-300 text-white"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

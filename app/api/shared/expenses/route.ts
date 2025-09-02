@@ -74,7 +74,6 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error fetching shared expenses:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -164,7 +163,6 @@ export async function POST(request: NextRequest) {
     }
 
   } catch (error) {
-    console.error('Error managing sharing:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }

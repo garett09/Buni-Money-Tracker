@@ -63,8 +63,6 @@ export async function POST(request: NextRequest) {
       { expiresIn: '7d' }
     );
 
-    console.log(`User logged in: ${email} (ID: ${userId})`);
-
     return NextResponse.json({
       message: 'Login successful',
       token,
@@ -77,7 +75,6 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Login error:', error);
     return NextResponse.json(
       { 
         message: 'Login failed. Please try again.',

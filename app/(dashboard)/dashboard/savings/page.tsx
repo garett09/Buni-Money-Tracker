@@ -40,7 +40,6 @@ const SavingsPage = () => {
         const response = await ApiClient.getSavingsGoals();
         setGoals(response.goals || []);
       } catch (error) {
-        console.log('API not available, using localStorage fallback');
         // Fallback to localStorage for development
         const savedGoals = localStorage.getItem('savingsGoals');
         if (savedGoals) {
@@ -99,7 +98,6 @@ const SavingsPage = () => {
       setShowAddForm(false);
       setEditingGoal(null);
     } catch (error) {
-      console.log('API not available, using localStorage fallback');
       const goalData = {
         ...formData,
         currentAmount: '0',
@@ -154,7 +152,6 @@ const SavingsPage = () => {
       setGoals(goals.filter(goal => goal.id !== goalId));
       toast.success('Savings goal deleted successfully!');
     } catch (error) {
-      console.log('API not available, using localStorage fallback');
       const updatedGoals = goals.filter(goal => goal.id !== goalId);
       setGoals(updatedGoals);
       localStorage.setItem('savingsGoals', JSON.stringify(updatedGoals));
@@ -195,7 +192,6 @@ const SavingsPage = () => {
       setSelectedGoal(null);
       setDepositAmount('');
     } catch (error) {
-      console.log('API not available, using localStorage fallback');
       const updatedGoal = {
         ...selectedGoal,
         currentAmount: (parseFloat(selectedGoal.currentAmount) + amount).toString()
@@ -477,7 +473,6 @@ const SavingsPage = () => {
                                   
                                   toast.success(`₱${amount.toLocaleString()} added to ${goal.name}!`);
                                 } catch (error) {
-                                  console.log('API not available, using localStorage fallback');
                                   const updatedGoal = {
                                     ...goal,
                                     currentAmount: (parseFloat(goal.currentAmount) + amount).toString()

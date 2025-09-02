@@ -17,6 +17,7 @@ import {
 } from 'react-icons/fi';
 import { IntelligentBudget, BudgetSettings as IBudgetSettings } from '@/app/lib/intelligentBudget';
 import { toast } from 'react-hot-toast';
+import { getDefaultMonthlyBudget, getUserMonthlyBudget, setUserMonthlyBudget } from '@/app/lib/currency';
 
 interface BudgetSettingsProps {
   isOpen: boolean;
@@ -32,7 +33,7 @@ const BudgetSettings: React.FC<BudgetSettingsProps> = ({
   expenseTransactions
 }) => {
   const [settings, setSettings] = useState<IBudgetSettings>({
-    monthlyBudget: 50000,
+    monthlyBudget: getUserMonthlyBudget(), // User's saved budget or default
     categoryBudgets: {},
     autoAdjust: true,
     learningEnabled: true,
@@ -59,7 +60,7 @@ const BudgetSettings: React.FC<BudgetSettingsProps> = ({
         try {
           initialSettings = JSON.parse(savedSettings);
         } catch (error) {
-          console.warn('Invalid budget settings in localStorage, using defaults');
+          // Invalid settings, using defaults
         }
       }
 
@@ -91,6 +92,8 @@ const BudgetSettings: React.FC<BudgetSettingsProps> = ({
 
   const saveSettings = () => {
     localStorage.setItem('budgetSettings', JSON.stringify(settings));
+    // Also save the monthly budget to the currency utility
+    setUserMonthlyBudget(settings.monthlyBudget);
     toast.success('Budget settings saved successfully');
   };
 
@@ -151,16 +154,41 @@ const BudgetSettings: React.FC<BudgetSettingsProps> = ({
               <label className="block text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
                 Monthly Budget
               </label>
+              
+              {/* Quick Budget Presets */}
+              <div className="flex flex-wrap gap-2 mb-3">
+                {[15000, 25000, 35000, 50000, 75000, 100000].map((preset) => (
+                  <button
+                    key={preset}
+                    onClick={() => handleSettingChange('monthlyBudget', preset)}
+                    className={`px-3 py-1 text-xs rounded-lg transition-all duration-300 ${
+                      settings.monthlyBudget === preset
+                        ? 'bg-blue-500 text-white'
+                        : 'bg-white/10 text-muted-foreground hover:bg-white/20'
+                    }`}
+                  >
+                    ₱{preset.toLocaleString()}
+                  </button>
+                ))}
+              </div>
+              
               <div className="flex items-center gap-2">
                 <input
                   type="number"
+                  min="1000"
+                  max="1000000"
+                  step="1000"
                   value={settings.monthlyBudget}
-                  onChange={(e) => handleSettingChange('monthlyBudget', parseInt(e.target.value))}
+                  onChange={(e) => handleSettingChange('monthlyBudget', parseInt(e.target.value) || 0)}
                   className="flex-1 p-2 bg-white/10 rounded-lg border border-white/20 focus:border-blue-500/50 focus:outline-none transition-all duration-300"
                   style={{ color: 'var(--text-primary)' }}
+                  placeholder="Enter your monthly budget"
                 />
                 <span className="text-sm" style={{ color: 'var(--text-muted)' }}>₱</span>
               </div>
+              <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+                Set your monthly spending limit. You can adjust this anytime.
+              </p>
             </div>
 
             {/* Emergency Buffer */}

@@ -29,7 +29,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ transactions });
 
   } catch (error) {
-    console.error('Error fetching expense transactions:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -62,7 +61,6 @@ export async function POST(request: NextRequest) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Error adding expense transaction:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -105,7 +103,6 @@ export async function PUT(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error updating expense transaction:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -141,7 +138,6 @@ export async function DELETE(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error deleting expense transaction:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }

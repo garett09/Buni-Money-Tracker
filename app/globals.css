@@ -29,29 +29,367 @@
 /* Sidebar specific improvements */
 .sidebar-glass {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
-  -webkit-backdrop-filter: blur(24px);
-  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  /* Reduced backdrop-filter blur to prevent artifacts */
 }
 
 /* Navigation item improvements */
 .nav-item-glass {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  /* Removed transform and complex transitions to prevent artifacts */
 }
 
 .nav-item-glass:hover {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-1px);
+  /* Removed transform to prevent ghosting effects */
 }
 
 .nav-item-glass.active {
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
   border-color: rgba(16, 185, 129, 0.3);
   box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2);
+}
+
+/* Ensure clean state transitions and prevent artifacts */
+.nav-item-glass:focus {
+  outline: none;
+}
+
+.nav-item-glass:focus-visible {
+  outline: 2px solid rgba(16, 185, 129, 0.5);
+  outline-offset: 2px;
+}
+
+/* Prevent any lingering hover effects */
+.nav-item-glass * {
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Force clean rendering and prevent artifacts */
+.nav-item-glass {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-perspective: 1000;
+  perspective: 1000;
+}
+
+/* Ensure clean icon rendering */
+.nav-item-glass .w-10 {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Enhanced Light Mode Navigation Styling - Cleaner Design */
+html.light-theme .sidebar-glass {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 
+    0 4px 6px rgba(0, 0, 0, 0.05),
+    0 10px 15px rgba(0, 0, 0, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+html.light-theme .nav-item-glass {
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  margin-bottom: 8px !important;
+  position: relative;
+}
+
+/* Remove connecting lines and artifacts */
+html.light-theme .nav-item-glass::before,
+html.light-theme .nav-item-glass::after {
+  display: none !important;
+}
+
+html.light-theme .nav-item-glass:hover {
+  background: rgba(59, 130, 246, 0.08);
+  border-color: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);
+  transform: translateY(-1px);
+}
+
+html.light-theme .nav-item-glass.active {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(16, 185, 129, 0.15) 100%);
+  border-color: rgba(59, 130, 246, 0.25);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Clean spacing between nav items */
+html.light-theme .nav-item-glass + .nav-item-glass {
+  margin-top: 8px !important;
+}
+
+/* Remove any remaining connecting lines or visual artifacts */
+html.light-theme .nav-item-glass *::before,
+html.light-theme .nav-item-glass *::after {
+  display: none !important;
+}
+
+html.light-theme .sidebar-glass *::before,
+html.light-theme .sidebar-glass *::after {
+  content: none !important;
+}
+
+/* Clean up any border artifacts */
+html.light-theme .nav-item-glass {
+  border-radius: 12px !important;
+  overflow: hidden !important;
+}
+
+/* Remove any pseudo-element lines */
+html.light-theme .nav-item-glass::before,
+html.light-theme .nav-item-glass::after,
+html.light-theme .sidebar-glass::before,
+html.light-theme .sidebar-glass::after {
+  display: none !important;
+  content: none !important;
+}
+
+/* Enhanced Light Mode Financial Data Colors - Darker for Better Visibility */
+html.light-theme .text-green-400 {
+  color: var(--accent-green) !important;
+  font-weight: 600 !important;
+}
+
+html.light-theme .text-blue-400 {
+  color: var(--accent-blue) !important;
+  font-weight: 600 !important;
+}
+
+html.light-theme .text-purple-400 {
+  color: var(--accent-purple) !important;
+  font-weight: 600 !important;
+}
+
+html.light-theme .text-orange-400 {
+  color: var(--accent-orange) !important;
+  font-weight: 600 !important;
+}
+
+html.light-theme .text-red-400 {
+  color: var(--accent-red) !important;
+  font-weight: 600 !important;
+}
+
+html.light-theme .text-yellow-400 {
+  color: var(--accent-orange) !important;
+  font-weight: 600 !important;
+}
+
+html.light-theme .text-pink-400 {
+  color: var(--accent-pink) !important;
+  font-weight: 600 !important;
+}
+
+/* Enhanced Light Mode Background Colors - Darker for Better Visibility */
+html.light-theme .bg-green-500\/10 {
+  background-color: rgba(5, 150, 105, 0.15) !important;
+  border: 1px solid rgba(5, 150, 105, 0.2) !important;
+}
+
+html.light-theme .bg-blue-500\/10 {
+  background-color: rgba(29, 78, 216, 0.15) !important;
+  border: 1px solid rgba(29, 78, 216, 0.2) !important;
+}
+
+html.light-theme .bg-purple-500\/10 {
+  background-color: rgba(124, 58, 237, 0.15) !important;
+  border: 1px solid rgba(124, 58, 237, 0.2) !important;
+}
+
+html.light-theme .bg-red-500\/10 {
+  background-color: rgba(185, 28, 28, 0.15) !important;
+  border: 1px solid rgba(185, 28, 28, 0.2) !important;
+}
+
+html.light-theme .bg-yellow-500\/10 {
+  background-color: rgba(217, 119, 6, 0.15) !important;
+  border: 1px solid rgba(217, 119, 6, 0.2) !important;
+}
+
+html.light-theme .bg-pink-500\/10 {
+  background-color: rgba(219, 39, 119, 0.15) !important;
+  border: 1px solid rgba(219, 39, 119, 0.2) !important;
+}
+
+/* Enhanced Light Mode Button Colors - Better Contrast */
+html.light-theme .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.08) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+}
+
+html.light-theme .bg-white\/20 {
+  background-color: rgba(0, 0, 0, 0.12) !important;
+  border: 1px solid rgba(0, 0, 0, 0.16) !important;
+}
+
+html.light-theme .hover\:bg-white\/20:hover {
+  background-color: rgba(29, 78, 216, 0.15) !important;
+  border-color: rgba(29, 78, 216, 0.25) !important;
+  box-shadow: 0 2px 8px rgba(29, 78, 216, 0.2) !important;
+}
+
+/* Enhanced Light Mode Button Text Visibility */
+html.light-theme .liquid-button,
+html.light-theme .bg-white\/10,
+html.light-theme .bg-white\/20 {
+  color: var(--text-primary) !important;
+}
+
+html.light-theme .liquid-button svg,
+html.light-theme .bg-white\/10 svg,
+html.light-theme .bg-white\/20 svg {
+  color: var(--text-primary) !important;
+  opacity: 0.9 !important;
+}
+
+html.light-theme .liquid-button:hover svg,
+html.light-theme .bg-white\/10:hover svg,
+html.light-theme .bg-white\/20:hover svg {
+  color: var(--accent-blue) !important;
+  opacity: 1 !important;
+}
+
+/* Fix for any remaining light grey button backgrounds */
+html.light-theme button[class*="bg-gray"],
+html.light-theme button[class*="bg-slate"],
+html.light-theme button[class*="bg-neutral"] {
+  background: var(--card-gradient) !important;
+  border: 1px solid var(--border-medium) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08) !important;
+}
+
+html.light-theme button[class*="bg-gray"]:hover,
+html.light-theme button[class*="bg-slate"]:hover,
+html.light-theme button[class*="bg-neutral"]:hover {
+  background: var(--card-gradient) !important;
+  border-color: var(--accent-blue) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Enhanced button icon visibility */
+html.light-theme button svg,
+html.light-theme button i {
+  color: var(--text-primary) !important;
+  opacity: 0.9 !important;
+}
+
+html.light-theme button:hover svg,
+html.light-theme button:hover i {
+  color: var(--accent-blue) !important;
+  opacity: 1 !important;
+}
+
+/* Enhanced Light Mode Chart and Progress Bar Colors - Darker for Better Visibility */
+html.light-theme .bg-green-500 {
+  background: linear-gradient(135deg, var(--accent-green) 0%, #047857 100%) !important;
+}
+
+html.light-theme .bg-blue-500 {
+  background: linear-gradient(135deg, var(--accent-blue) 0%, #1E40AF 100%) !important;
+}
+
+html.light-theme .bg-purple-500 {
+  background: linear-gradient(135deg, var(--accent-purple) 0%, #6D28D9 100%) !important;
+}
+
+html.light-theme .bg-red-500 {
+  background: linear-gradient(135deg, var(--accent-red) 0%, #991B1B 100%) !important;
+}
+
+html.light-theme .bg-yellow-500 {
+  background: linear-gradient(135deg, var(--accent-orange) 0%, #B45309 100%) !important;
+}
+
+html.light-theme .bg-pink-500 {
+  background: linear-gradient(135deg, var(--accent-pink) 0%, #BE185D 100%) !important;
+}
+
+/* Enhanced Light Mode Tab Styling */
+html.light-theme .bg-white\/10 {
+  background-color: rgba(59, 130, 246, 0.05) !important;
+}
+
+html.light-theme .bg-white\/20 {
+  background-color: rgba(59, 130, 246, 0.1) !important;
+  border: 1px solid rgba(59, 130, 246, 0.2) !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Enhanced Light Mode White Overlay Colors */
+html.light-theme .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.02) !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Enhanced Light Mode Dashboard Specific Styling */
+html.light-theme .text-white\/60 {
+  color: var(--text-muted) !important;
+}
+
+html.light-theme .hover\:text-white:hover {
+  color: var(--text-primary) !important;
+}
+
+html.light-theme .text-white {
+  color: var(--text-primary) !important;
+}
+
+/* Enhanced Light Mode Chart Colors */
+html.light-theme .recharts-cartesian-grid-horizontal line,
+html.light-theme .recharts-cartesian-grid-vertical line {
+  stroke: var(--text-muted) !important;
+  opacity: 0.3;
+}
+
+html.light-theme .recharts-tooltip-wrapper {
+  background: var(--card-bg) !important;
+  border: 1px solid var(--card-border) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+/* Enhanced Light Mode Progress Bars */
+html.light-theme .bg-white\/10 {
+  background: var(--border-light) !important;
+}
+
+html.light-theme .bg-white\/10 .bg-blue-500 {
+  background: linear-gradient(135deg, var(--accent-blue) 0%, #1E40AF 100%) !important;
+}
+
+/* Enhanced Light Mode Financial Metric Cards */
+html.light-theme .liquid-card .bg-green-500\/10,
+html.light-theme .liquid-card .bg-blue-500\/10,
+html.light-theme .liquid-card .bg-purple-500\/10,
+html.light-theme .liquid-card .bg-red-500\/10,
+html.light-theme .liquid-card .bg-yellow-500\/10,
+html.light-theme .liquid-card .bg-pink-500\/10 {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 12px !important;
+  padding: 16px !important;
+}
+
+/* Enhanced Light Mode Text Contrast */
+html.light-theme .liquid-card h3,
+html.light-theme .liquid-card h4 {
+  color: var(--text-primary) !important;
+  font-weight: 700 !important;
+}
+
+html.light-theme .liquid-card .font-bold {
+  font-weight: 700 !important;
 }
 
 /* ========================================
@@ -156,12 +494,25 @@
     
     --overlay-light: rgba(0, 0, 0, 0.05);
     --overlay-medium: rgba(0, 0, 0, 0.1);
-    --overlay-heavy: rgba(0, 0, 0, 0.2);
-    
-    /* Light Theme Gradients */
-    --bg-gradient: linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 50%, #CBD5E1 100%);
-    --card-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
-  }
+      --overlay-heavy: rgba(0, 0, 0, 0.2);
+  
+  /* Enhanced Light Theme Gradients */
+  --bg-gradient: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 25%, #BAE6FD 50%, #7DD3FC 75%, #38BDF8 100%);
+  --card-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 50%, rgba(241, 245, 249, 0.85) 100%);
+  
+  /* Enhanced Light Theme Accent Colors - Darker for Better Visibility */
+  --accent-blue: #1D4ED8;
+  --accent-green: #059669;
+  --accent-purple: #7C3AED;
+  --accent-orange: #D97706;
+  --accent-pink: #DB2777;
+  --accent-red: #B91C1C;
+  
+  /* Enhanced Light Theme Borders - Darker for Better Visibility */
+  --border-light: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.12);
+  --border-heavy: rgba(0, 0, 0, 0.18);
+}
 }
 
 /* Manual Light Theme Class */
@@ -302,6 +653,44 @@ html.dark-theme {
       inset 0 1px 0 var(--card-border);
   }
 
+  /* Enhanced Light Mode Card Styling - Darker for Better Visibility */
+  html.light-theme .liquid-card {
+    background: var(--card-gradient);
+    border: 1px solid var(--border-heavy);
+    box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.08),
+      0 12px 20px rgba(0, 0, 0, 0.12),
+      0 2px 4px rgba(0, 0, 0, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    overflow: hidden;
+  }
+
+  /* Enhanced Light Mode Card Hover Effect */
+  html.light-theme .liquid-card::before {
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.03) 0%, transparent 70%);
+  }
+
+  /* Enhanced Light Mode Card Hover */
+  html.light-theme .liquid-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-blue);
+    box-shadow: 
+      0 20px 25px rgba(0, 0, 0, 0.05),
+      0 25px 50px rgba(0, 0, 0, 0.1),
+      0 0 0 1px var(--accent-blue),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  /* Enhanced Light Mode Card Active State */
+  html.light-theme .liquid-card:active {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 10px 15px rgba(0, 0, 0, 0.05),
+      0 20px 25px rgba(0, 0, 0, 0.1),
+      0 0 0 1px var(--accent-blue),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
   /* Liquid Button Component */
   .liquid-button {
     background: var(--card-bg);
@@ -356,6 +745,43 @@ html.dark-theme {
   .liquid-button:active {
     transform: translateY(0) scale(1.02);
     transition: transform 0.1s ease;
+  }
+
+  /* Enhanced Light Mode Button Styling - Better Visibility */
+  html.light-theme .liquid-button {
+    background: var(--card-gradient);
+    border: 1px solid var(--border-medium);
+    box-shadow: 
+      0 2px 6px rgba(0, 0, 0, 0.08),
+      0 4px 12px rgba(0, 0, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    color: var(--text-primary) !important;
+  }
+
+  html.light-theme .liquid-button:hover {
+    border-color: var(--accent-blue);
+    box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.08),
+      0 8px 16px rgba(0, 0, 0, 0.12),
+      0 0 0 1px var(--accent-blue),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  }
+
+  html.light-theme .liquid-button:hover {
+    border-color: var(--accent-blue);
+    box-shadow: 
+      0 4px 8px rgba(0, 0, 0, 0.05),
+      0 8px 16px rgba(0, 0, 0, 0.1),
+      0 0 0 1px var(--accent-blue),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+
+  html.light-theme .liquid-button:active {
+    box-shadow: 
+      0 1px 2px rgba(0, 0, 0, 0.05),
+      0 2px 4px rgba(0, 0, 0, 0.1),
+      0 0 0 1px var(--accent-blue),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
   /* Liquid Input Component */

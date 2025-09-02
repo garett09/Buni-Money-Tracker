@@ -125,7 +125,6 @@ export class OptimizedApiClient {
       
       return headers;
     } catch (error) {
-      console.warn('Failed to get auth headers:', error);
       return { 'Content-Type': 'application/json' };
     }
   }
@@ -263,12 +262,12 @@ export class OptimizedApiClient {
     // Use requestIdleCallback for non-critical prefetching
     if ('requestIdleCallback' in window) {
       requestIdleCallback(() => {
-        this.batchFetch(criticalEndpoints).catch(console.warn);
+        this.batchFetch(criticalEndpoints).catch(() => {});
       });
     } else {
       // Fallback for browsers without requestIdleCallback
       setTimeout(() => {
-        this.batchFetch(criticalEndpoints).catch(console.warn);
+        this.batchFetch(criticalEndpoints).catch(() => {});
       }, 100);
     }
   }

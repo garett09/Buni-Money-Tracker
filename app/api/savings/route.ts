@@ -29,7 +29,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ goals });
 
   } catch (error) {
-    console.error('Error fetching savings goals:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -64,7 +63,6 @@ export async function POST(request: NextRequest) {
     }, { status: 201 });
 
   } catch (error) {
-    console.error('Error adding savings goal:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -104,7 +102,6 @@ export async function PUT(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error updating savings goal:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }
@@ -139,7 +136,6 @@ export async function DELETE(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Error deleting savings goal:', error);
     return NextResponse.json(
       { message: 'Server error' },
       { status: 500 }

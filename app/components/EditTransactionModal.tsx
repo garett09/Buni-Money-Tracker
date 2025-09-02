@@ -47,7 +47,6 @@ const EditTransactionModal: React.FC<EditTransactionModalProps> = ({
         const response = await ApiClient.getAccounts();
         setAccounts(response.accounts || []);
       } catch (error) {
-        console.log('Failed to load accounts, using empty array');
         setAccounts([]);
       }
     };

@@ -21,7 +21,6 @@ const API_BASE = getApiBase();
 export class ApiClient {
   private static getAuthHeaders() {
     const token = localStorage.getItem('token');
-    console.log('Auth token:', token ? 'Present' : 'Missing');
     return {
       'Content-Type': 'application/json',
       'Authorization': token ? `Bearer ${token}` : '',
@@ -277,8 +276,6 @@ export class ApiClient {
   // Accounts management
   static async getAccounts() {
     const url = `${API_BASE}/api/accounts`;
-    console.log('API_BASE:', API_BASE);
-    console.log('Full URL:', url);
     
     const response = await fetch(url, {
       headers: this.getAuthHeaders(),
@@ -286,7 +283,6 @@ export class ApiClient {
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Get accounts API error:', response.status, errorText);
       throw new Error(`Failed to fetch accounts: ${response.status} ${errorText}`);
     }
     
@@ -330,7 +326,6 @@ export class ApiClient {
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('Delete account API error:', response.status, errorText);
       throw new Error(`Failed to delete account: ${response.status} ${errorText}`);
     }
     

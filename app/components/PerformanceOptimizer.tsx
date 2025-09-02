@@ -25,7 +25,7 @@ export const PerformanceOptimizer = () => {
 
     // Register service worker
     if (process.env.NEXT_PUBLIC_ENABLE_SERVICE_WORKER === 'true') {
-      registerServiceWorker().catch(console.warn);
+      registerServiceWorker().catch(() => {});
     }
 
     // Optimize images and fonts
@@ -78,7 +78,7 @@ export const PerformanceOptimizer = () => {
         }, 1000);
       }
     } catch (error) {
-      console.warn('Failed to prefetch critical data:', error);
+      // Failed to prefetch critical data
     }
   };
 
@@ -138,7 +138,7 @@ export const PerformanceOptimizer = () => {
       }
 
       if (violations.length > 0) {
-        console.warn('Performance budget violations:', violations);
+        // Performance budget violations detected
         
         // Send to analytics if available
         if (typeof window !== 'undefined' && window.gtag) {

@@ -131,7 +131,7 @@ export class SavingsCalculator {
       });
       localStorage.setItem('depositHistory', JSON.stringify(history));
     } catch (error) {
-      console.error('Failed to save deposit history:', error);
+      // Failed to save deposit history
     }
   }
 

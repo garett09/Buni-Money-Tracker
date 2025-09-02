@@ -50,7 +50,6 @@ const DataManagement: React.FC = () => {
       const status = await ApiClient.checkDataHealth();
       setHealthStatus(status);
     } catch (error) {
-      console.error('Failed to load health status:', error);
       toast.error('Failed to load data health status');
     } finally {
       setLoading(false);
@@ -74,7 +73,6 @@ const DataManagement: React.FC = () => {
       
       toast.success('Data exported successfully!');
     } catch (error) {
-      console.error('Failed to export data:', error);
       toast.error('Failed to export data');
     } finally {
       setExporting(false);
@@ -105,7 +103,6 @@ const DataManagement: React.FC = () => {
       
       toast.success('Data imported successfully!');
     } catch (error) {
-      console.error('Failed to import data:', error);
       toast.error('Failed to import data. Please check the file format.');
     } finally {
       setImporting(false);
@@ -126,7 +123,6 @@ const DataManagement: React.FC = () => {
         toast(`${dataType} is already up to date`);
       }
     } catch (error) {
-      console.error(`Failed to sync ${dataType}:`, error);
       toast.error(`Failed to sync ${dataType}`);
     }
   };

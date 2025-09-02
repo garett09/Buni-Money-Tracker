@@ -35,8 +35,6 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid import data format' }, { status: 400 });
     }
 
-    console.log('Importing data for user:', user.userId);
-    
     // Import the data
     const success = await DataPersistence.importUserData(user.userId, importData);
     
@@ -51,7 +49,6 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Data import error:', error);
     return NextResponse.json({ error: 'Failed to import data' }, { status: 500 });
   }
 }

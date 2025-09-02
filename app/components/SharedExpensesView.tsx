@@ -30,7 +30,6 @@ const SharedExpensesView: React.FC<SharedExpensesViewProps> = ({ sharingEnabled,
       setUserExpenses(response.userExpenses || []);
       setPartnerExpenses(response.partnerExpenses || []);
     } catch (error) {
-      console.log('Failed to load shared expenses:', error);
       // Fallback to localStorage
       const savedUserExpenses = localStorage.getItem('expenseTransactions');
       const savedPartnerExpenses = localStorage.getItem('partnerExpenseTransactions');

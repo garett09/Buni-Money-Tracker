@@ -114,7 +114,7 @@ export default function RootLayout({
           <PerformanceOptimizer />
           {children}
           <Toaster position="top-right" />
-          {process.env.NODE_ENV === 'development' && <PerformanceDashboard />}
+
         </ThemeProvider>
       </body>
     </html>

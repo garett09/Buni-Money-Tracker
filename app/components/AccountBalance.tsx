@@ -47,7 +47,6 @@ const AccountBalance: React.FC<AccountBalanceProps> = ({ className = '' }) => {
       ) || [];
       setAccounts(validAccounts);
     } catch (error) {
-      console.error('Failed to load accounts:', error);
       // Fallback to localStorage if API fails
       const savedAccounts = localStorage.getItem('accounts');
       if (savedAccounts) {
@@ -55,7 +54,7 @@ const AccountBalance: React.FC<AccountBalanceProps> = ({ className = '' }) => {
           const parsedAccounts = JSON.parse(savedAccounts);
           setAccounts(parsedAccounts.filter((account: any) => account && account.isActive));
         } catch (parseError) {
-          console.error('Failed to parse saved accounts:', parseError);
+          // Failed to parse saved accounts
         }
       }
     } finally {

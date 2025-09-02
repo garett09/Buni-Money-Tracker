@@ -16,6 +16,7 @@ import {
   FiStar,
   FiZap
 } from 'react-icons/fi';
+import { getUserMonthlyBudget } from '@/app/lib/currency';
 
 interface Notification {
   id: string;
@@ -45,47 +46,61 @@ const SmartNotifications: React.FC<SmartNotificationsProps> = ({
   savingsGoals,
   selectedPeriod
 }) => {
+  // Ensure props are arrays with fallbacks
+  const safeIncomeTransactions = Array.isArray(incomeTransactions) ? incomeTransactions : [];
+  const safeExpenseTransactions = Array.isArray(expenseTransactions) ? expenseTransactions : [];
+  const safeSavingsGoals = Array.isArray(savingsGoals) ? savingsGoals : [];
+
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     generateNotifications();
-  }, [incomeTransactions, expenseTransactions, savingsGoals, selectedPeriod]);
+  }, [safeIncomeTransactions, safeExpenseTransactions, safeSavingsGoals, selectedPeriod]);
 
   useEffect(() => {
     setUnreadCount(notifications.filter(n => !n.read).length);
   }, [notifications]);
 
   const generateNotifications = () => {
-    const newNotifications: Notification[] = [];
+    try {
+      const newNotifications: Notification[] = [];
 
-    // Calculate financial metrics
-    const totalIncome = incomeTransactions.reduce((sum, t) => sum + Math.abs(t.amount), 0);
-    const totalExpenses = expenseTransactions.reduce((sum, t) => sum + Math.abs(t.amount), 0);
-    const netBalance = totalIncome - totalExpenses;
-    const savingsRate = totalIncome > 0 ? (netBalance / totalIncome) * 100 : 0;
-    const monthlyBudget = 50000;
-    const budgetUsagePercent = selectedPeriod === 'all-time' ? 0 : (totalExpenses / monthlyBudget) * 100;
+      // Use the safe arrays we defined at component level
+      const incomeArray = safeIncomeTransactions;
+      const expenseArray = safeExpenseTransactions;
 
-    // Spending velocity analysis
-    const dailySpending = totalExpenses / 30;
-    const weeklySpending = dailySpending * 7;
-    const monthlyProjection = dailySpending * 30;
 
-    // Anomaly detection
-    const amounts = expenseTransactions.map(t => Math.abs(t.amount));
-    const mean = amounts.reduce((sum, amount) => sum + amount, 0) / amounts.length;
-    const variance = amounts.reduce((sum, amount) => sum + Math.pow(amount - mean, 2), 0) / amounts.length;
-    const standardDeviation = Math.sqrt(variance);
-    const unusualSpending = expenseTransactions.filter(t => Math.abs(t.amount) > mean + (2 * standardDeviation));
 
-    // Category analysis
-    const categoryBreakdown: { [key: string]: number } = {};
-    expenseTransactions.forEach(t => {
-      const category = t.category || 'Other';
-      categoryBreakdown[category] = (categoryBreakdown[category] || 0) + Math.abs(t.amount);
-    });
+            // Calculate financial metrics
+      const totalIncome = incomeArray.reduce((sum, t) => sum + Math.abs(t?.amount || 0), 0);
+      const totalExpenses = expenseArray.reduce((sum, t) => sum + Math.abs(t?.amount || 0), 0);
+      const netBalance = totalIncome - totalExpenses;
+      const savingsRate = totalIncome > 0 ? (netBalance / totalIncome) * 100 : 0;
+      // Monthly budget in Philippine Peso (₱)
+      const monthlyBudget = getUserMonthlyBudget(); // User's current monthly budget
+      const budgetUsagePercent = selectedPeriod === 'all-time' ? 0 : (totalExpenses / monthlyBudget) * 100;
+
+      // Spending velocity analysis
+      const dailySpending = totalExpenses / 30;
+      const weeklySpending = dailySpending * 7;
+      const monthlyProjection = dailySpending * 30;
+
+      // Anomaly detection
+      const amounts = expenseArray.map(t => Math.abs(t?.amount || 0)).filter(amount => amount > 0);
+      const mean = amounts.length > 0 ? amounts.reduce((sum, amount) => sum + amount, 0) / amounts.length : 0;
+      const variance = amounts.length > 0 ? amounts.reduce((sum, amount) => sum + Math.pow(amount - mean, 2), 0) / amounts.length : 0;
+      const standardDeviation = Math.sqrt(variance);
+      const unusualSpending = expenseArray.filter(t => Math.abs(t?.amount || 0) > mean + (2 * standardDeviation));
+
+      // Category analysis
+      const categoryBreakdown: { [key: string]: number } = {};
+      expenseArray.forEach(t => {
+        const category = t?.category || 'Other';
+        const amount = Math.abs(t?.amount || 0);
+        categoryBreakdown[category] = (categoryBreakdown[category] || 0) + amount;
+      });
 
     const topCategory = Object.entries(categoryBreakdown)
       .sort(([,a], [,b]) => b - a)[0];
@@ -105,7 +120,7 @@ const SmartNotifications: React.FC<SmartNotificationsProps> = ({
         priority: 'high',
         action: {
           label: 'Review Budget',
-          onClick: () => console.log('Navigate to budget page')
+          onClick: () => {}
         }
       });
     } else if (budgetUsagePercent > 80) {
@@ -134,7 +149,7 @@ const SmartNotifications: React.FC<SmartNotificationsProps> = ({
         priority: 'medium',
         action: {
           label: 'Set Savings Goal',
-          onClick: () => console.log('Navigate to savings page')
+          onClick: () => {}
         }
       });
     }
@@ -224,14 +239,14 @@ const SmartNotifications: React.FC<SmartNotificationsProps> = ({
     }
 
     // Income insights
-    if (incomeTransactions.length > 0) {
-      const recentIncome = incomeTransactions
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    if (incomeArray.length > 0) {
+      const recentIncome = incomeArray
+        .sort((a, b) => new Date(b?.date || new Date()).getTime() - new Date(a?.date || new Date()).getTime())
         .slice(0, 3);
       
-      const averageIncome = recentIncome.reduce((sum, t) => sum + Math.abs(t.amount), 0) / recentIncome.length;
+      const averageIncome = recentIncome.reduce((sum, t) => sum + Math.abs(t?.amount || 0), 0) / recentIncome.length;
       
-      if (averageIncome > totalIncome / incomeTransactions.length * 1.2) {
+      if (averageIncome > totalIncome / incomeArray.length * 1.2) {
         newNotifications.push({
           id: `income-trend-${Date.now()}`,
           type: 'success',
@@ -266,6 +281,22 @@ const SmartNotifications: React.FC<SmartNotificationsProps> = ({
       const uniqueNewNotifications = newNotifications.filter(n => !existingIds.has(n.id));
       return [...prev, ...uniqueNewNotifications];
     });
+    } catch (error) {
+      // Set a fallback notification
+      setNotifications(prev => {
+        const errorNotification = {
+          id: `error-${Date.now()}`,
+          type: 'error' as const,
+          title: 'Notification Error',
+          message: 'There was an error generating notifications. Please refresh the page.',
+          icon: FiAlertTriangle,
+          timestamp: new Date(),
+          read: false,
+          priority: 'high' as const
+        };
+        return [errorNotification, ...prev];
+      });
+    }
   };
 
   const markAsRead = (notificationId: string) => {

@@ -152,19 +152,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     <div className="min-h-screen relative overflow-hidden">
       {/* Enhanced Animated Background */}
       <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl animate-pulse" 
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full blur-3xl" 
              style={{ 
                background: 'radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, rgba(16, 185, 129, 0.1) 50%, transparent 100%)',
                animationDelay: '0s',
                animationDuration: '4s'
              }} />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl animate-pulse" 
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full blur-3xl" 
              style={{ 
                background: 'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(6, 182, 212, 0.1) 50%, transparent 100%)',
                animationDelay: '2s',
                animationDuration: '4s'
              }} />
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full blur-3xl animate-pulse" 
+        <div className="absolute top-1/2 right-1/3 w-64 h-64 rounded-full blur-3xl" 
              style={{ 
                background: 'radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(139, 92, 246, 0.1) 50%, transparent 100%)',
                animationDelay: '4s',
@@ -240,7 +240,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                       className="p-3 rounded-xl bg-white/5 hover:bg-white/10 transition-all duration-300 group shadow-sm"
                       onClick={() => setSidebarOpen(false)}
                     >
-                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform duration-300 shadow-md`}>
+                      <div className={`w-8 h-8 rounded-lg bg-gradient-to-br ${action.color} flex items-center justify-center mb-2 transition-all duration-200 shadow-md`}>
                         <action.icon size={16} className="text-white" />
                       </div>
                       <p className="text-xs font-medium text-white/80">{action.name}</p>
@@ -259,7 +259,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`group relative p-4 rounded-2xl transition-all duration-300 ${
+                    className={`group relative p-4 rounded-2xl transition-colors duration-200 ${
                       isActive 
                         ? 'nav-item-glass active' 
                         : 'nav-item-glass'
@@ -267,19 +267,19 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     onClick={() => setSidebarOpen(false)}
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-colors duration-200 ${
                         isActive 
                           ? 'bg-gradient-to-br from-emerald-500 to-blue-600 shadow-lg' 
-                          : 'bg-white/10 group-hover:bg-white/20'
+                          : 'bg-white/10'
                       }`}>
-                        <Icon size={20} className={`transition-colors duration-300 ${
-                          isActive ? 'text-white' : 'text-white/60 group-hover:text-white'
+                        <Icon size={20} className={`transition-colors duration-200 ${
+                          isActive ? 'text-white' : 'text-white/60'
                         }`} />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <span className={`font-medium transition-colors duration-300 ${
-                            isActive ? 'text-white' : 'text-white/80 group-hover:text-white'
+                          <span className={`font-medium transition-colors duration-200 ${
+                            isActive ? 'text-white' : 'text-white/80'
                           }`}>
                             {item.name}
                           </span>
@@ -289,8 +289,8 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                             </span>
                           )}
                         </div>
-                        <p className={`text-sm transition-colors duration-300 ${
-                          isActive ? 'text-white/80' : 'text-white/40 group-hover:text-white/60'
+                        <p className={`text-sm transition-colors duration-200 ${
+                          isActive ? 'text-white/80' : 'text-white/40'
                         }`}>
                           {item.description}
                         </p>
