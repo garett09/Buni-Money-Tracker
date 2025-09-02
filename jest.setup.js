@@ -1,5 +1,8 @@
 import '@testing-library/jest-dom'
 
+// Ensure tests run in a non-production environment
+process.env.NODE_ENV = 'test'
+
 // Mock Next.js router
 jest.mock('next/router', () => ({
   useRouter() {
@@ -40,7 +43,7 @@ const localStorageMock = {
   removeItem: jest.fn(),
   clear: jest.fn(),
 }
-global.localStorage = localStorageMock
+Object.defineProperty(window, 'localStorage', { value: localStorageMock })
 
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
