@@ -174,17 +174,17 @@ const DataManagement: React.FC = () => {
 
   const getStatusColor = (status: string): string => {
     switch (status) {
-      case 'healthy': return 'text-green-400';
-      case 'unhealthy': return 'text-red-400';
-      default: return 'text-yellow-400';
+      case 'healthy': return 'var(--accent-green)';
+      case 'unhealthy': return 'var(--accent-red)';
+      default: return 'var(--accent-yellow)';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'healthy': return <FiCheckCircle className="text-green-400" />;
-      case 'unhealthy': return <FiAlertTriangle className="text-red-400" />;
-      default: return <FiInfo className="text-yellow-400" />;
+      case 'healthy': return <FiCheckCircle style={{ color: 'var(--accent-green)' }} />;
+      case 'unhealthy': return <FiAlertTriangle style={{ color: 'var(--accent-red)' }} />;
+      default: return <FiInfo style={{ color: 'var(--accent-yellow)' }} />;
     }
   };
 
