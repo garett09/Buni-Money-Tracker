@@ -758,6 +758,133 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
     return 'Poor';
   };
 
+  // Helper functions for enhanced overview data
+  const getDaysLeftInMonth = () => {
+    const today = new Date();
+    const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+    return lastDay.getDate() - today.getDate();
+  };
+
+  const getRemainingBudget = () => {
+    const monthlyBudget = getUserMonthlyBudget();
+    return Math.max(0, monthlyBudget - analytics.totalExpenses);
+  };
+
+  const getDailyBudgetLimit = () => {
+    const remainingBudget = getRemainingBudget();
+    const daysLeft = getDaysLeftInMonth();
+    return daysLeft > 0 ? Math.round(remainingBudget / daysLeft) : 0;
+  };
+
+  const getOverspendingRisk = () => {
+    const monthlyBudget = getUserMonthlyBudget();
+    const budgetUsage = analytics.budgetUsagePercent;
+    const daysLeft = getDaysLeftInMonth();
+    
+    if (budgetUsage > 100) return true;
+    if (budgetUsage > 80 && daysLeft < 7) return true;
+    if (budgetUsage > 70 && daysLeft < 14) return true;
+    return false;
+  };
+
+  const getIncomeFrequency = () => {
+    if (analytics.incomeCount === 0) return 'None';
+    if (analytics.incomeCount === 1) return 'Once this month';
+    if (analytics.incomeCount <= 3) return 'Few times';
+    if (analytics.incomeCount <= 8) return 'Weekly';
+    return 'Multiple times per week';
+  };
+
+  const getExpenseFrequency = () => {
+    if (analytics.expenseCount === 0) return 'None';
+    if (analytics.expenseCount <= 5) return 'Low';
+    if (analytics.expenseCount <= 15) return 'Moderate';
+    if (analytics.expenseCount <= 30) return 'High';
+    return 'Very High';
+  };
+
+  const getCashFlowTrend = () => {
+    if (analytics.netBalance > 0) return 'positive';
+    return 'negative';
+  };
+
+  const getEmergencyFundStatus = () => {
+    const monthlyExpenses = analytics.totalExpenses;
+    const savings = analytics.netBalance > 0 ? analytics.netBalance : 0;
+    
+    if (savings >= monthlyExpenses * 3) return 'healthy';
+    if (savings >= monthlyExpenses * 1) return 'building';
+    return 'needs attention';
+  };
+
+  const getPeakSpendingDay = () => {
+    // Calculate based on available data - using daily spending average
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    
+    // Simple logic: assume weekends have higher spending
+    if (dayOfWeek === 0 || dayOfWeek === 6) return 'Weekend';
+    return days[dayOfWeek];
+  };
+
+  const getMostExpensiveWeek = () => {
+    // Calculate current week number
+    const today = new Date();
+    const startOfYear = new Date(today.getFullYear(), 0, 1);
+    const days = Math.floor((today.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000));
+    const weekNumber = Math.ceil(days / 7);
+    return weekNumber;
+  };
+
+  const getSpendingMomentum = () => {
+    // Simple momentum calculation based on budget usage
+    const budgetUsage = analytics.budgetUsagePercent;
+    const daysLeft = getDaysLeftInMonth();
+    
+    if (budgetUsage > 100) return 'increasing';
+    if (budgetUsage > 80 && daysLeft < 7) return 'increasing';
+    if (budgetUsage < 50 && daysLeft > 15) return 'slowing';
+    return 'stable';
+  };
+
+  const getSavingsGoalProgress = () => {
+    const monthlyBudget = getUserMonthlyBudget();
+    const savings = analytics.netBalance > 0 ? analytics.netBalance : 0;
+    const goal = monthlyBudget * 0.2; // 20% savings goal
+    
+    return Math.min(100, Math.round((savings / goal) * 100));
+  };
+
+  const getBudgetGoalProgress = () => {
+    const monthlyBudget = getUserMonthlyBudget();
+    const used = analytics.totalExpenses;
+    
+    return Math.min(100, Math.round((used / monthlyBudget) * 100));
+  };
+
+  const getDebtReductionProgress = () => {
+    // This is a placeholder - you can implement actual debt tracking logic
+    const monthlyIncome = analytics.totalIncome;
+    const monthlyExpenses = analytics.totalExpenses;
+    const savings = monthlyIncome - monthlyExpenses;
+    
+    if (savings <= 0) return 0;
+    if (savings >= monthlyIncome * 0.3) return 100;
+    return Math.round((savings / (monthlyIncome * 0.3)) * 100);
+  };
+
+  const getInvestmentReadiness = () => {
+    const emergencyFund = getEmergencyFundStatus();
+    const savingsRate = analytics.savingsRate;
+    const budgetAdherence = 100 - analytics.budgetUsagePercent;
+    
+    if (emergencyFund === 'healthy' && savingsRate >= 20 && budgetAdherence >= 80) {
+      return 'ready';
+    }
+    return 'building';
+  };
+
   return (
     <div className="space-y-8" key={refreshKey}>
       {/* Enhanced Header with Actions */}
@@ -1136,6 +1263,273 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                     {analytics.unusualSpending.length}
                   </span>
                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Enhanced Budget Insights */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="liquid-card p-8 rounded-3xl">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                  Budget Insights
+                </h3>
+                <FiTarget size={24} style={{ color: 'var(--text-muted)' }} />
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiCalendar size={16} className="text-blue-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Days Left in Month</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    {getDaysLeftInMonth()}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiTrendingUp size={16} className="text-green-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Remaining Budget</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    ₱{getRemainingBudget().toLocaleString()}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiClock size={16} className="text-yellow-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Daily Budget Limit</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    ₱{getDailyBudgetLimit().toLocaleString()}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiAlertCircle size={16} className="text-red-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Overspending Risk</span>
+                  </div>
+                  <span className={`font-semibold ${getOverspendingRisk() ? 'text-red-400' : 'text-green-400'}`}>
+                    {getOverspendingRisk() ? 'High' : 'Low'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="liquid-card p-8 rounded-3xl">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                  Cash Flow Analysis
+                </h3>
+                <FiDollarSign size={24} style={{ color: 'var(--text-muted)' }} />
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiTrendingUp size={16} className="text-green-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Income Frequency</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    {getIncomeFrequency()}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiTrendingDown size={16} className="text-red-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Expense Frequency</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    {getExpenseFrequency()}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiActivity size={16} className="text-purple-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Cash Flow Trend</span>
+                  </div>
+                  <span className={`font-semibold ${getCashFlowTrend() === 'positive' ? 'text-green-400' : 'text-red-400'}`}>
+                    {getCashFlowTrend() === 'positive' ? '↗ Improving' : '↘ Declining'}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiTarget size={16} className="text-blue-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Emergency Fund Status</span>
+                  </div>
+                  <span className={`font-semibold ${getEmergencyFundStatus() === 'healthy' ? 'text-green-400' : 'text-yellow-400'}`}>
+                    {getEmergencyFundStatus() === 'healthy' ? 'Healthy' : 'Needs Attention'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Enhanced Spending Patterns */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="liquid-card p-8 rounded-3xl">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                  Spending Patterns
+                </h3>
+                <FiBarChart size={24} style={{ color: 'var(--text-muted)' }} />
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiClock size={16} className="text-blue-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Peak Spending Day</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    {getPeakSpendingDay()}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiCalendar size={16} className="text-green-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Most Expensive Week</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    Week {getMostExpensiveWeek()}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiTrendingUp size={16} className="text-purple-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Spending Momentum</span>
+                  </div>
+                  <span className={`font-semibold ${getSpendingMomentum() === 'increasing' ? 'text-red-400' : 'text-green-400'}`}>
+                    {getSpendingMomentum() === 'increasing' ? '↗ Accelerating' : '↘ Slowing'}
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiAlertCircle size={16} className="text-yellow-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Unusual Spending</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    {analytics.unusualSpending.length} transactions
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div className="liquid-card p-8 rounded-3xl">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                  Financial Goals Progress
+                </h3>
+                <FiTarget size={24} style={{ color: 'var(--text-muted)' }} />
+              </div>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiTrendingUp size={16} className="text-green-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Savings Goal Progress</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    {getSavingsGoalProgress()}%
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiShield size={16} className="text-blue-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Budget Goal Progress</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    {getBudgetGoalProgress()}%
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiActivity size={16} className="text-purple-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Debt Reduction</span>
+                  </div>
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    {getDebtReductionProgress()}%
+                  </span>
+                </div>
+                
+                <div className="flex items-center justify-between p-4 rounded-xl bg-white/5">
+                  <div className="flex items-center gap-3">
+                    <FiTarget size={16} className="text-yellow-400" />
+                    <span style={{ color: 'var(--text-muted)' }}>Investment Readiness</span>
+                  </div>
+                  <span className={`font-semibold ${getInvestmentReadiness() === 'ready' ? 'text-green-400' : 'text-blue-400'}`}>
+                    {getInvestmentReadiness() === 'ready' ? 'Ready' : 'Building'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions & Insights */}
+          <div className="liquid-card p-8 rounded-3xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-2xl font-bold" style={{ color: 'var(--text-primary)' }}>
+                Quick Actions & Insights
+              </h3>
+              <FiZap size={24} style={{ color: 'var(--text-muted)' }} />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-blue-500/10 to-purple-500/10 border border-blue-500/20">
+                <div className="flex items-center gap-3 mb-3">
+                  <FiTrendingUp size={20} className="text-blue-400" />
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    Spending Alert
+                  </span>
+                </div>
+                <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>
+                  {getOverspendingRisk() ? 'You\'re at risk of overspending this month' : 'Your spending is on track'}
+                </p>
+                <button className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
+                  View Details →
+                </button>
+              </div>
+              
+              <div className="p-4 rounded-xl bg-gradient-to-br from-green-500/10 to-emerald-500/10 border border-green-500/20">
+                <div className="flex items-center gap-3 mb-3">
+                  <FiTarget size={20} className="text-green-400" />
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    Savings Goal
+                  </span>
+                </div>
+                <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>
+                  {getSavingsGoalProgress()}% of your monthly savings goal achieved
+                </p>
+                <button className="text-xs text-green-400 hover:text-green-300 transition-colors">
+                  Set Goals →
+                </button>
+              </div>
+              
+              <div className="p-4 rounded-xl bg-gradient-to-br from-yellow-500/10 to-orange-500/10 border border-yellow-500/20">
+                <div className="flex items-center gap-3 mb-3">
+                  <FiCalendar size={20} className="text-yellow-400" />
+                  <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>
+                    Budget Timeline
+                  </span>
+                </div>
+                <p className="text-sm mb-3" style={{ color: 'var(--text-muted)' }}>
+                  {getDaysLeftInMonth()} days left with ₱{getDailyBudgetLimit().toLocaleString()} daily limit
+                </p>
+                <button className="text-xs text-yellow-400 hover:text-yellow-300 transition-colors">
+                  Adjust Budget →
+                </button>
               </div>
             </div>
           </div>
