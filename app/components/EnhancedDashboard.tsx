@@ -384,32 +384,22 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
     const totalIncome = income.reduce((sum, t) => sum + Math.abs(t.amount), 0);
     const totalExpenses = expenses.reduce((sum, t) => sum + Math.abs(t.amount), 0);
 
-    // If no data, provide sample data
-    if (totalIncome === 0 && totalExpenses === 0) {
-      return [
-        {
-          category: 'Income',
-          income: getUserMonthlyBudget(), // User's current budget
-          expenses: 0
-        },
-        {
-          category: 'Expenses',
-          income: 0,
-          expenses: 35000
-        }
-      ];
-    }
-
+    // Always return data with proper structure, even for zero values
+    // This ensures the chart always shows both categories with visual representation
     return [
       {
         category: 'Income',
-        income: totalIncome,
-        expenses: 0
+        income: totalIncome || 0,
+        expenses: 0,
+        // Add a minimum height for zero values to ensure visual presence
+        minHeight: totalIncome === 0 ? 0.01 : undefined
       },
       {
         category: 'Expenses',
         income: 0,
-        expenses: totalExpenses
+        expenses: totalExpenses || 0,
+        // Add a minimum height for zero values to ensure visual presence
+        minHeight: totalExpenses === 0 ? 0.01 : undefined
       }
     ];
   };
