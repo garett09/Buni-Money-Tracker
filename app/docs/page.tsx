@@ -1,477 +1,601 @@
 'use client';
 
 import React, { useState } from 'react';
-import { FiBook, FiSearch, FiArrowRight, FiCode, FiPlay, FiSettings, FiDatabase, FiTarget, FiTrendingUp, FiDollarSign, FiShield, FiFileText, FiStar, FiClock, FiCheckCircle, FiAlertTriangle } from 'react-icons/fi';
+import { useTheme } from '@/app/contexts/ThemeContext';
+import { 
+  FiBook, 
+  FiSearch, 
+  FiArrowRight, 
+  FiCode, 
+  FiSettings, 
+  FiDatabase, 
+  FiTarget, 
+  FiTrendingUp, 
+  FiPieChart,
+  FiSmartphone,
+  FiZap,
+  FiBell,
+  FiUsers,
+  FiDownload,
+  FiRefreshCw,
+  FiMonitor,
+  FiGift,
+  FiSun,
+  FiMoon
+} from 'react-icons/fi';
 import Link from 'next/link';
 
 const DocumentationPage = () => {
+  const { theme, toggleTheme } = useTheme();
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeSection, setActiveSection] = useState('getting-started-step1');
+  const [activeSection, setActiveSection] = useState('overview');
 
-  const tutorialSteps = [
+
+  const features = [
     {
-      id: 'getting-started',
-      title: 'Getting Started',
-      icon: FiPlay,
+      id: 'overview',
+      title: 'Overview',
+      icon: FiBook,
       color: 'from-blue-500 to-cyan-600',
-      steps: [
-        { 
-          id: 'step1', 
-          title: 'Step 1: Create Your Account', 
-          description: 'Sign up and get started in minutes',
-          stepNumber: 1,
-          estimatedTime: '2 minutes'
-        },
-        { 
-          id: 'step2', 
-          title: 'Step 2: Add Your First Bank Account', 
-          description: 'Connect your primary bank account',
-          stepNumber: 2,
-          estimatedTime: '3 minutes'
-        },
-        { 
-          id: 'step3', 
-          title: 'Step 3: Set Up Your Budget', 
-          description: 'Create your first monthly budget',
-          stepNumber: 3,
-          estimatedTime: '5 minutes'
-        },
-        { 
-          id: 'step4', 
-          title: 'Step 4: Track Your First Transaction', 
-          description: 'Record your first expense or income',
-          stepNumber: 4,
-          estimatedTime: '2 minutes'
-        }
-      ]
+      description: 'Complete guide to Buni Money Tracker',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Welcome to Buni Money Tracker</h2>
+        <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
+          Your comprehensive financial management solution designed to help you track, analyze, and optimize your money.
+          Built with modern technology and intelligent features to make personal finance simple and effective.
+        </p>
+        
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+            <h3 className="text-xl font-semibold text-blue-900 dark:text-blue-100 mb-3">🎯 Key Benefits</h3>
+            <ul className="space-y-2 text-blue-800 dark:text-blue-200">
+              <li>• Real-time financial tracking</li>
+              <li>• Intelligent budget recommendations</li>
+              <li>• Advanced analytics and insights</li>
+              <li>• Cross-platform synchronization</li>
+              <li>• Secure data management</li>
+            </ul>
+          </div>
+          
+          <div className="bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 p-6 rounded-xl border border-green-200 dark:border-green-800">
+            <h3 className="text-xl font-semibold text-green-900 dark:text-green-100 mb-3">🚀 Getting Started</h3>
+            <ul className="space-y-2 text-green-800 dark:text-green-200">
+              <li>• Create your account in 2 minutes</li>
+              <li>• Connect your bank accounts</li>
+              <li>• Set up your first budget</li>
+              <li>• Start tracking transactions</li>
+              <li>• Explore advanced features</li>
+            </ul>
+          </div>
+        </div>
+      `
     },
     {
       id: 'core-features',
-      title: 'Master the Basics',
+      title: 'Core Features',
       icon: FiSettings,
       color: 'from-emerald-500 to-green-600',
-      steps: [
-        { 
-          id: 'step5', 
-          title: 'Step 5: Dashboard Navigation', 
-          description: 'Learn to navigate your financial dashboard',
-          stepNumber: 5,
-          estimatedTime: '4 minutes'
-        },
-        { 
-          id: 'step6', 
-          title: 'Step 6: Budget Management', 
-          description: 'Create and manage monthly budgets',
-          stepNumber: 6,
-          estimatedTime: '6 minutes'
-        },
-        { 
-          id: 'step7', 
-          title: 'Step 7: Expense Tracking', 
-          description: 'Track daily expenses and categorize spending',
-          stepNumber: 7,
-          estimatedTime: '5 minutes'
-        },
-        { 
-          id: 'step8', 
-          title: 'Step 8: Income Management', 
-          description: 'Manage multiple income sources',
-          stepNumber: 8,
-          estimatedTime: '4 minutes'
-        }
-      ]
+      description: 'Essential money tracking capabilities',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Core Features</h2>
+        
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiDollarSign className="text-green-500" size={24} />
+              Transaction Management
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Income Tracking</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Multiple income sources</li>
+                  <li>• Recurring income setup</li>
+                  <li>• Income categorization</li>
+                  <li>• Income vs expense analysis</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Expense Tracking</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Real-time expense logging</li>
+                  <li>• Smart categorization</li>
+                  <li>• Receipt management</li>
+                  <li>• Spending alerts</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiTarget className="text-blue-500" size={24} />
+              Budget Management
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Monthly Budgets</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Custom budget categories</li>
+                  <li>• Budget vs actual tracking</li>
+                  <li>• Budget rollover options</li>
+                  <li>• Budget notifications</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Category Budgets</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Food & Dining</li>
+                  <li>• Transportation</li>
+                  <li>• Entertainment</li>
+                  <li>• Shopping</li>
+                  <li>• Utilities</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiPieChart className="text-purple-500" size={24} />
+              Account Management
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Account Types</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Checking accounts</li>
+                  <li>• Savings accounts</li>
+                  <li>• Credit cards</li>
+                  <li>• Investment accounts</li>
+                  <li>• Cash accounts</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Account Features</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Balance tracking</li>
+                  <li>• Account reconciliation</li>
+                  <li>• Transfer management</li>
+                  <li>• Account grouping</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
     },
     {
       id: 'advanced-features',
-      title: 'Advanced Techniques',
+      title: 'Advanced Features',
       icon: FiCode,
       color: 'from-purple-500 to-pink-600',
-      steps: [
-        { 
-          id: 'step9', 
-          title: 'Step 9: Savings Goals', 
-          description: 'Set and track financial objectives',
-          stepNumber: 9,
-          estimatedTime: '7 minutes'
-        },
-        { 
-          id: 'step10', 
-          title: 'Step 10: Analytics & Reports', 
-          description: 'Analyze your financial patterns',
-          stepNumber: 10,
-          estimatedTime: '8 minutes'
-        },
-        { 
-          id: 'step11', 
-          title: 'Step 11: AI Notifications', 
-          description: 'Set up smart financial alerts',
-          stepNumber: 11,
-          estimatedTime: '5 minutes'
-        },
-        { 
-          id: 'step12', 
-          title: 'Step 12: Shared Expenses', 
-          description: 'Split bills with family and friends',
-          stepNumber: 12,
-          estimatedTime: '6 minutes'
-        }
-      ]
+      description: 'Powerful tools for financial optimization',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Advanced Features</h2>
+        
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiZap className="text-yellow-500" size={24} />
+              Intelligent Budget System
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              AI-powered budget recommendations based on your spending patterns and financial goals.
+            </p>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Smart Features</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Spending pattern analysis</li>
+                  <li>• Predictive budget forecasting</li>
+                  <li>• Seasonal adjustments</li>
+                  <li>• Risk factor identification</li>
+                  <li>• Opportunity recommendations</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Learning Capabilities</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Adaptive budget adjustments</li>
+                  <li>• Behavioral pattern recognition</li>
+                  <li>• Personalized recommendations</li>
+                  <li>• Continuous improvement</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiTrendingUp className="text-green-500" size={24} />
+              Advanced Analytics
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Charts & Graphs</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Line charts for trends</li>
+                  <li>• Bar charts for comparisons</li>
+                  <li>• Pie charts for categories</li>
+                  <li>• Area charts for cumulative data</li>
+                  <li>• Interactive tooltips</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Financial Metrics</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Net worth tracking</li>
+                  <li>• Savings rate analysis</li>
+                  <li>• Spending velocity</li>
+                  <li>• Category breakdowns</li>
+                  <li>• Historical comparisons</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiBell className="text-red-500" size={24} />
+              Smart Notifications
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Alert Types</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Budget threshold alerts</li>
+                  <li>• Unusual spending detection</li>
+                  <li>• Bill due reminders</li>
+                  <li>• Savings goal updates</li>
+                  <li>• Financial health scores</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Intelligence</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Anomaly detection</li>
+                  <li>• Pattern recognition</li>
+                  <li>• Predictive alerts</li>
+                  <li>• Personalized timing</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    },
+    {
+      id: 'savings-goals',
+      title: 'Savings & Goals',
+      icon: FiTarget,
+      color: 'from-orange-500 to-red-600',
+      description: 'Achieve your financial objectives',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Savings & Goals</h2>
+        
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiGift className="text-pink-500" size={24} />
+              Savings Goals
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              Set, track, and achieve your financial goals with intelligent planning and progress monitoring.
+            </p>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Goal Types</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Emergency fund</li>
+                  <li>• Vacation savings</li>
+                  <li>• Down payment</li>
+                  <li>• Retirement planning</li>
+                  <li>• Custom goals</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Features</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Target amount setting</li>
+                  <li>• Deadline management</li>
+                  <li>• Progress tracking</li>
+                  <li>• Achievement celebrations</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+                             <FiTarget className="text-blue-500" size={24} />
+              Savings Calculator
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Calculations</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Timeline projections</li>
+                  <li>• Required savings rate</li>
+                  <li>• Interest calculations</li>
+                  <li>• Goal achievability</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Projections</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Daily savings needed</li>
+                  <li>• Weekly contributions</li>
+                  <li>• Monthly targets</li>
+                  <li>• Annual projections</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    },
+    {
+      id: 'shared-expenses',
+      title: 'Shared Expenses',
+      icon: FiUsers,
+      color: 'from-indigo-500 to-purple-600',
+      description: 'Split bills and manage group finances',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Shared Expenses</h2>
+        
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiUsers className="text-indigo-500" size={24} />
+              Group Expense Management
+            </h3>
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
+              Easily split expenses with roommates, family members, or friends while keeping track of who owes what.
+            </p>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Splitting Options</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Equal splits</li>
+                  <li>• Percentage-based splits</li>
+                  <li>• Custom amount splits</li>
+                  <li>• Round-robin splitting</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Management</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Expense history</li>
+                  <li>• Settlement tracking</li>
+                  <li>• Group analytics</li>
+                  <li>• Payment reminders</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiMessageCircle className="text-green-500" size={24} />
+              Communication
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Notifications</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Expense added alerts</li>
+                  <li>• Settlement reminders</li>
+                  <li>• Group updates</li>
+                  <li>• Payment confirmations</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Transparency</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Real-time balances</li>
+                  <li>• Expense breakdowns</li>
+                  <li>• Settlement history</li>
+                  <li>• Group summaries</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
     },
     {
       id: 'data-management',
-      title: 'Data & Security',
+      title: 'Data Management',
       icon: FiDatabase,
-      color: 'from-orange-500 to-red-600',
-      steps: [
-        { 
-          id: 'step13', 
-          title: 'Step 13: Import & Export', 
-          description: 'Transfer data from other financial apps',
-          stepNumber: 13,
-          estimatedTime: '5 minutes'
-        },
-        { 
-          id: 'step14', 
-          title: 'Step 14: Backup & Restore', 
-          description: 'Secure your financial data',
-          stepNumber: 14,
-          estimatedTime: '4 minutes'
-        },
-        { 
-          id: 'step15', 
-          title: 'Step 15: Data Sync', 
-          description: 'Keep data in sync across devices',
-          stepNumber: 15,
-          estimatedTime: '3 minutes'
-        }
-      ]
+      color: 'from-teal-500 to-cyan-600',
+      description: 'Import, export, and sync your data',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Data Management</h2>
+        
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiDownload className="text-blue-500" size={24} />
+              Import & Export
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Import Options</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• CSV file import</li>
+                  <li>• Bank statement uploads</li>
+                  <li>• Excel file support</li>
+                  <li>• Manual entry</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Export Formats</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• PDF reports</li>
+                  <li>• CSV data export</li>
+                  <li>• Excel spreadsheets</li>
+                  <li>• JSON data format</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiRefreshCw className="text-green-500" size={24} />
+              Synchronization
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Sync Features</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Cross-device sync</li>
+                  <li>• Real-time updates</li>
+                  <li>• Offline support</li>
+                  <li>• Conflict resolution</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Backup</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Automatic backups</li>
+                  <li>• Manual backup creation</li>
+                  <li>• Cloud storage integration</li>
+                  <li>• Restore functionality</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiShield className="text-red-500" size={24} />
+              Security & Privacy
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Security</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• End-to-end encryption</li>
+                  <li>• Two-factor authentication</li>
+                  <li>• Secure data transmission</li>
+                  <li>• Regular security audits</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Privacy</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Data anonymization</li>
+                  <li>• Privacy controls</li>
+                  <li>• GDPR compliance</li>
+                  <li>• Data deletion options</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
     },
     {
-      id: 'pro-tips',
-      title: 'Pro Tips & Tricks',
-      icon: FiStar,
-      color: 'from-indigo-500 to-purple-600',
-      steps: [
-        { 
-          id: 'step16', 
-          title: 'Step 16: Keyboard Shortcuts', 
-          description: 'Speed up your workflow',
-          stepNumber: 16,
-          estimatedTime: '3 minutes'
-        },
-        { 
-          id: 'step17', 
-          title: 'Step 17: Custom Categories', 
-          description: 'Create personalized spending categories',
-          stepNumber: 17,
-          estimatedTime: '4 minutes'
-        },
-        { 
-          id: 'step18', 
-          title: 'Step 18: Mobile Optimization', 
-          description: 'Get the most from mobile app',
-          stepNumber: 18,
-          estimatedTime: '5 minutes'
-        }
-      ]
+      id: 'mobile-optimization',
+      title: 'Mobile & Performance',
+      icon: FiSmartphone,
+      color: 'from-pink-500 to-rose-600',
+      description: 'Optimized for all devices',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Mobile & Performance</h2>
+        
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+                             <FiSmartphone className="text-pink-500" size={24} />
+              Mobile Optimization
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Responsive Design</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Mobile-first approach</li>
+                  <li>• Touch-friendly interface</li>
+                  <li>• Adaptive layouts</li>
+                  <li>• Gesture support</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Device Support</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Smartphones</li>
+                  <li>• Tablets</li>
+                  <li>• Desktop computers</li>
+                  <li>• All screen sizes</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiZap className="text-yellow-500" size={24} />
+              Performance Features
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Speed</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Fast loading times</li>
+                  <li>• Optimized assets</li>
+                  <li>• Lazy loading</li>
+                  <li>• Caching strategies</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Efficiency</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Minimal resource usage</li>
+                  <li>• Battery optimization</li>
+                  <li>• Data compression</li>
+                  <li>• Background sync</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiMonitor className="text-blue-500" size={24} />
+              Progressive Web App
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">PWA Features</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Offline functionality</li>
+                  <li>• App-like experience</li>
+                  <li>• Push notifications</li>
+                  <li>• Home screen installation</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Benefits</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• No app store required</li>
+                  <li>• Automatic updates</li>
+                  <li>• Cross-platform compatibility</li>
+                  <li>• Reduced storage usage</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
     }
   ];
 
-  const filteredSections = tutorialSteps.filter(section =>
-    section.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    section.steps.some(step =>
-      step.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      step.description.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+  const filteredFeatures = features.filter(feature =>
+    feature.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    feature.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const renderTutorialContent = (activeSection: string) => {
-    // If no specific step is selected, show section overview
-    if (!activeSection.includes('-')) {
-      const section = tutorialSteps.find(s => s.id === activeSection);
-      if (!section) return <div>Select a tutorial section to begin</div>;
-      
-      return (
-        <div className="space-y-6">
-          <div className="text-center">
-            <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${section.color} flex items-center justify-center mx-auto mb-4`}>
-              <section.icon size={32} className="text-white" />
-            </div>
-            <h2 className="text-3xl font-bold mb-2">{section.title}</h2>
-            <p className="text-gray-600 dark:text-gray-300 text-lg">
-              Follow these steps to master {section.title.toLowerCase()}
-            </p>
-          </div>
-          
-          <div className="grid gap-4">
-            {section.steps.map((step) => (
-              <div key={step.id} className="p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-300">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0">
-                    <span className="text-white font-bold text-lg">{step.stepNumber}</span>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold mb-2">{step.title}</h3>
-                    <p className="text-gray-600 dark:text-gray-300 mb-3">{step.description}</p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                      <span className="flex items-center gap-2">
-                        <FiClock size={16} />
-                        {step.estimatedTime}
-                      </span>
-                      <button 
-                        onClick={() => setActiveSection(`${section.id}-${step.id}`)}
-                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
-                      >
-                        Start Step
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    }
-    
-    // Show specific step content
-    const [sectionId, stepId] = activeSection.split('-');
-    const section = tutorialSteps.find(s => s.id === sectionId);
-    const step = section?.steps.find(st => st.id === stepId);
-    
-    if (!section || !step) {
-      return <div>Step not found</div>;
-    }
-    
-    return (
-      <div className="space-y-6">
-        {/* Step Header */}
-        <div className="text-center pb-6 border-b border-gray-200 dark:border-gray-700">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <button 
-              onClick={() => setActiveSection(sectionId)}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-            >
-              <FiArrowRight size={20} className="rotate-180" />
-            </button>
-            <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${section.color} flex items-center justify-center`}>
-              <span className="text-white font-bold text-lg">{step.stepNumber}</span>
-            </div>
-            <div className="text-left">
-              <h2 className="text-2xl font-bold">{step.title}</h2>
-              <p className="text-gray-600 dark:text-gray-300">{step.description}</p>
-            </div>
-          </div>
-          <div className="flex items-center justify-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-            <span className="flex items-center gap-2">
-              <FiClock size={16} />
-              Estimated time: {step.estimatedTime}
-            </span>
-            <span className="flex items-center gap-2">
-              <FiTarget size={16} />
-              {section.title}
-            </span>
-          </div>
-        </div>
-        
-        {/* Step Content */}
-        <div className="prose prose-lg max-w-none dark:prose-invert">
-          {renderStepContent(sectionId, stepId)}
-        </div>
-        
-        {/* Step Navigation */}
-        <div className="flex items-center justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
-          <button 
-            onClick={() => navigateToStep(sectionId, step.stepNumber - 1)}
-            disabled={step.stepNumber === 1}
-            className="px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            ← Previous Step
-          </button>
-          
-          <div className="text-sm text-gray-500 dark:text-gray-400">
-            Step {step.stepNumber} of {section.steps.length}
-          </div>
-          
-          <button 
-            onClick={() => navigateToStep(sectionId, step.stepNumber + 1)}
-            disabled={step.stepNumber === section.steps.length}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Next Step →
-          </button>
-        </div>
-      </div>
-    );
-  };
-  
-  const navigateToStep = (sectionId: string, stepNumber: number) => {
-    const section = tutorialSteps.find(s => s.id === sectionId);
-    if (!section) return;
-    
-    const step = section.steps.find(st => st.stepNumber === stepNumber);
-    if (step) {
-      setActiveSection(`${sectionId}-${step.id}`);
-    }
-  };
-  
-  const renderStepContent = (sectionId: string, stepId: string) => {
-    const content: Record<string, Record<string, { title: string; content: string; tips?: string[]; warnings?: string[] }>> = {
-      'getting-started': {
-        'step-1': {
-          title: 'Create Your Account',
-          content: `
-            <h3>Welcome to Buni Money Tracker!</h3>
-            <p>Let's get you started with your financial journey. This first step will take you just 2 minutes.</p>
-            
-            <h4>What You'll Need</h4>
-            <ul>
-              <li>A valid email address</li>
-              <li>A strong password</li>
-              <li>Basic personal information</li>
-            </ul>
-            
-            <h4>Step-by-Step Instructions</h4>
-            <ol>
-              <li><strong>Visit the Website</strong>: Go to <code>https://buni-money-tracker.vercel.app</code></li>
-              <li><strong>Click Sign Up</strong>: Look for the "Sign Up" or "Create Account" button</li>
-              <li><strong>Fill in Your Details</strong>:
-                <ul>
-                  <li>Enter your full name</li>
-                  <li>Provide your email address</li>
-                  <li>Create a secure password</li>
-                  <li>Confirm your password</li>
-                </ul>
-              </li>
-              <li><strong>Verify Your Email</strong>: Check your inbox and click the verification link</li>
-              <li><strong>Complete Setup</strong>: Log in to your new account</li>
-            </ol>
-            
-            <h4>Security Tips</h4>
-            <ul>
-              <li>Use a unique password that you don't use elsewhere</li>
-              <li>Enable two-factor authentication if available</li>
-              <li>Keep your login credentials secure</li>
-            </ul>
-          `,
-          tips: [
-            'Use a password manager for better security',
-            'Consider using your real name for better personalization',
-            'Bookmark the login page for easy access'
-          ],
-          warnings: [
-            'Never share your login credentials',
-            'Use a private device for account creation',
-            'Avoid using public Wi-Fi for sensitive information'
-          ]
-        },
-        'step-2': {
-          title: 'Add Your First Bank Account',
-          content: `
-            <h3>Connect Your Primary Bank Account</h3>
-            <p>Now that you have an account, let's connect your first bank account to start tracking your finances.</p>
-            
-            <h4>Before You Begin</h4>
-            <ul>
-              <li>Have your bank account information ready</li>
-              <li>Know your current account balance</li>
-              <li>Ensure you have internet banking access</li>
-            </ul>
-            
-            <h4>Step-by-Step Instructions</h4>
-            <ol>
-              <li><strong>Navigate to Accounts</strong>: From the dashboard, click on "Accounts" in the sidebar</li>
-              <li><strong>Add New Account</strong>: Click the "Add Account" or "+" button</li>
-              <li><strong>Select Account Type</strong>:
-                <ul>
-                  <li>Savings Account</li>
-                  <li>Checking Account</li>
-                  <li>Credit Card</li>
-                  <li>Investment Account</li>
-                </ul>
-              </li>
-              <li><strong>Enter Account Details</strong>:
-                <ul>
-                  <li>Bank name (e.g., "Bank of America", "Chase")</li>
-                  <li>Account nickname (e.g., "Main Checking", "Emergency Fund")</li>
-                  <li>Current balance</li>
-                  <li>Account number (optional for manual tracking)</li>
-                </ul>
-              </li>
-              <li><strong>Set Account Color</strong>: Choose a color to distinguish this account</li>
-              <li><strong>Save Account</strong>: Click "Save" to add the account</li>
-            </ol>
-            
-            <h4>Account Organization Tips</h4>
-            <ul>
-              <li>Use descriptive nicknames for easy identification</li>
-              <li>Group similar accounts with similar colors</li>
-              <li>Start with your primary checking and savings accounts</li>
-            </ul>
-          `,
-          tips: [
-            'Start with your main checking account',
-            'Use the current balance as of today',
-            'You can always update the balance later'
-          ],
-          warnings: [
-            'Never enter your actual account password',
-            'Only share account numbers if you trust the platform',
-            'Consider using account nicknames instead of real account numbers'
-          ]
-        }
-      }
-    };
-    
-    const stepContent = content[sectionId]?.[stepId];
-    if (!stepContent) {
-      return (
-        <div className="text-center py-12">
-          <div className="w-24 h-24 rounded-3xl bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center mx-auto mb-6">
-            <FiBook size={48} className="text-white" />
-          </div>
-          <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Tutorial Content Coming Soon</h3>
-          <p className="text-gray-600 dark:text-gray-300">
-            We're working on comprehensive tutorial content for this step. Check back soon!
-          </p>
-        </div>
-      );
-    }
-    
-    return (
-      <div>
-        <div dangerouslySetInnerHTML={{ __html: stepContent.content }} />
-        
-        {stepContent.tips && stepContent.tips.length > 0 && (
-          <div className="mt-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-            <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2 flex items-center gap-2">
-              <FiCheckCircle size={20} className="text-green-600" />
-              Pro Tips
-            </h4>
-            <ul className="space-y-1">
-              {stepContent.tips.map((tip, index) => (
-                <li key={index} className="text-green-700 dark:text-green-300 text-sm">• {tip}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-        
-        {stepContent.warnings && stepContent.warnings.length > 0 && (
-          <div className="mt-4 p-4 rounded-xl bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
-            <h4 className="font-semibold text-yellow-800 dark:text-yellow-200 mb-2 flex items-center gap-2">
-              <FiAlertTriangle size={20} className="text-yellow-600" />
-              Important Warnings
-            </h4>
-            <ul className="space-y-1">
-              {stepContent.warnings.map((warning, index) => (
-                <li key={index} className="text-yellow-700 dark:text-yellow-300 text-sm">• {warning}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
-    );
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -489,10 +613,21 @@ const DocumentationPage = () => {
               </Link>
             </div>
             <div className="flex items-center gap-3 sm:gap-4">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              >
+                {theme === 'dark' ? (
+                  <FiSun size={20} className="text-yellow-500" />
+                ) : (
+                  <FiMoon size={20} className="text-gray-600" />
+                )}
+              </button>
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                 <FiBook size={16} className="sm:text-xl text-white" />
               </div>
-              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Tutorial</h1>
+              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Documentation</h1>
             </div>
           </div>
         </div>
@@ -509,7 +644,7 @@ const DocumentationPage = () => {
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                   <input
                     type="text"
-                    placeholder="Search tutorial steps..."
+                    placeholder="Search features..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 sm:py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:text-white text-sm sm:text-base"
@@ -517,45 +652,21 @@ const DocumentationPage = () => {
                 </div>
               </div>
 
-              {/* Tutorial Navigation */}
+              {/* Feature Navigation */}
               <nav className="space-y-2">
-                {filteredSections.map((section) => (
-                  <div key={section.id} className="space-y-2">
-                    <button
-                      onClick={() => setActiveSection(section.id)}
-                      className={`w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-left transition-all duration-200 ${
-                        activeSection === section.id
-                          ? 'bg-blue-500 text-white shadow-lg'
-                          : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
-                      }`}
-                    >
-                      <section.icon size={18} className="sm:text-xl" />
-                      <span className="font-medium text-sm sm:text-base">{section.title}</span>
-                    </button>
-                    
-                    {activeSection === section.id && (
-                      <div className="ml-4 sm:ml-8 space-y-1">
-                        {section.steps.map((step) => (
-                          <button
-                            key={step.id}
-                            onClick={() => setActiveSection(`${section.id}-${step.id}`)}
-                            className={`w-full text-left px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg text-xs sm:text-sm transition-colors ${
-                              activeSection === `${section.id}-${step.id}`
-                                ? 'text-blue-600 dark:text-blue-400 font-medium'
-                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200'
-                            }`}
-                          >
-                            <div className="flex items-center gap-2">
-                              <span className="w-5 h-5 rounded-full bg-blue-500 text-white text-xs flex items-center justify-center font-bold">
-                                {step.stepNumber}
-                              </span>
-                              <span className="truncate">{step.title}</span>
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
+                {filteredFeatures.map((feature) => (
+                  <button
+                    key={feature.id}
+                    onClick={() => setActiveSection(feature.id)}
+                    className={`w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-left transition-all duration-200 ${
+                      activeSection === feature.id
+                        ? 'bg-blue-500 text-white shadow-lg'
+                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <feature.icon size={18} className="sm:text-xl" />
+                    <span className="font-medium text-sm sm:text-base">{feature.title}</span>
+                  </button>
                 ))}
               </nav>
             </div>
@@ -564,7 +675,27 @@ const DocumentationPage = () => {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <div className="bg-white dark:bg-gray-800 rounded-3xl p-4 sm:p-6 md:p-8 border border-gray-200 dark:border-gray-700 shadow-xl">
-              {renderTutorialContent(activeSection)}
+              {(() => {
+                const activeFeature = features.find(f => f.id === activeSection);
+                if (!activeFeature) return null;
+                
+                return (
+                  <div>
+                    <div className="text-center mb-8">
+                      <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${activeFeature.color} flex items-center justify-center mx-auto mb-4`}>
+                        <activeFeature.icon size={32} className="text-white" />
+                      </div>
+                      <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">{activeFeature.title}</h2>
+                      <p className="text-gray-600 dark:text-gray-300 text-lg">{activeFeature.description}</p>
+                    </div>
+                    
+                    <div 
+                      className="prose prose-lg max-w-none dark:prose-invert"
+                      dangerouslySetInnerHTML={{ __html: activeFeature.content }}
+                    />
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
