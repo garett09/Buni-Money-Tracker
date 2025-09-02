@@ -1,134 +1,240 @@
-/* Performance Optimizations for Liquid Design */
+/* Performance-optimized CSS for Buni Money Tracker */
 
-/* GPU acceleration for smooth animations */
-.liquid-card,
-.liquid-button,
-.liquid-input,
-.liquid-shape,
-.liquid-shape-2,
-.liquid-shape-3,
-.liquid-progress,
-.liquid-progress-fill {
+/* Optimize paint and layout operations */
+* {
+  box-sizing: border-box;
+}
+
+/* Use transform instead of top/left for animations */
+.animate-slide-in {
+  transform: translateX(0);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.animate-slide-out {
+  transform: translateX(-100%);
+}
+
+/* Optimize transitions */
+.transition-optimized {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+/* Hardware acceleration for animations */
+.hardware-accelerated {
   transform: translateZ(0);
-  will-change: transform, opacity, filter;
   backface-visibility: hidden;
   perspective: 1000px;
 }
 
-/* Optimize animations for better performance */
-.liquid-shape,
-.liquid-shape-2,
-.liquid-shape-3 {
-  transform: translateZ(0);
-  will-change: border-radius;
+/* Optimize scrolling */
+.smooth-scroll {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
-.liquid-progress-fill {
-  will-change: width;
+/* Content visibility optimization */
+.content-visibility-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 500px;
 }
 
-.apple-float {
-  will-change: transform;
+/* Optimize images */
+img {
+  max-width: 100%;
+  height: auto;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
 }
 
-.apple-glow {
-  will-change: box-shadow;
+/* Lazy loading placeholder */
+.lazy-placeholder {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
 }
 
-/* Reduce repaints and reflows */
-.liquid-card::before,
-.liquid-button::before,
-.liquid-progress::before,
-.liquid-progress-fill::before {
-  transform: translateZ(0);
-  will-change: opacity, transform;
+@keyframes loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-/* Optimize hover states */
-.liquid-card:hover,
-.liquid-button:hover {
-  will-change: transform, box-shadow;
+/* Skeleton loading animation */
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
 }
 
-.liquid-input:focus {
-  will-change: transform, box-shadow;
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }
 
-/* Contain layout and paint for better performance */
-.liquid-card,
-.liquid-button,
-.liquid-input {
+/* Optimize font rendering */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1;
+  font-kerning: normal;
+}
+
+/* Reduce layout thrashing */
+.layout-stable {
   contain: layout style paint;
 }
 
-/* Optimize for 60fps animations */
-@media (min-resolution: 2dppx) {
-  .liquid-shape,
-  .liquid-shape-2,
-  .liquid-shape-3 {
-    animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
+
+
+
+
+/* Optimize shadows and effects */
+.shadow-optimized {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  will-change: box-shadow;
 }
 
-/* Reduce motion for users who prefer it */
+/* Reduce repaints for hover effects */
+.hover-optimized {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform, box-shadow;
+}
+
+.hover-optimized:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Optimize liquid card animations */
+.liquid-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow, backdrop-filter;
+}
+
+.liquid-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(20px);
+}
+
+/* Optimize button animations */
+.liquid-button {
+  background: linear-gradient(135deg, #109965 0%, #06c4ca 100%);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, box-shadow;
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(16, 153, 101, 0.3);
+}
+
+.liquid-button:active {
+  transform: translateY(0);
+}
+
+/* Optimize loading states */
+.loading-optimized {
+  position: relative;
+  overflow: hidden;
+}
+
+.loading-optimized::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+
+
+/* Optimize modal animations */
+.modal-optimized {
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+.modal-optimized.show {
+  transform: scale(1);
+  opacity: 1;
+}
+
+
+
+
+
+
+
+
+
+/* Optimize for reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .liquid-card,
-  .liquid-button,
-  .liquid-input,
-  .liquid-shape,
-  .liquid-shape-2,
-  .liquid-shape-3,
-  .liquid-progress,
-  .liquid-progress-fill {
-    will-change: auto;
-    transform: none;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
-/* Optimize for low-end devices */
-@media (max-width: 480px) {
+/* Optimize for high contrast */
+@media (prefers-contrast: high) {
   .liquid-card {
-    backdrop-filter: blur(20px) saturate(120%);
-    -webkit-backdrop-filter: blur(20px) saturate(120%);
+    border: 2px solid #000;
   }
   
   .liquid-button {
-    backdrop-filter: blur(15px) saturate(100%);
-    -webkit-backdrop-filter: blur(15px) saturate(100%);
-  }
-  
-  .liquid-input {
-    backdrop-filter: blur(10px) saturate(100%);
-    -webkit-backdrop-filter: blur(10px) saturate(100%);
-  }
-  
-  /* Disable complex animations on low-end devices */
-  .liquid-shape,
-  .liquid-shape-2,
-  .liquid-shape-3 {
-    animation: none;
-    border-radius: 16px;
+    border: 2px solid #000;
   }
 }
 
-/* Memory optimization */
-.liquid-card,
-.liquid-button,
-.liquid-input {
-  isolation: isolate;
-}
-
-/* Optimize for battery life */
-@media (prefers-reduced-data: reduce) {
-  .liquid-shape,
-  .liquid-shape-2,
-  .liquid-shape-3 {
-    animation: none;
-    border-radius: 20px;
+/* Optimize for dark mode */
+@media (prefers-color-scheme: dark) {
+  .liquid-card {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.1);
   }
   
-  .apple-float,
-  .apple-glow {
-    animation: none;
+  .skeleton {
+    background: linear-gradient(90deg, #374151 25%, #4b5563 50%, #374151 75%);
+  }
+}
+
+/* Print optimizations */
+@media print {
+  .liquid-card,
+  .liquid-button,
+
+  
+  * {
+    animation: none !important;
+    transition: none !important;
   }
 }
