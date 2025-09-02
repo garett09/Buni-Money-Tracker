@@ -666,9 +666,20 @@ html.light-theme .liquid-card .font-bold {
     --accent-blue: #1D4ED8;
     --accent-green: #059669;
     --accent-purple: #7C3AED;
-    --accent-orange: #D97706;
-    --accent-pink: #DB2777;
-    --accent-red: #B91C1C;
+      --accent-orange: #D97706;
+  --accent-pink: #DB2777;
+  --accent-red: #B91C1C;
+  --accent-blue-hover: #1D4ED8;
+  
+  /* Notification-specific accent colors with backgrounds and borders */
+  --accent-green-bg: rgba(5, 150, 105, 0.1);
+  --accent-green-border: rgba(5, 150, 105, 0.2);
+  --accent-yellow-bg: rgba(217, 119, 6, 0.1);
+  --accent-yellow-border: rgba(217, 119, 6, 0.2);
+  --accent-red-bg: rgba(185, 28, 28, 0.1);
+  --accent-red-border: rgba(185, 28, 28, 0.2);
+  --accent-blue-bg: rgba(59, 130, 246, 0.1);
+  --accent-blue-border: rgba(59, 130, 246, 0.2);
   
     /* Enhanced Light Theme Borders - Darker for Better Visibility */
     --border-light: rgba(0, 0, 0, 0.08);
@@ -731,6 +742,31 @@ html.dark-theme {
   
   --bg-gradient: linear-gradient(135deg, #0F0F23 0%, #1A1A2E 50%, #16213E 100%);
   --card-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.06) 100%);
+  
+  /* Dark Theme Accent Colors - More Muted for Dark Mode */
+  --accent-blue: #60A5FA;
+  --accent-green: #34D399;
+  --accent-purple: #A78BFA;
+  --accent-orange: #FBBF24;
+  --accent-pink: #F472B6;
+  --accent-red: #F87171;
+  --accent-yellow: #FBBF24;
+  
+  /* Dark Theme Accent Backgrounds and Borders */
+  --accent-green-bg: rgba(16, 185, 129, 0.1);
+  --accent-green-border: rgba(16, 185, 129, 0.2);
+  --accent-yellow-bg: rgba(245, 158, 11, 0.1);
+  --accent-yellow-border: rgba(245, 158, 11, 0.2);
+  --accent-red-bg: rgba(239, 68, 68, 0.1);
+  --accent-red-border: rgba(239, 68, 68, 0.2);
+  --accent-blue-bg: rgba(59, 130, 246, 0.1);
+  --accent-blue-border: rgba(59, 130, 246, 0.2);
+  --accent-purple-bg: rgba(139, 92, 246, 0.1);
+  --accent-purple-border: rgba(139, 92, 246, 0.2);
+  --accent-pink-bg: rgba(236, 72, 153, 0.1);
+  --accent-pink-border: rgba(236, 72, 153, 0.2);
+  --accent-orange-bg: rgba(245, 158, 11, 0.1);
+  --accent-orange-border: rgba(245, 158, 11, 0.2);
 }
 
 /* Reduced Motion Variables */
