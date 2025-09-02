@@ -5,6 +5,8 @@ import './styles/performance.css'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/app/contexts/ThemeContext'
 import { PerformanceOptimizer } from '@/app/components/PerformanceOptimizer'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 
 // Optimize font loading with display: swap
@@ -114,7 +116,8 @@ export default function RootLayout({
           <PerformanceOptimizer />
           {children}
           <Toaster position="top-right" />
-
+          <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>
