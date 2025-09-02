@@ -79,6 +79,123 @@ const DocumentationPage = () => {
             </ul>
           </div>
         </div>
+
+        <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 p-6 rounded-xl border border-purple-200 dark:border-purple-800 mb-8">
+          <h3 className="text-xl font-semibold text-purple-900 dark:text-purple-100 mb-3">🚀 Quick Start Guide</h3>
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="text-center">
+              <div className="w-12 h-12 bg-purple-200 dark:bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-2">
+                <span className="text-purple-700 dark:text-purple-300 font-bold">1</span>
+              </div>
+              <p className="text-sm text-purple-800 dark:text-purple-200">Create Account</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-purple-200 dark:bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-2">
+                <span className="text-purple-700 dark:text-purple-300 font-bold">2</span>
+              </div>
+              <p className="text-sm text-purple-800 dark:text-purple-200">Add Transactions</p>
+            </div>
+            <div className="text-center">
+              <div className="w-12 h-12 bg-purple-200 dark:bg-purple-800 rounded-full flex items-center justify-center mx-auto mb-2">
+                <span className="text-purple-700 dark:text-purple-300 font-bold">3</span>
+              </div>
+              <p className="text-sm text-purple-800 dark:text-purple-200">Track Progress</p>
+            </div>
+          </div>
+        </div>
+      `
+    },
+    {
+      id: 'getting-started',
+      title: 'Getting Started',
+      icon: FiHome,
+      color: 'from-green-500 to-emerald-600',
+      description: 'Quick setup and first steps',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Getting Started</h2>
+        
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiUser className="text-blue-500" size={24} />
+              Account Setup
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Registration</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Visit the signup page</li>
+                  <li>• Enter your email and password</li>
+                  <li>• Verify your email address</li>
+                  <li>• Complete your profile</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Profile Setup</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Add your name and preferences</li>
+                  <li>• Set your timezone</li>
+                  <li>• Choose your currency</li>
+                  <li>• Set financial goals</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiCreditCard className="text-green-500" size={24} />
+              First Transactions
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Adding Income</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Click "Add Income" button</li>
+                  <li>• Select income category</li>
+                  <li>• Enter amount and description</li>
+                  <li>• Set recurring if applicable</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Adding Expenses</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Click "Add Expense" button</li>
+                  <li>• Choose expense category</li>
+                  <li>• Enter amount and details</li>
+                  <li>• Add receipt if available</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiTarget className="text-purple-500" size={24} />
+              Setting Goals
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Savings Goals</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Emergency fund target</li>
+                  <li>• Vacation savings</li>
+                  <li>• Down payment goal</li>
+                  <li>• Custom financial objectives</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Budget Limits</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Monthly spending limits</li>
+                  <li>• Category budgets</li>
+                  <li>• Weekly allowances</li>
+                  <li>• Annual financial plans</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       `
     },
     {
@@ -594,6 +711,238 @@ const DocumentationPage = () => {
                   <li>• Automatic updates</li>
                   <li>• Cross-platform compatibility</li>
                   <li>• Reduced storage usage</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    },
+    {
+      id: 'api-reference',
+      title: 'API Reference',
+      icon: FiCode,
+      color: 'from-indigo-500 to-blue-600',
+      description: 'Developer API and integrations',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">API Reference</h2>
+        
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiCode className="text-indigo-500" size={24} />
+              Authentication
+            </h3>
+            <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg mb-4">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">All API requests require authentication via JWT token in the Authorization header:</p>
+              <code className="text-sm bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded">Authorization: Bearer YOUR_JWT_TOKEN</code>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Login</h4>
+                <code className="text-sm bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded block mb-2">POST /api/login</code>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Authenticate user and receive JWT token</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Register</h4>
+                <code className="text-sm bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded block mb-2">POST /api/register</code>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Create new user account</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiDatabase className="text-green-500" size={24} />
+              Transactions API
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Get Transactions</h4>
+                <code className="text-sm bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded block mb-2">GET /api/transactions</code>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Retrieve user's transaction history with optional filters</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Add Transaction</h4>
+                <code className="text-sm bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded block mb-2">POST /api/transactions</code>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Create new income or expense transaction</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Update Transaction</h4>
+                <code className="text-sm bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded block mb-2">PUT /api/transactions/:id</code>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Modify existing transaction details</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Delete Transaction</h4>
+                <code className="text-sm bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded block mb-2">DELETE /api/transactions/:id</code>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Remove transaction from records</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiBarChart className="text-purple-500" size={24} />
+              Analytics API
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Dashboard Stats</h4>
+                <code className="text-sm bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded block mb-2">GET /api/dashboard/stats</code>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Get overview statistics and metrics</p>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Category Analysis</h4>
+                <code className="text-sm bg-gray-200 dark:bg-gray-800 px-2 py-1 rounded block mb-2">GET /api/analytics/categories</code>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Get spending breakdown by category</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    },
+    {
+      id: 'deployment',
+      title: 'Deployment',
+      icon: FiMonitor,
+      color: 'from-orange-500 to-red-600',
+      description: 'Deploy to production environments',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Deployment Guide</h2>
+        
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiMonitor className="text-orange-500" size={24} />
+              Vercel Deployment (Recommended)
+            </h3>
+            <div className="space-y-4">
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">🚀 Quick Deploy</h4>
+                <ol className="text-sm text-blue-800 dark:text-blue-200 space-y-1 list-decimal list-inside">
+                  <li>Push your code to GitHub</li>
+                  <li>Connect repository to Vercel</li>
+                  <li>Set environment variables</li>
+                  <li>Deploy automatically</li>
+                </ol>
+              </div>
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">Environment Variables</h4>
+                  <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                    <li>• NEXT_PUBLIC_API_URL</li>
+                    <li>• UPSTASH_REDIS_REST_URL</li>
+                    <li>• UPSTASH_REDIS_REST_TOKEN</li>
+                    <li>• JWT_SECRET</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">Features</h4>
+                  <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                    <li>• Automatic deployments</li>
+                    <li>• Preview deployments</li>
+                    <li>• Edge functions</li>
+                    <li>• Global CDN</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiDownload className="text-green-500" size={24} />
+              Alternative Platforms
+            </h3>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Netlify</h4>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Static site hosting with form handling</p>
+              </div>
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Railway</h4>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Full-stack deployment platform</p>
+              </div>
+              <div className="text-center p-4 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Heroku</h4>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Traditional hosting with add-ons</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    },
+    {
+      id: 'troubleshooting',
+      title: 'Troubleshooting',
+      icon: FiHelpCircle,
+      color: 'from-red-500 to-pink-600',
+      description: 'Common issues and solutions',
+      content: `
+        <h2 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white">Troubleshooting Guide</h2>
+        
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiHelpCircle className="text-red-500" size={24} />
+              Common Issues
+            </h3>
+            <div className="space-y-4">
+              <div className="border-l-4 border-red-500 pl-4">
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Authentication Errors</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">If you're experiencing login issues:</p>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 list-disc list-inside">
+                  <li>Clear browser cookies and cache</li>
+                  <li>Check your internet connection</li>
+                  <li>Verify your email and password</li>
+                  <li>Try resetting your password</li>
+                </ul>
+              </div>
+              <div className="border-l-4 border-yellow-500 pl-4">
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Performance Issues</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">If the app is running slowly:</p>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 list-disc list-inside">
+                  <li>Check your internet connection</li>
+                  <li>Clear browser cache</li>
+                  <li>Try refreshing the page</li>
+                  <li>Update your browser</li>
+                </ul>
+              </div>
+              <div className="border-l-4 border-blue-500 pl-4">
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Data Sync Issues</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">If data isn't syncing properly:</p>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 list-disc list-inside">
+                  <li>Check your internet connection</li>
+                  <li>Log out and log back in</li>
+                  <li>Clear browser storage</li>
+                  <li>Contact support if persistent</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700">
+            <h3 className="text-xl font-semibold mb-4 flex items-center gap-3">
+              <FiFileText className="text-blue-500" size={24} />
+              Getting Help
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Support Channels</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• GitHub Issues</li>
+                  <li>• Documentation</li>
+                  <li>• Community Forum</li>
+                  <li>• Email Support</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium text-gray-900 dark:text-white mb-2">Before Contacting Support</h4>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <li>• Check this troubleshooting guide</li>
+                  <li>• Search existing issues</li>
+                  <li>• Include error messages</li>
+                  <li>• Describe steps to reproduce</li>
                 </ul>
               </div>
             </div>
