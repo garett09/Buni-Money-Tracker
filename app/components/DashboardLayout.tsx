@@ -306,16 +306,16 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                     <FiBook size={16} className="sm:text-lg text-white" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-blue-300">Need Help?</h3>
-                    <p className="text-xs text-blue-200/60">Master the platform</p>
+                    <h3 className="text-sm font-bold text-blue-700 dark:text-blue-200">Need Help?</h3>
+                    <p className="text-xs text-blue-600 dark:text-blue-100">Master the platform</p>
                   </div>
                 </div>
-                <p className="text-xs text-blue-200/80 mb-3 sm:mb-4 leading-relaxed">
+                <p className="text-xs text-blue-700 dark:text-blue-100 mb-3 sm:mb-4 leading-relaxed">
                   Learn how to use all the features and unlock your financial potential with our step-by-step tutorial
                 </p>
                 <Link
                   href="/docs"
-                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-blue-500/30 to-purple-500/30 hover:from-blue-500/40 hover:to-purple-500/40 text-blue-200 hover:text-white rounded-xl transition-all duration-300 text-xs sm:text-sm font-semibold border border-blue-500/40 hover:border-blue-500/60 shadow-lg hover:shadow-blue-500/25 hover:scale-[1.02] flex items-center justify-center"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-3 bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white rounded-xl transition-all duration-300 text-xs sm:text-sm font-semibold border border-blue-500/40 hover:border-blue-600/60 shadow-lg hover:shadow-blue-500/25 hover:scale-[1.02] flex items-center justify-center"
                 >
                   🎓 Start Tutorial
                 </Link>
@@ -374,7 +374,7 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
                 {/* Documentation Button - Hidden on mobile, shown on tablet+ */}
                 <Link
                   href="/docs"
-                  className="hidden sm:flex items-center gap-3 px-4 sm:px-5 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 text-blue-400 hover:text-blue-300 rounded-2xl transition-all duration-300 group border border-blue-500/30 hover:border-blue-500/50 backdrop-blur-lg shadow-lg hover:shadow-blue-500/25 hover:scale-105"
+                  className="hidden sm:flex items-center gap-3 px-4 sm:px-5 py-3 bg-gradient-to-r from-blue-500/20 to-purple-500/20 hover:from-blue-500/30 hover:to-purple-500/30 text-blue-700 dark:text-blue-200 hover:text-blue-800 dark:hover:text-blue-100 rounded-2xl transition-all duration-300 group border border-blue-500/30 hover:border-blue-500/50 backdrop-blur-lg shadow-lg hover:shadow-blue-500/25 hover:scale-105"
                 >
                   <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                     <FiBook size={18} className="text-white" />
