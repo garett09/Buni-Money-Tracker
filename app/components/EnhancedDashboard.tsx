@@ -1902,7 +1902,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center p-6 rounded-xl bg-white/5">
                 <div className="text-2xl font-bold text-green-400 mb-2">
-                  ₱50,000
+                  ₱{getUserMonthlyBudget().toLocaleString()}
                 </div>
                 <div className="text-sm" style={{ color: 'var(--text-muted)' }}>Monthly Budget</div>
               </div>
