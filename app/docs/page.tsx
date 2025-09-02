@@ -987,7 +987,37 @@ const DocumentationPage = () => {
               <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center">
                 <FiBook size={16} className="sm:text-xl text-white" />
               </div>
-              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Documentation</h1>
+              <h1 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">Buni Money Tracker Docs</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* GitHub-style Hero Section */}
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-blue-900/20 dark:to-indigo-900/20 border-b border-blue-200 dark:border-blue-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="text-center">
+            <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4">
+              Buni Money Tracker Documentation
+            </h1>
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto">
+              Complete guide to tracking, analyzing, and optimizing your personal finances with our intelligent money management platform.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link
+                href="/dashboard"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
+              >
+                <FiHome size={20} />
+                Get Started
+              </Link>
+              <Link
+                href="#overview"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-semibold rounded-xl border border-gray-300 dark:border-gray-600 transition-colors"
+              >
+                <FiBook size={20} />
+                View Documentation
+              </Link>
             </div>
           </div>
         </div>
@@ -1004,7 +1034,7 @@ const DocumentationPage = () => {
                   <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                   <input
                     type="text"
-                    placeholder="Search features..."
+                    placeholder="Search documentation..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-10 pr-4 py-2 sm:py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:text-white text-sm sm:text-base"
@@ -1012,23 +1042,172 @@ const DocumentationPage = () => {
                 </div>
               </div>
 
-              {/* Feature Navigation */}
-              <nav className="space-y-2">
-                {filteredFeatures.map((feature) => (
+              {/* GitHub-style Categories */}
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Categories</h3>
+                <div className="space-y-1">
+                  <div className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Getting Started</div>
                   <button
-                    key={feature.id}
-                    onClick={() => setActiveSection(feature.id)}
-                    className={`w-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 rounded-xl text-left transition-all duration-200 ${
-                      activeSection === feature.id
-                        ? 'bg-blue-500 text-white shadow-lg'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+                    onClick={() => setActiveSection('overview')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'overview'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
                     }`}
                   >
-                    <feature.icon size={18} className="sm:text-xl" />
-                    <span className="font-medium text-sm sm:text-base">{feature.title}</span>
+                    Overview
                   </button>
-                ))}
-              </nav>
+                  <button
+                    onClick={() => setActiveSection('getting-started')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'getting-started'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    Quick Start Guide
+                  </button>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Core Features</h3>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setActiveSection('core-features')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'core-features'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    Essential Features
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('advanced-features')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'advanced-features'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    Advanced Tools
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('savings-goals')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'savings-goals'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    Savings & Goals
+                  </button>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Advanced</h3>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setActiveSection('shared-expenses')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'shared-expenses'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    Shared Expenses
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('data-management')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'data-management'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    Data Management
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('mobile-optimization')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'mobile-optimization'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    Mobile & Performance
+                  </button>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Developer</h3>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setActiveSection('api-reference')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'api-reference'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    API Reference
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('deployment')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'deployment'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    Deployment
+                  </button>
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Support</h3>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setActiveSection('troubleshooting')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      activeSection === 'troubleshooting'
+                        ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                        : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    Troubleshooting
+                  </button>
+                </div>
+              </div>
+
+              {/* Popular Sections */}
+              <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Popular</h3>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => setActiveSection('overview')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    🚀 Quick Start
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('core-features')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    💰 Core Features
+                  </button>
+                  <button
+                    onClick={() => setActiveSection('api-reference')}
+                    className="w-full text-left px-3 py-2 rounded-lg text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                  >
+                    🔌 API Reference
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -1056,6 +1235,63 @@ const DocumentationPage = () => {
                   </div>
                 );
               })()}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* GitHub-style Footer */}
+      <div className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 mt-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Buni Money Tracker</h3>
+              <p className="text-gray-600 dark:text-gray-400 text-sm">
+                Your intelligent personal finance companion. Track, analyze, and optimize your money with powerful tools and insights.
+              </p>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Product</h4>
+              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <li><Link href="#overview" className="hover:text-gray-900 dark:hover:text-white transition-colors">Features</Link></li>
+                <li><Link href="#pricing" className="hover:text-gray-900 dark:hover:text-white transition-colors">Pricing</Link></li>
+                <li><Link href="#security" className="hover:text-gray-900 dark:hover:text-white transition-colors">Security</Link></li>
+                <li><Link href="#roadmap" className="hover:text-gray-900 dark:hover:text-white transition-colors">Roadmap</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Developers</h4>
+              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <li><Link href="#api-reference" className="hover:text-gray-900 dark:hover:text-white transition-colors">API</Link></li>
+                <li><Link href="#deployment" className="hover:text-gray-900 dark:hover:text-white transition-colors">Deployment</Link></li>
+                <li><Link href="#integrations" className="hover:text-gray-900 dark:hover:text-white transition-colors">Integrations</Link></li>
+                <li><Link href="#webhooks" className="hover:text-gray-900 dark:hover:text-white transition-colors">Webhooks</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 uppercase tracking-wide">Support</h4>
+              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <li><Link href="#troubleshooting" className="hover:text-gray-900 dark:hover:text-white transition-colors">Help</Link></li>
+                <li><Link href="#community" className="hover:text-gray-900 dark:hover:text-white transition-colors">Community</Link></li>
+                <li><Link href="#status" className="hover:text-gray-900 dark:hover:text-white transition-colors">Status</Link></li>
+                <li><Link href="#contact" className="hover:text-gray-900 dark:hover:text-white transition-colors">Contact</Link></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-200 dark:border-gray-700 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              © 2024 Buni Money Tracker. Built with ❤️ using Next.js and modern web technologies.
+            </p>
+            <div className="flex items-center gap-4 mt-4 md:mt-0">
+              <Link href="/privacy" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                Terms of Service
+              </Link>
+              <Link href="/dashboard" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
+                Dashboard
+              </Link>
             </div>
           </div>
         </div>
