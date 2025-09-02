@@ -767,13 +767,19 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
 
   const getRemainingBudget = () => {
     const monthlyBudget = getUserMonthlyBudget();
-    return Math.max(0, monthlyBudget - analytics.totalExpenses);
+    const remaining = monthlyBudget - analytics.totalExpenses;
+    return Math.max(0, remaining); // Ensure we don't show negative remaining budget
   };
 
   const getDailyBudgetLimit = () => {
     const remainingBudget = getRemainingBudget();
     const daysLeft = getDaysLeftInMonth();
-    return daysLeft > 0 ? Math.round(remainingBudget / daysLeft) : 0;
+    
+    // Handle edge cases
+    if (daysLeft <= 0) return 0;
+    if (remainingBudget <= 0) return 0;
+    
+    return Math.round(remainingBudget / daysLeft);
   };
 
   const getOverspendingRisk = () => {
@@ -853,7 +859,12 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
     const savings = analytics.netBalance > 0 ? analytics.netBalance : 0;
     const goal = monthlyBudget * 0.2; // 20% savings goal
     
-    return Math.min(100, Math.round((savings / goal) * 100));
+    // Handle edge cases
+    if (goal <= 0) return 0;
+    if (savings <= 0) return 0;
+    
+    const progress = Math.min(100, Math.round((savings / goal) * 100));
+    return Math.max(0, progress); // Ensure progress is not negative
   };
 
   const getBudgetGoalProgress = () => {
