@@ -901,21 +901,24 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
               </div>
             ) : (
               <div className="text-center py-12">
-                <FiPieChart size={48} className="mx-auto mb-4" style={{ color: 'var(--text-muted)' }} />
-                <p className="text-lg font-medium" style={{ color: 'var(--text-primary)' }}>
-                  {loading ? 'Loading spending data...' : 'No spending categories found'}
-                </p>
-                <p className="text-sm mt-2" style={{ color: 'var(--text-muted)' }}>
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-100 to-emerald-100 flex items-center justify-center">
+                  <FiPieChart size={32} className="text-blue-600" />
+                </div>
+                <h4 className="text-xl font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>
+                  {loading ? 'Loading spending data...' : 'Start Tracking Your Spending'}
+                </h4>
+                <p className="text-base mb-4" style={{ color: 'var(--text-muted)' }}>
                   {loading ? 'Please wait while we process your transactions' : 
-                   'Add some expense transactions with categories to see your spending breakdown'}
+                   'Add your first expense transaction to see your spending breakdown and insights'}
                 </p>
                 {!loading && (
-                  <div className="mt-4 p-4 bg-white/5 rounded-lg">
-                    <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                      Debug Info: {analytics ? 
-                        `Analytics exists, topCategories: ${analytics.topCategories?.length || 0}` : 
-                        'Analytics is null/undefined'}
-                    </p>
+                  <div className="mt-6">
+                    <button
+                      onClick={() => setActiveTab('expenses')}
+                      className="px-6 py-3 bg-gradient-to-r from-blue-500 to-emerald-500 text-white rounded-xl hover:from-blue-600 hover:to-emerald-600 transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                    >
+                      Add Your First Expense
+                    </button>
                   </div>
                 )}
               </div>
