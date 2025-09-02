@@ -1140,7 +1140,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
               </div>
               
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: 'var(--overlay-light)' }}>
                   <div className="flex items-center gap-2">
                     <FiTrendingUp size={16} className="text-green-400" />
                     <span style={{ color: 'var(--text-muted)' }}>Savings Rate</span>
@@ -1149,7 +1149,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                     {analytics.savingsRate.toFixed(1)}%
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: 'var(--overlay-light)' }}>
                   <div className="flex items-center gap-2">
                     <FiShield size={16} className="text-blue-400" />
                     <span style={{ color: 'var(--text-muted)' }}>Budget Adherence</span>
@@ -1158,7 +1158,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
                     {(100 - analytics.budgetUsagePercent).toFixed(1)}%
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 rounded-xl bg-white/5">
+                <div className="flex items-center justify-between p-3 rounded-xl" style={{ background: 'var(--overlay-light)' }}>
                   <div className="flex items-center gap-2">
                     <FiActivity size={16} className="text-purple-400" />
                     <span style={{ color: 'var(--text-muted)' }}>Cash Flow</span>
