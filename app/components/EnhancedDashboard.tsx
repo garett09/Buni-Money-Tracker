@@ -973,7 +973,7 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
       </div>
 
       {/* Enhanced Analytics Tabs */}
-      <div className="flex items-center gap-1 sm:gap-2 liquid-card rounded-xl p-1 overflow-x-auto">
+      <div className="flex items-center gap-1 sm:gap-2 liquid-card rounded-xl p-1 overflow-x-auto overflow-y-hidden h-12">
         {[
           { id: 'overview', label: 'Overview', icon: FiEye },
           { id: 'trends', label: 'Trends', icon: FiTrendingUp },
