@@ -553,7 +553,7 @@ export class EnhancedBudgetTracker {
   }> {
     try {
       const currentStatus = await this.calculateBudgetStatus(expenses, income);
-      const historicalTrends = await HistoricalDataManager.getTrendAnalysis(this.userId, 'budgetAdherence', 12);
+      const historicalTrends = await HistoricalDataManager.generateLongTermTrends(this.userId, 12);
       const yearOverYear = await HistoricalDataManager.generateYearOverYearComparison(this.userId, new Date().getFullYear());
       
       // Combine recommendations

@@ -1,5 +1,7 @@
 // Historical Data Management System
-// Provides comprehensive storage and analysis of long-term financial data
+// Provides comprehensive storage and analysis of long-term financial data using Redis
+
+import { redis } from './redis';
 
 export interface HistoricalBudgetPerformance {
   month: string; // YYYY-MM format
@@ -343,12 +345,12 @@ export class HistoricalDataManager {
       const existingData = await this.getHistoricalData(userId, dataType);
       const updatedData = Array.isArray(existingData) ? [...existingData, data] : [data];
       
-      // Store in localStorage for now (can be enhanced with Redis later)
-      localStorage.setItem(key, JSON.stringify({
+      // Store in Redis
+      await redis.set(key, {
         data: updatedData,
         timestamp,
         version: '1.0.0'
-      }));
+      });
 
       return true;
     } catch (error) {
@@ -363,11 +365,10 @@ export class HistoricalDataManager {
   ): Promise<any> {
     try {
       const key = `user:${userId}:historical:${dataType}`;
-      const stored = localStorage.getItem(key);
+      const stored = await redis.get(key);
       
       if (stored) {
-        const parsed = JSON.parse(stored);
-        return parsed.data || [];
+        return stored.data || [];
       }
       
       return [];
@@ -385,7 +386,7 @@ export class HistoricalDataManager {
         version: '1.0.0'
       };
       
-      localStorage.setItem(`user:${userId}:historical:metadata`, JSON.stringify(metadata));
+      await redis.set(`user:${userId}:historical:metadata`, metadata);
     } catch (error) {
       console.error('Failed to update archive metadata:', error);
     }

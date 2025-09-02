@@ -1,5 +1,5 @@
-// Notification Manager for Persistent Notifications
-// Handles storage, retrieval, and management of notifications across sessions
+// Notification Manager for Redis-based Persistent Notifications
+// Handles storage, retrieval, and management of notifications using Redis
 
 export interface PersistentNotification {
   id: string;
@@ -45,19 +45,23 @@ export interface NotificationSettings {
   maxNotifications: number;
 }
 
+import { redis } from './redis';
+
 export class NotificationManager {
-  private static readonly STORAGE_KEY = 'buni_notifications';
-  private static readonly SETTINGS_KEY = 'buni_notification_settings';
+  private static readonly NOTIFICATIONS_KEY = 'buni:notifications';
+  private static readonly SETTINGS_KEY = 'buni:notification_settings';
   private static readonly DEFAULT_RETENTION_DAYS = 30;
   private static readonly DEFAULT_MAX_NOTIFICATIONS = 100;
 
   // Get all notifications for a user
   static async getNotifications(userId: string): Promise<PersistentNotification[]> {
     try {
-      const stored = localStorage.getItem(`${this.STORAGE_KEY}_${userId}`);
+      const key = `${this.NOTIFICATIONS_KEY}:${userId}`;
+      const stored = await redis.get(key);
+      
       if (!stored) return [];
 
-      const notifications: PersistentNotification[] = JSON.parse(stored);
+      const notifications: PersistentNotification[] = Array.isArray(stored) ? stored : [];
       
       // Filter out expired notifications
       const currentTime = this.getCurrentTime();
@@ -89,7 +93,8 @@ export class NotificationManager {
         .filter(notification => notification.timestamp > cutoffTime)
         .slice(0, settings.maxNotifications || this.DEFAULT_MAX_NOTIFICATIONS);
 
-      localStorage.setItem(`${this.STORAGE_KEY}_${userId}`, JSON.stringify(filteredNotifications));
+      const key = `${this.NOTIFICATIONS_KEY}:${userId}`;
+      await redis.set(key, filteredNotifications);
       return true;
     } catch (error) {
       console.error('Failed to save notifications:', error);
@@ -181,7 +186,9 @@ export class NotificationManager {
   // Get notification settings
   static async getNotificationSettings(userId: string): Promise<NotificationSettings> {
     try {
-      const stored = localStorage.getItem(`${this.SETTINGS_KEY}_${userId}`);
+      const key = `${this.SETTINGS_KEY}:${userId}`;
+      const stored = await redis.get(key);
+      
       if (!stored) {
         // Return default settings
         const defaultSettings: NotificationSettings = {
@@ -205,7 +212,7 @@ export class NotificationManager {
         return defaultSettings;
       }
 
-      return JSON.parse(stored);
+      return stored as NotificationSettings;
     } catch (error) {
       console.error('Failed to get notification settings:', error);
       return {
@@ -230,7 +237,8 @@ export class NotificationManager {
   // Save notification settings
   static async saveNotificationSettings(userId: string, settings: NotificationSettings): Promise<boolean> {
     try {
-      localStorage.setItem(`${this.SETTINGS_KEY}_${userId}`, JSON.stringify(settings));
+      const key = `${this.SETTINGS_KEY}:${userId}`;
+      await redis.set(key, settings);
       return true;
     } catch (error) {
       console.error('Failed to save notification settings:', error);
