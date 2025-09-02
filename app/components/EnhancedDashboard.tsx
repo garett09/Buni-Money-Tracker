@@ -1763,14 +1763,25 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
             
             <div className="h-80">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={getIncomeExpenseData()}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="var(--text-muted)" />
+                <BarChart 
+                  data={getIncomeExpenseData()}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                >
+                  <CartesianGrid 
+                    strokeDasharray="3 3" 
+                    stroke="var(--text-muted)" 
+                    opacity={0.3}
+                    horizontal={true}
+                    vertical={false}
+                  />
                   <XAxis 
                     dataKey="category" 
                     stroke="var(--text-muted)"
-                    fontSize={12}
+                    fontSize={14}
+                    fontWeight={500}
                     tickLine={false}
                     axisLine={false}
+                    tick={{ fill: 'var(--text-primary)' }}
                   />
                   <YAxis 
                     stroke="var(--text-muted)"
