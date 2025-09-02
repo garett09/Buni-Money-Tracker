@@ -222,7 +222,7 @@ const AccountsPage = () => {
   if (loading) {
     return (
       <DashboardLayout>
-        <LoadingStates />
+        <LoadingStates type="accounts" />
       </DashboardLayout>
     );
   }
