@@ -25,7 +25,7 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [theme, setThemeState] = useState<Theme>('dark');
+  const [theme, setThemeState] = useState<Theme>('light');
 
   // Load theme from localStorage on mount
   useEffect(() => {
@@ -35,13 +35,13 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
   }, []);
 
-  // Apply theme to document for Tailwind CSS
+  // Apply theme to document for CSS variables
   useEffect(() => {
     // Remove existing theme classes
-    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.remove('light-theme', 'dark-theme');
     
-    // Add the appropriate theme class for Tailwind
-    document.documentElement.classList.add(theme);
+    // Add the appropriate theme class for CSS variables
+    document.documentElement.classList.add(`${theme}-theme`);
     
     localStorage.setItem('theme', theme);
   }, [theme]);
