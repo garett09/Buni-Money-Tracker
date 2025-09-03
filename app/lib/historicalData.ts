@@ -134,7 +134,9 @@ export class HistoricalDataManager {
 
       return true;
     } catch (error) {
-      console.error('Failed to archive monthly data:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to archive monthly data:', error);
+      }
       return false;
     }
   }
@@ -153,7 +155,9 @@ export class HistoricalDataManager {
         .sort((a, b) => new Date(b.month).getTime() - new Date(a.month).getTime())
         .slice(0, months);
     } catch (error) {
-      console.error('Failed to get historical budget performance:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to get historical budget performance:', error);
+      }
       return [];
     }
   }
@@ -171,7 +175,9 @@ export class HistoricalDataManager {
         .sort((a, b) => new Date(b.month).getTime() - new Date(a.month).getTime())
         .slice(0, months);
     } catch (error) {
-      console.error('Failed to get historical spending trends:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to get historical spending trends:', error);
+      }
       return [];
     }
   }
@@ -189,7 +195,9 @@ export class HistoricalDataManager {
         .sort((a, b) => new Date(b.month).getTime() - new Date(a.month).getTime())
         .slice(0, months);
     } catch (error) {
-      console.error('Failed to get historical financial health:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to get historical financial health:', error);
+      }
       return [];
     }
   }
@@ -248,7 +256,9 @@ export class HistoricalDataManager {
         seasonalPatterns
       };
     } catch (error) {
-      console.error('Failed to generate year-over-year comparison:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to generate year-over-year comparison:', error);
+      }
       return null;
     }
   }
@@ -307,7 +317,9 @@ export class HistoricalDataManager {
         predictions
       };
     } catch (error) {
-      console.error('Failed to generate long-term trends:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to generate long-term trends:', error);
+      }
       return {
         spendingTrends: { trend: 'stable', rate: 0 },
         budgetAdherenceTrends: { trend: 'stable', rate: 0 },
@@ -323,10 +335,14 @@ export class HistoricalDataManager {
     try {
       // Data retention is set to Infinity, so no cleaning is performed
       // All historical data is preserved indefinitely
-      console.log(`Historical data cleaning skipped for user ${userId} - data retention is set to forever`);
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Historical data cleaning skipped for user ${userId} - data retention is set to forever`);
+      }
       return true;
     } catch (error) {
-      console.error('Failed to process historical data cleaning:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to process historical data cleaning:', error);
+      }
       return false;
     }
   }
@@ -354,7 +370,9 @@ export class HistoricalDataManager {
 
       return true;
     } catch (error) {
-      console.error('Failed to store historical data:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to store historical data:', error);
+      }
       return false;
     }
   }
@@ -373,7 +391,9 @@ export class HistoricalDataManager {
       
       return [];
     } catch (error) {
-      console.error('Failed to get historical data:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to get historical data:', error);
+      }
       return [];
     }
   }
@@ -388,7 +408,9 @@ export class HistoricalDataManager {
       
       await redis.set(`user:${userId}:historical:metadata`, metadata);
     } catch (error) {
-      console.error('Failed to update archive metadata:', error);
+      if (process.env.NODE_ENV === 'development') {
+        console.error('Failed to update archive metadata:', error);
+      }
     }
   }
 

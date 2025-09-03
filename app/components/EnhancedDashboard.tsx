@@ -586,7 +586,12 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         };
 
         // Archive data in background for historical analysis
-        HistoricalDataManager.archiveMonthlyData(userId, currentData).catch(console.error);
+        HistoricalDataManager.archiveMonthlyData(userId, currentData).catch((error) => {
+          // Silent error handling for production
+          if (process.env.NODE_ENV === 'development') {
+            console.error('Historical data archive failed:', error);
+          }
+        });
 
         // Generate persistent notifications
         generateNotifications(userId, analytics, currentData);
@@ -648,10 +653,14 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
         }
       } catch (error) {
         // Historical notifications are optional, don't fail if they can't be generated
-        console.log('Could not generate historical notifications:', error);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('Could not generate historical notifications:', error);
+        }
       }
     } catch (error) {
-      console.error('Failed to generate notifications:', error);
+              if (process.env.NODE_ENV === 'development') {
+          console.error('Failed to generate notifications:', error);
+        }
     }
   };
 
@@ -697,7 +706,9 @@ const EnhancedDashboard: React.FC<EnhancedDashboardProps> = ({
       
       toast.success('Data exported successfully! 📊');
     } catch (error) {
-      console.error('Export failed:', error);
+              if (process.env.NODE_ENV === 'development') {
+          console.error('Export failed:', error);
+        }
       toast.error('Export failed. Please try again.');
     } finally {
       setIsDownloading(false);
