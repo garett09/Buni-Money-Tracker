@@ -32,6 +32,26 @@ const nextConfig = {
       };
     }
     
+    // Production minification optimization
+    if (!dev && !isServer) {
+      config.optimization.minimize = true;
+      config.optimization.minimizer = [
+        '...', // Keep existing minimizers
+        new (require('terser-webpack-plugin'))({
+          terserOptions: {
+            compress: {
+              drop_console: true, // Remove console.log in production
+              drop_debugger: true,
+              pure_funcs: ['console.log', 'console.info', 'console.debug'],
+            },
+            mangle: {
+              safari10: true, // Better Safari compatibility
+            },
+          },
+        }),
+      ];
+    }
+    
     // Optimize bundle splitting
     config.optimization = {
       ...config.optimization,
