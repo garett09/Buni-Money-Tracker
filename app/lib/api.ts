@@ -20,11 +20,23 @@ const API_BASE = getApiBase();
 
 export class ApiClient {
   private static getAuthHeaders() {
+    // Check if we're in a browser environment
+    if (typeof window === 'undefined') {
+      return {
+        'Content-Type': 'application/json',
+      };
+    }
+    
     const token = localStorage.getItem('token');
-    return {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-      'Authorization': token ? `Bearer ${token}` : '',
     };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return headers;
   }
 
   // Income transactions
@@ -32,6 +44,10 @@ export class ApiClient {
     const response = await fetch(`${API_BASE}/api/transactions/income`, {
       headers: this.getAuthHeaders(),
     });
+    
+    if (response.status === 401) {
+      throw new Error('Authentication required. Please log in.');
+    }
     
     if (!response.ok) {
       throw new Error('Failed to fetch income transactions');
@@ -87,6 +103,10 @@ export class ApiClient {
     const response = await fetch(`${API_BASE}/api/transactions/expenses`, {
       headers: this.getAuthHeaders(),
     });
+    
+    if (response.status === 401) {
+      throw new Error('Authentication required. Please log in.');
+    }
     
     if (!response.ok) {
       throw new Error('Failed to fetch expense transactions');
