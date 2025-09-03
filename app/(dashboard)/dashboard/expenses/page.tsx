@@ -41,8 +41,14 @@ import {
 import { expenseCategories, spendingInsights } from '@/app/lib/categories';
 import { ApiClient } from '@/app/lib/api';
 import { updateAccountBalance } from '@/app/lib/accounts';
+import { requireAuth } from '@/app/lib/auth';
 
 const ExpensesPage = () => {
+  // Check authentication on component mount
+  useEffect(() => {
+    requireAuth();
+  }, []);
+
   const [formData, setFormData] = useState({
     amount: '',
     description: '',

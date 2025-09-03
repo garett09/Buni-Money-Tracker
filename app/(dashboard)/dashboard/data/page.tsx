@@ -1,8 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DashboardLayout from '@/app/components/DashboardLayout';
 import DataManagement from '@/app/components/DataManagement';
+import { requireAuth } from '@/app/lib/auth';
 import { 
   FiBook, 
   FiHelpCircle, 
@@ -24,6 +25,11 @@ import {
 } from 'react-icons/fi';
 
 const DataManagementPage = () => {
+  // Check authentication on component mount
+  useEffect(() => {
+    requireAuth();
+  }, []);
+
   const [showHelp, setShowHelp] = useState(false);
   const [activeFeature, setActiveFeature] = useState('overview');
 

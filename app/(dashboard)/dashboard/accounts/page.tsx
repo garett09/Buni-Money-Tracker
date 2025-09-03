@@ -39,8 +39,14 @@ import {
   getAccountTypeById
 } from '@/app/lib/accounts';
 import { ApiClient } from '@/app/lib/api';
+import { requireAuth } from '@/app/lib/auth';
 
 const AccountsPage = () => {
+  // Check authentication on component mount
+  useEffect(() => {
+    requireAuth();
+  }, []);
+
   const [accounts, setAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);

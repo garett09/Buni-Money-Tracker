@@ -5,8 +5,14 @@ import DashboardLayout from '@/app/components/DashboardLayout';
 import ExpenseSharingSettings from '@/app/components/ExpenseSharingSettings';
 import SharedExpensesView from '@/app/components/SharedExpensesView';
 import { FiUsers, FiSettings } from 'react-icons/fi';
+import { requireAuth } from '@/app/lib/auth';
 
 const SharedExpensesPage = () => {
+  // Check authentication on component mount
+  useEffect(() => {
+    requireAuth();
+  }, []);
+
   const [sharingEnabled, setSharingEnabled] = useState(false);
   const [partnerInfo, setPartnerInfo] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'expenses' | 'settings'>('expenses');

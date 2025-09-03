@@ -27,6 +27,7 @@ import {
 } from 'react-icons/fi';
 import { ApiClient } from '@/app/lib/api';
 import { toast } from 'react-hot-toast';
+import { requireAuth } from '@/app/lib/auth';
 
 interface Transaction {
   id: number;
@@ -42,6 +43,11 @@ interface Transaction {
 }
 
 const TransactionsPage = () => {
+  // Check authentication on component mount
+  useEffect(() => {
+    requireAuth();
+  }, []);
+
   const [incomeTransactions, setIncomeTransactions] = useState<Transaction[]>([]);
   const [expenseTransactions, setExpenseTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);

@@ -15,8 +15,14 @@ import {
 } from 'react-icons/fi';
 import { ApiClient } from '@/app/lib/api';
 import { SavingsCalculator, DepositHistory } from '@/app/lib/savingsCalculator';
+import { requireAuth } from '@/app/lib/auth';
 
 const SavingsPage = () => {
+  // Check authentication on component mount
+  useEffect(() => {
+    requireAuth();
+  }, []);
+
   const [goals, setGoals] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
