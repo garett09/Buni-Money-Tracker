@@ -57,9 +57,13 @@ export async function POST(request: NextRequest) {
     await redis.hset(`user:${userId}`, 'lastLogin', new Date().toISOString());
 
     // Generate JWT token
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET environment variable is not configured');
+    }
+    
     const token = jwt.sign(
       { userId: user.id, email: user.email },
-      process.env.JWT_SECRET || 'your-secret-key',
+      process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
