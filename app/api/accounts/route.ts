@@ -31,7 +31,14 @@ export async function GET(request: NextRequest) {
     // Filter only active accounts
     const activeAccounts = accounts.filter(account => account.isActive !== false);
 
-    return NextResponse.json({ accounts: activeAccounts });
+    const response = NextResponse.json({ accounts: activeAccounts });
+    
+    // Add security headers
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-XSS-Protection', '1; mode=block');
+    
+    return response;
 
   } catch (error) {
     return NextResponse.json(
@@ -62,10 +69,17 @@ export async function POST(request: NextRequest) {
     const success = await DataPersistence.addListItem(user.userId, 'accounts', account);
 
     if (success) {
-      return NextResponse.json({
+      const response = NextResponse.json({
         message: 'Account added successfully',
         account
       }, { status: 201 });
+      
+      // Add security headers
+      response.headers.set('X-Frame-Options', 'DENY');
+      response.headers.set('X-Content-Type-Options', 'nosniff');
+      response.headers.set('X-XSS-Protection', '1; mode=block');
+      
+      return response;
     } else {
       return NextResponse.json(
         { message: 'Failed to add account' },
