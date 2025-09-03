@@ -13,8 +13,6 @@ const nextConfig = {
       },
     },
   },
-  // Enable SWC minification for faster builds
-  swcMinify: true,
   // Optimize images
   images: {
     domains: ['localhost', 'vercel.app', 'vercel.com'],
