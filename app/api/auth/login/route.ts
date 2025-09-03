@@ -2,8 +2,28 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { redis } from '@/app/lib/redis';
+import { rateLimiters, getClientIP } from '@/app/lib/rateLimit';
 
 export async function POST(request: NextRequest) {
+  // Apply rate limiting for authentication
+  const clientIP = getClientIP(request);
+  const rateLimitResult = rateLimiters.auth.isAllowed(clientIP);
+  
+  if (!rateLimitResult.allowed) {
+    return NextResponse.json({ 
+      message: 'Too many login attempts. Please try again later.',
+      retryAfter: Math.ceil(rateLimiters.auth.config.windowMs / 1000)
+    }, { 
+      status: 429,
+      headers: {
+        'X-RateLimit-Limit': rateLimiters.auth.config.max.toString(),
+        'X-RateLimit-Remaining': '0',
+        'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toUTCString(),
+        'Retry-After': Math.ceil(rateLimiters.auth.config.windowMs / 1000).toString()
+      }
+    });
+  }
+
   try {
     const { email, password } = await request.json();
 
