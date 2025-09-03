@@ -22,33 +22,8 @@ export async function GET(request: NextRequest) {
   try {
     const user = await verifyToken(request);
     
-    // For development, if no user is authenticated, return sample accounts
     if (!user) {
-      const sampleAccounts = [
-        {
-          id: 1,
-          name: 'BPI Savings',
-          accountType: 'savings',
-          bankId: 'bpi',
-          accountNumber: '****1234',
-          currentBalance: 50000,
-          description: 'Main savings account',
-          isActive: true,
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: 2,
-          name: 'GCash Wallet',
-          accountType: 'digital-wallet',
-          digitalWalletId: 'gcash',
-          accountNumber: '****5678',
-          currentBalance: 5000,
-          description: 'Daily expenses wallet',
-          isActive: true,
-          createdAt: new Date().toISOString()
-        }
-      ];
-      return NextResponse.json({ accounts: sampleAccounts });
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     const accounts = await DataPersistence.getListData(user.userId, 'accounts');
@@ -71,20 +46,8 @@ export async function POST(request: NextRequest) {
   try {
     const user = await verifyToken(request);
     
-    // For development, if no user is authenticated, return success but don't save to database
     if (!user) {
-      const accountData = await request.json();
-      const account = {
-        id: Date.now(),
-        ...accountData,
-        currentBalance: parseFloat(accountData.currentBalance) || 0,
-        createdAt: new Date().toISOString()
-      };
-      
-      return NextResponse.json({
-        message: 'Account added successfully (development mode)',
-        account
-      }, { status: 201 });
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
     const accountData = await request.json();
