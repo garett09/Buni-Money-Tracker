@@ -4,24 +4,16 @@ const nextConfig = {
     // Disable ESLint during builds to prevent Vercel build failures
     ignoreDuringBuilds: true,
   },
-  experimental: {
-    // Enable Turbo for faster builds
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  // Enable Turbopack for faster builds (Next.js 15.5.2)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
-    // Enable SWC minification for faster builds
-    swcMinify: true,
-    // Enable concurrent features
-    concurrentFeatures: true,
-    // Enable server components
-    serverComponentsExternalPackages: [],
   },
-  // Enable SWC minification
+  // Enable SWC minification for faster builds
   swcMinify: true,
   // Optimize images
   images: {
@@ -68,7 +60,7 @@ const nextConfig = {
   },
   // Enable static optimization
   staticPageGenerationTimeout: 120,
-  // Optimize output
+  // Optimize output for Vercel
   output: 'standalone',
   // Enable trailing slash for better caching
   trailingSlash: false,
