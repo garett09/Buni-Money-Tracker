@@ -11,7 +11,7 @@ export const PageTransitionOptimizer: React.FC<PageTransitionOptimizerProps> = (
   const router = useRouter();
   const pathname = usePathname();
   const previousPath = useRef<string>('');
-  const transitionTimeout = useRef<NodeJS.Timeout>();
+  const transitionTimeout = useRef<NodeJS.Timeout | null>(null);
   const prefetchCache = useRef<Set<string>>(new Set());
 
   // Prefetch critical routes for faster navigation
@@ -83,6 +83,7 @@ export const PageTransitionOptimizer: React.FC<PageTransitionOptimizerProps> = (
     return () => {
       if (transitionTimeout.current) {
         clearTimeout(transitionTimeout.current);
+        transitionTimeout.current = null;
       }
     };
   }, []);
