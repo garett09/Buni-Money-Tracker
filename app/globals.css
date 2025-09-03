@@ -9,6 +9,9 @@
 /* Import mobile responsive styles */
 @import './styles/mobile-responsive.css';
 
+/* Import page transition styles */
+@import './styles/page-transitions.css';
+
 /* Tailwind CSS Directives */
 @tailwind base;
 @tailwind components;
@@ -1894,8 +1897,5 @@ html.light-theme *[class*="bg-neutral-200"] {
     transition: none;
   }
 }
-
-/* Import page transition styles */
-@import './styles/page-transitions.css';
 
 
