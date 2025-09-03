@@ -27,7 +27,21 @@
         "./*"
       ]
     },
-    "target": "ES2017"
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "forceConsistentCasingInFileNames": true,
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": false,
+    "verbatimModuleSyntax": false,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "exactOptionalPropertyTypes": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noPropertyAccessFromIndexSignature": false,
+    "noUncheckedIndexedAccess": false,
+    "exactOptionalPropertyTypes": false
   },
   "include": [
     "next-env.d.ts",

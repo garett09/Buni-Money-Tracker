@@ -1895,4 +1895,7 @@ html.light-theme *[class*="bg-neutral-200"] {
   }
 }
 
+/* Import page transition styles */
+@import './styles/page-transitions.css';
+
 

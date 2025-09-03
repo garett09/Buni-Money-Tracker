@@ -5,6 +5,7 @@ import './styles/performance.css'
 import { Toaster } from 'react-hot-toast'
 import { ThemeProvider } from '@/app/contexts/ThemeContext'
 import { PerformanceOptimizer } from '@/app/components/PerformanceOptimizer'
+import { PageTransitionOptimizer } from '@/app/components/PageTransitionOptimizer'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 
@@ -114,7 +115,9 @@ export default function RootLayout({
       <body className={inter.className}>
         <ThemeProvider>
           <PerformanceOptimizer />
-          {children}
+          <PageTransitionOptimizer>
+            {children}
+          </PageTransitionOptimizer>
           <Toaster position="top-right" />
           <Analytics />
           <SpeedInsights />

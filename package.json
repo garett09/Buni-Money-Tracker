@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:fast": "next dev --turbo",
+    "dev:analyze": "ANALYZE=true next dev",
     "build": "next build",
+    "build:fast": "next build --turbo",
+    "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
     "test": "jest",
@@ -21,11 +25,14 @@
     "css:watch": "postcss app/globals.css -o app/styles/compiled.css --watch",
     "css:optimize": "postcss app/globals.css -o app/styles/compiled.css --env production",
     "analyze": "ANALYZE=true npm run build",
-    "build:analyze": "cross-env ANALYZE=true next build",
     "lighthouse": "lighthouse http://localhost:3000 --output=json --output-path=./lighthouse-report.json",
     "performance:check": "npm run build && npm run lighthouse",
     "bundle:analyze": "npm run build && npx @next/bundle-analyzer",
-    "optimize": "npm run css:optimize && npm run build"
+    "optimize": "npm run css:optimize && npm run build",
+    "performance:dev": "npm run dev:fast",
+    "performance:build": "npm run build:fast",
+    "performance:monitor": "node scripts/performance-monitor.js",
+    "performance:analyze": "npm run build:analyze && npm run performance:monitor"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
