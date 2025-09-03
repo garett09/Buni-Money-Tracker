@@ -58,6 +58,8 @@ const DataManagement: React.FC = () => {
       
       return () => clearTimeout(timer);
     }
+    // Return undefined for the case when retryCount is 0 or > 3
+    return undefined;
   }, [retryCount]);
 
   const loadHealthStatus = async () => {
