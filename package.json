@@ -32,7 +32,9 @@
     "performance:dev": "npm run dev:fast",
     "performance:build": "npm run build:fast",
     "performance:monitor": "node scripts/performance-monitor.js",
-    "performance:analyze": "npm run build:analyze && npm run performance:monitor"
+    "performance:analyze": "npm run build:analyze && npm run performance:monitor",
+    "vercel-build": "npm run build:fast",
+    "vercel-dev": "npm run dev:fast"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
